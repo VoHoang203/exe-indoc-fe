@@ -12,7 +12,7 @@ import { useMutation } from "@tanstack/react-query"
 // import tick from "../../assets/tick.png"
 import login from '../../assets/login_register.png'
 // import { getAccessToken } from "../../utils/auth"
-export type RegisterInputs = Pick<Schema,"email"|"password" >
+export type RegisterInputs = Pick<Schema,"email"|"password"|"confirm_password" >
 // enum RegisterStep {
 //   Index,
 //   XacMinh,
@@ -64,7 +64,7 @@ export type RegisterInputs = Pick<Schema,"email"|"password" >
 // };
 
 const Register2 :React.FC = () =>{
-  const registerSchema = schema.pick(["email","password" ])
+  const registerSchema = schema.pick(["email","password" ,"confirm_password"])
   const navigate = useNavigate()
   const {
     register,
@@ -90,7 +90,7 @@ const Register2 :React.FC = () =>{
   })
   
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
+    console.log({ email: data.email, password: data.password })
     registerMutation.mutate({ email: data.email, password: data.password })
   });
   
@@ -119,7 +119,13 @@ const Register2 :React.FC = () =>{
                 placeholder="Mật khẩu"
               />
               <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">{errors.password?.message}</div>
-              
+              <input
+              {...register("confirm_password")}
+                type="password"
+                className="mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm"
+                placeholder="Mật khẩu"
+              />
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">{errors.confirm_password?.message}</div>
               <div className="mt-3">
                 <button className="flex  w-full items-center justify-center rounded-2xl bg-[#1AB3BC] py-4 px-2 text-sm uppercase text-white hover:bg-blue-600">
                 {registerMutation.isPending && (

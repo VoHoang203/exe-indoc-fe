@@ -11,11 +11,12 @@ import { getAccessToken, removeTokens } from "../../utils/auth";
 import logo_indocs from '../../assets/logo_indocs.png'
 const Header = () => {
   const [isOpen,setOpen] = useState(false)
-  const {isAuthenticated,setUser,setIsAuthenticated,reset} = useAuth()
+  const {isAuthenticated,setUser,setIsAuthenticated,reset, isSeller} = useAuth()
   const user = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')!) as User : null
   const navigate = useNavigate()
   console.log("header login",isAuthenticated )
   console.log("header login",user )
+  console.log("header login",isSeller )
   const logoutMutation = useMutation({
     mutationFn:async (): Promise<void> =>{
       const response = await http.delete('v1/logout');
@@ -123,12 +124,12 @@ const Header = () => {
                   >
                     <span className="mr-3" /> Thông tin cá nhân
                   </button>
-                  <button
+                  { !isSeller && <button
                     onClick={() => {navigate("/registerseller")}}
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                   >
-                    <span className="mr-3" /> Chuyên kênh người bán
-                  </button>
+                    <span className="mr-3" /> Đăng ký người bán
+                  </button>}
                   <button
                     onClick={()=>{logout()}}
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"

@@ -7,6 +7,8 @@ export interface User {
     password: string;
     bankAccount: string;
     bankCV: string;
+    phone: string;
+    createdAt: string;
   }
 interface AppContextInterface{
     isAuthenticated: boolean
@@ -14,6 +16,8 @@ interface AppContextInterface{
     user: User | null;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
     reset: () => void
+    isSeller: boolean;
+    setIsSeller: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const initialAppContext : AppContextInterface = {
     isAuthenticated: Boolean(getAccessToken()),
@@ -21,6 +25,8 @@ const initialAppContext : AppContextInterface = {
     user: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')!) as User : null,
     setUser: () => {},
     reset: () => {},
+    isSeller: false, // Initialize isSeller
+    setIsSeller: () => {}, // Initialize setIsSeller
 }
 export const AppContext= createContext<AppContextInterface>(initialAppContext)
 
@@ -45,11 +51,13 @@ export const AppProvider = ({children}:{children:React.ReactNode})=>{
         const userInfo = localStorage.getItem('userInfo');
         return userInfo ? JSON.parse(userInfo) : null;
       });
+      const [isSeller, setIsSeller] = useState<boolean>(false); 
       const reset = () => {
         setIsAuthenticated(false)
         setUser(null)
+        setIsSeller(false);
     }
     return( <AppContext.Provider value={{
-        isAuthenticated, setIsAuthenticated, user, setUser,reset 
+        isAuthenticated, setIsAuthenticated, user, setUser,reset ,setIsSeller, isSeller
     }}>{children}</AppContext.Provider>)
 }
