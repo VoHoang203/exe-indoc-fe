@@ -1,4 +1,22 @@
-
+import man from "../../assets/man.png"
+import lapLeft from "../../assets/lapLeft.png"
+import rightArrow from "../../assets/bxs_up-arrow.png"
+import docHocThuat from "../../assets/docHocThuat.png"
+import faq from "../../assets/faq.png"
+import community from "../../assets/community.png"
+import picture from "../../assets/picture.png"
+import cntt from "../../assets/icon-park_code-computer.png"
+import dohoa from "../../assets/ic_outline-draw.png"
+import marketing from "../../assets/nimbus_marketing.png"
+import ngonngu from "../../assets/ic_baseline-language.png"
+import mutot from "../../assets/material-symbols-light_school-outline-rounded.png"
+import document from "../../assets/solar_document-text-linear.png"
+import arrowngangxanh from "../../assets/arrowngangxanh.png"
+import arrowCheo from "../../assets/arrowCheo.png"
+import nuocxanh from "../../assets/nuocxanh.png"
+import nuocxam from "../../assets/nuocxam.png"
+import tintuc from "../../assets/tintuc.jpg"
+import { Link } from "react-router-dom"
 const MainContent = () => {
   return (
     <>
@@ -54,8 +72,9 @@ const MainContent = () => {
           </p>
 
         {/* Link section */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="bg-purple-600 text-white rounded-lg py-2 px-12 gap-4 flex justify-between items-center">
+        <div className="my-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 bg-gray-100 ">
+          <div className="  text-white rounded-lg py-2 px-12 gap-4 flex justify-between items-center"
+          style={{ backgroundImage: `url(${docHocThuat})`, backgroundSize: 'cover' } }>
             <svg
               fill="none"
               viewBox="0 0 24 24"
@@ -80,15 +99,18 @@ const MainContent = () => {
               <p className="text-md mt-2">34 tài liệu PDF / 6 Học phần</p>
             </div>
           </div>
-          <div className="bg-blue-500 text-white rounded-lg p-6">
+          <div className="bg-blue-500 text-white rounded-lg p-10"
+          style={{ backgroundImage: `url(${picture})`, backgroundSize: 'cover' } }>
             <p className="text-2xl font-bold">Hình ảnh</p>
             <p className="mt-2">900+</p>
           </div>
-          <div className="bg-green-500 text-white rounded-lg p-6">
+          <div className="bg-green-500 text-white rounded-lg p-10"
+          style={{ backgroundImage: `url(${community})`, backgroundSize: 'cover' } }>
             <p className="text-2xl font-bold">Cộng đồng</p>
             <p className="mt-2">163 bài viết / 600 đánh giá</p>
           </div>
-          <div className="bg-yellow-500 text-white rounded-lg p-6">
+          <div className="bg-yellow-500 text-white rounded-lg p-10"
+          style={{ backgroundImage: `url(${faq})`, backgroundSize: 'cover' } }>
             <p className="text-2xl font-bold">FAQ</p>
             <p className="mt-2">6 câu hỏi thường gặp</p>
           </div>
@@ -105,122 +127,21 @@ const MainContent = () => {
           {}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* card test*/}
-            <div className="border-2 border-blue-300 p-6 rounded-lg shadow-lg">
-              <h3 className="text-xl font-semibold text-blue-700 mb-2">
-                Công nghệ thông tin
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Tổng hợp các tài liệu liên quan chuyên ngành công nghệ TT
-              </p>
-              <p className="text-blue-600 font-semibold mb-4">
-                34 tài liệu PDF / 6 Học phần
-              </p>
-              <ul className="text-left text-gray-700 space-y-2">
-                <li className="flex items-center justify-between">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="w-12 h-12 mr-2 text-blue-600"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M7 18h10v-2H7v2zM17 14H7v-2h10v2zM7 10h4V8H7v2z"
-                    />
-                    <path
-                      fill="currentColor"
-                      fillRule="evenodd"
-                      d="M6 2a3 3 0 00-3 3v14a3 3 0 003 3h12a3 3 0 003-3V9a7 7 0 00-7-7H6zm0 2h7v5h6v10a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 .1A5.009 5.009 0 0118.584 7H15V4.1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  "Introduction to Algorithms" by Thomas H. Cormen, ....
-                </li>
-                <li className="flex items-center justify-between">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="w-12 h-12 mr-2 text-blue-600"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M7 18h10v-2H7v2zM17 14H7v-2h10v2zM7 10h4V8H7v2z"
-                    />
-                    <path
-                      fill="currentColor"
-                      fillRule="evenodd"
-                      d="M6 2a3 3 0 00-3 3v14a3 3 0 003 3h12a3 3 0 003-3V9a7 7 0 00-7-7H6zm0 2h7v5h6v10a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 .1A5.009 5.009 0 0118.584 7H15V4.1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  "Computer Networking: Principles, Protocols and Practice" by
-                  Olivier Bonaventure
-                </li>
-                <li className="flex items-center justify-between">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="w-12 h-12 mr-2 text-blue-600"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M7 18h10v-2H7v2zM17 14H7v-2h10v2zM7 10h4V8H7v2z"
-                    />
-                    <path
-                      fill="currentColor"
-                      fillRule="evenodd"
-                      d="M6 2a3 3 0 00-3 3v14a3 3 0 003 3h12a3 3 0 003-3V9a7 7 0 00-7-7H6zm0 2h7v5h6v10a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 .1A5.009 5.009 0 0118.584 7H15V4.1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>{" "}
-                  "Software Engineering" by Ian Sommerville
-                </li>
-                <li className="flex items-center justify-between">
-                  <svg
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                    className="w-12 h-12 mr-2 text-blue-600"
-                  >
-                    <path d="M8.211 2.047a.5.5 0 00-.422 0l-7.5 3.5a.5.5 0 00.025.917l7.5 3a.5.5 0 00.372 0L14 7.14V13a1 1 0 00-1 1v2h3v-2a1 1 0 00-1-1V6.739l.686-.275a.5.5 0 00.025-.917l-7.5-3.5z" />
-                    <path d="M4.176 9.032a.5.5 0 00-.656.327l-.5 1.7a.5.5 0 00.294.605l4.5 1.8a.5.5 0 00.372 0l4.5-1.8a.5.5 0 00.294-.605l-.5-1.7a.5.5 0 00-.656-.327L8 10.466 4.176 9.032z" />
-                  </svg>{" "}
-                  "Giải thuật và lập trình" - Lê Minh Hoàng
-                </li>
-              </ul>
-              <a
-                href="#"
-                className="text-blue-600 font-semibold mt-4 flex items-center"
-              >
-                Xem tất cả
-                <svg
-                  viewBox="0 0 448 512"
-                  fill="currentColor"
-                  height="1em"
-                  width="1em"
-                >
-                  <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144v256c0 44.2 35.8 80 80 80h256c44.2 0 80-35.8 80-80v-80c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
-                </svg>
-              </a>
-            </div>
+            
             {/* card test 2 */}
             <div className="border-2 border-blue-300 p-6 rounded-lg shadow-lg">
-              <div className="flex items-start justify-between gap-x-4 border-b border-gray-300">
-                <div className="">
-                  <svg
-                    viewBox="0 0 1024 1024"
-                    fill="currentColor"
-                    className="h-8 w-8 mx-3 text-black "
-                  >
-                    <path d="M928 140H96c-17.7 0-32 14.3-32 32v496c0 17.7 14.3 32 32 32h380v112H304c-8.8 0-16 7.2-16 16v48c0 4.4 3.6 8 8 8h432c4.4 0 8-3.6 8-8v-48c0-8.8-7.2-16-16-16H548V700h380c17.7 0 32-14.3 32-32V172c0-17.7-14.3-32-32-32zm-40 488H136V212h752v416z" />
-                  </svg>
+              <div className="flex items-start justify-between gap-x-4 border-b border-white">
+                <div className="flex items-center">
+                  <img src={cntt} className="h-8 w-8 mt-6 text-black " />
                 </div>
-                <div className="">
-                  <h3 className="text-left text-xl font-semibold text-blue-700 mb-2">
+                <div className="flex flex-col items-start w-3/4">
+                  <h3 className="text-left text-xl font-semibold text-gray-600 mb-2">
                     Công nghệ thông tin
                   </h3>
                   <p className="text-left text-sm text-gray-600 mb-4">
                     Tổng hợp các tài liệu liên quan chuyên ngành công nghệ TT
                   </p>
-                  <p className="text-left text-blue-600 font-semibold mb-4">
+                  <p className="text-left text-cyan-300 font-semibold mb-4">
                 34 tài liệu PDF / 6 Học phần
               </p>
                 </div>
@@ -228,78 +149,27 @@ const MainContent = () => {
               
               <ul className="text-left text-gray-700 space-y-2">
                 <li className="flex  justify-between gap-x-4">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="w-12 h-12 text-blue-600 flex-shrink-0"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M7 18h10v-2H7v2zM17 14H7v-2h10v2zM7 10h4V8H7v2z"
-                    />
-                    <path
-                      fill="currentColor"
-                      fillRule="evenodd"
-                      d="M6 2a3 3 0 00-3 3v14a3 3 0 003 3h12a3 3 0 003-3V9a7 7 0 00-7-7H6zm0 2h7v5h6v10a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 .1A5.009 5.009 0 0118.584 7H15V4.1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <p>"Introduction to Algorithms" by Thomas H. Cormen, ....</p>
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Introduction to Algorithms" by Thomas H. Cormen, ....</p>
                 </li>
                 <li className="flex justify-between gap-x-4">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="w-12 h-12 text-blue-600 flex-shrink-0"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M7 18h10v-2H7v2zM17 14H7v-2h10v2zM7 10h4V8H7v2z"
-                    />
-                    <path
-                      fill="currentColor"
-                      fillRule="evenodd"
-                      d="M6 2a3 3 0 00-3 3v14a3 3 0 003 3h12a3 3 0 003-3V9a7 7 0 00-7-7H6zm0 2h7v5h6v10a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 .1A5.009 5.009 0 0118.584 7H15V4.1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <p>"Computer Networking: Principles, Protocols and Practice" by
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Computer Networking: Principles, Protocols and Practice" by
                   Olivier Bonaventure</p>
                 </li>
                 <li className="flex  justify-between gap-x-4">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="w-12 h-12 text-blue-600 flex-shrink-0"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M7 18h10v-2H7v2zM17 14H7v-2h10v2zM7 10h4V8H7v2z"
-                    />
-                    <path
-                      fill="currentColor"
-                      fillRule="evenodd"
-                      d="M6 2a3 3 0 00-3 3v14a3 3 0 003 3h12a3 3 0 003-3V9a7 7 0 00-7-7H6zm0 2h7v5h6v10a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 .1A5.009 5.009 0 0118.584 7H15V4.1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>{" "}
-                  <p>"Software Engineering" by Ian Sommerville</p>
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p  className="w-4/5">"Software Engineering" by Ian Sommerville</p>
                 </li>
                 <li className="flex  justify-between gap-x-4">
-                  <svg
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                    className="w-12 h-12 mr-2 text-blue-600 "
-                  >
-                    <path d="M8.211 2.047a.5.5 0 00-.422 0l-7.5 3.5a.5.5 0 00.025.917l7.5 3a.5.5 0 00.372 0L14 7.14V13a1 1 0 00-1 1v2h3v-2a1 1 0 00-1-1V6.739l.686-.275a.5.5 0 00.025-.917l-7.5-3.5z" />
-                    <path d="M4.176 9.032a.5.5 0 00-.656.327l-.5 1.7a.5.5 0 00.294.605l4.5 1.8a.5.5 0 00.372 0l4.5-1.8a.5.5 0 00.294-.605l-.5-1.7a.5.5 0 00-.656-.327L8 10.466 4.176 9.032z" />
-                  </svg>{" "}
-                  <p>"Giải thuật và lập trình" - Lê Minh Hoàng</p>
+                <img src={mutot} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Giải thuật và lập trình" - Lê Minh Hoàng</p>
                 </li>
               </ul>
-              <a
-                href="#"
-                className="text-blue-600 font-semibold mt-4 flex items-center"
+              <div className="flex justify-end">
+              <Link
+                to="/service"
+                className="text-blue-600 font-semibold mt-4 flex items-center ml-auto"
               >
                 Xem tất cả
                 <svg
@@ -310,115 +180,173 @@ const MainContent = () => {
                 >
                   <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144v256c0 44.2 35.8 80 80 80h256c44.2 0 80-35.8 80-80v-80c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
                 </svg>
-              </a>
-            </div>
-            {/* Card 1 */}
-            <div className="border-2 border-blue-300 p-6 rounded-lg shadow-lg">
-              <h3 className="text-xl font-semibold text-blue-700 mb-2">
-                Công nghệ thông tin
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Tổng hợp các tài liệu liên quan chuyên ngành CNTT
-              </p>
-              <p className="text-blue-600 font-semibold mb-4">
-                34 tài liệu PDF / 6 Học phần
-              </p>
-              <ul className="text-left text-gray-700 space-y-2">
-                <li>• "Introduction to Algorithms" by Thomas H. Cormen</li>
-                <li>
-                  • "Computer Networking: Principles, Protocols and Practice" by
-                  Olivier Bonaventure
-                </li>
-                <li>• "Software Engineering" by Ian Sommerville</li>
-                <li>• "Giải thuật và lập trình" - Lê Minh Hoàng</li>
-              </ul>
-              <a
-                href="#"
-                className="text-blue-600 font-semibold mt-4 inline-block"
-              >
-                Xem tất cả →
-              </a>
+              </Link>
+              </div>
             </div>
             {/* Card 2 */}
             <div className="border-2 border-purple-300 p-6 rounded-lg shadow-lg">
-              <h3 className="text-xl font-semibold text-purple-700 mb-2">
-                Đồ họa
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Tổng hợp các tài liệu liên quan chuyên ngành đồ họa
-              </p>
-              <p className="text-purple-600 font-semibold mb-4">
+            <div className="flex items-start justify-between gap-x-4 border-b border-white">
+                <div className="flex items-center">
+                  <img src={dohoa} className="h-8 w-8 mt-6 text-black " />
+                </div>
+                <div className="flex flex-col items-start w-3/4">
+                  <h3 className="text-left text-xl font-semibold text-gray-600 mb-2">
+                    Đồ họa
+                  </h3>
+                  <p className="text-left text-sm text-gray-600 mb-4">
+                    Tổng hợp các tài liệu liên quan chuyên ngành công nghệ TT
+                  </p>
+                  <p className="text-left text-cyan-300 font-semibold mb-4">
                 34 tài liệu PDF / 6 Học phần
               </p>
+                </div>
+              </div>
+              
               <ul className="text-left text-gray-700 space-y-2">
-                <li>• "Introduction to Algorithms" by Thomas H. Cormen</li>
-                <li>
-                  • "Computer Networking: Principles, Protocols and Practice" by
-                  Olivier Bonaventure
+                <li className="flex  justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Introduction to Algorithms" by Thomas H. Cormen, ....</p>
                 </li>
-                <li>• "Software Engineering" by Ian Sommerville</li>
-                <li>• "Giải thuật và lập trình" - Lê Minh Hoàng</li>
+                <li className="flex justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Computer Networking: Principles, Protocols and Practice" by
+                  Olivier Bonaventure</p>
+                </li>
+                <li className="flex  justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p  className="w-4/5">"Software Engineering" by Ian Sommerville</p>
+                </li>
+                <li className="flex  justify-between gap-x-4">
+                <img src={mutot} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Giải thuật và lập trình" - Lê Minh Hoàng</p>
+                </li>
               </ul>
-              <a
-                href="#"
-                className="text-purple-600 font-semibold mt-4 inline-block"
+              <div className="flex justify-end">
+              <Link
+                to="/service"
+                className="text-purple-600 font-semibold mt-4 flex items-center ml-auto"
               >
-                Xem tất cả →
-              </a>
+                Xem tất cả
+                <svg
+                  viewBox="0 0 448 512"
+                  fill="currentColor"
+                  height="1em"
+                  width="1em"
+                >
+                  <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144v256c0 44.2 35.8 80 80 80h256c44.2 0 80-35.8 80-80v-80c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
+                </svg>
+              </Link>
+              </div>
             </div>
             {/* Card 3 */}
             <div className="border-2 border-green-300 p-6 rounded-lg shadow-lg">
-              <h3 className="text-xl font-semibold text-green-700 mb-2">
-                Marketing
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Tổng hợp các tài liệu liên quan chuyên ngành marketing
-              </p>
-              <p className="text-green-600 font-semibold mb-4">
+            <div className="flex items-start justify-between gap-x-4 border-b border-white">
+                <div className="flex items-center">
+                  <img src={marketing} className="h-8 w-8 mt-6 text-black " />
+                </div>
+                <div className="flex flex-col items-start w-3/4">
+                  <h3 className="text-left text-xl font-semibold text-gray-600 mb-2">
+                    Marketing
+                  </h3>
+                  <p className="text-left text-sm text-gray-600 mb-4">
+                    Tổng hợp các tài liệu liên quan chuyên ngành công nghệ TT
+                  </p>
+                  <p className="text-left text-cyan-300 font-semibold mb-4">
                 34 tài liệu PDF / 6 Học phần
               </p>
+                </div>
+              </div>
+              
               <ul className="text-left text-gray-700 space-y-2">
-                <li>• "Introduction to Algorithms" by Thomas H. Cormen</li>
-                <li>
-                  • "Computer Networking: Principles, Protocols and Practice" by
-                  Olivier Bonaventure
+                <li className="flex  justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Introduction to Algorithms" by Thomas H. Cormen, ....</p>
                 </li>
-                <li>• "Software Engineering" by Ian Sommerville</li>
-                <li>• "Giải thuật và lập trình" - Lê Minh Hoàng</li>
+                <li className="flex justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Computer Networking: Principles, Protocols and Practice" by
+                  Olivier Bonaventure</p>
+                </li>
+                <li className="flex  justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p  className="w-4/5">"Software Engineering" by Ian Sommerville</p>
+                </li>
+                <li className="flex  justify-between gap-x-4">
+                <img src={mutot} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Giải thuật và lập trình" - Lê Minh Hoàng</p>
+                </li>
               </ul>
-              <a
-                href="#"
-                className="text-green-600 font-semibold mt-4 inline-block"
+              <div className="flex justify-end">
+              <Link
+                to="/service"
+                className="text-purple-600 font-semibold mt-4 flex items-center ml-auto"
               >
-                Xem tất cả →
-              </a>
+                Xem tất cả
+                <svg
+                  viewBox="0 0 448 512"
+                  fill="currentColor"
+                  height="1em"
+                  width="1em"
+                >
+                  <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144v256c0 44.2 35.8 80 80 80h256c44.2 0 80-35.8 80-80v-80c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
+                </svg>
+              </Link>
+              </div>
             </div>
-            {/* Card 3 */}
-            <div className="border-2 border-green-300 p-6 rounded-lg shadow-lg">
-              <h3 className="text-xl font-semibold text-green-700 mb-2">
-                Marketing
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Tổng hợp các tài liệu liên quan chuyên ngành marketing
-              </p>
-              <p className="text-green-600 font-semibold mb-4">
+             {/* Card 4 */}
+             <div className="border-2 border-green-300 p-6 rounded-lg shadow-lg">
+            <div className="flex items-start justify-between gap-x-4 border-b border-white">
+                <div className="flex items-center">
+                  <img src={ngonngu} className="h-8 w-8 mt-6 text-black " />
+                </div>
+                <div className="flex flex-col items-start w-3/4">
+                  <h3 className="text-left text-xl font-semibold text-gray-600 mb-2">
+                    Ngôn Ngữ
+                  </h3>
+                  <p className="text-left text-sm text-gray-600 mb-4">
+                    Tổng hợp các tài liệu liên quan chuyên ngành công nghệ TT
+                  </p>
+                  <p className="text-left text-cyan-300 font-semibold mb-4">
                 34 tài liệu PDF / 6 Học phần
               </p>
+                </div>
+              </div>
+              
               <ul className="text-left text-gray-700 space-y-2">
-                <li>• "Introduction to Algorithms" by Thomas H. Cormen</li>
-                <li>
-                  • "Computer Networking: Principles, Protocols and Practice" by
-                  Olivier Bonaventure
+                <li className="flex  justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Introduction to Algorithms" by Thomas H. Cormen, ....</p>
                 </li>
-                <li>• "Software Engineering" by Ian Sommerville</li>
-                <li>• "Giải thuật và lập trình" - Lê Minh Hoàng</li>
+                <li className="flex justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Computer Networking: Principles, Protocols and Practice" by
+                  Olivier Bonaventure</p>
+                </li>
+                <li className="flex  justify-between gap-x-4">
+                  <img src={document} className="w-6 h-6 flex-shrink-0 " />
+                  <p  className="w-4/5">"Software Engineering" by Ian Sommerville</p>
+                </li>
+                <li className="flex  justify-between gap-x-4">
+                <img src={mutot} className="w-6 h-6 flex-shrink-0 " />
+                  <p className="w-4/5">"Giải thuật và lập trình" - Lê Minh Hoàng</p>
+                </li>
               </ul>
-              <a
-                href="#"
-                className="text-green-600 font-semibold mt-4 inline-block"
+              <div className="flex justify-end">
+              <Link
+                to="/service"
+                className="text-purple-600 font-semibold mt-4 flex items-center ml-auto"
               >
-                Xem tất cả →
-              </a>
+                Xem tất cả
+                <svg
+                  viewBox="0 0 448 512"
+                  fill="currentColor"
+                  height="1em"
+                  width="1em"
+                >
+                  <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144v256c0 44.2 35.8 80 80 80h256c44.2 0 80-35.8 80-80v-80c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
+                </svg>
+              </Link>
+              </div>
             </div>
             {/* Add more cards as necessary */}
           </div>
@@ -431,31 +359,32 @@ const MainContent = () => {
           </h1>
           <div className="flex justify-center items-center space-x-6">
             <img
-              src="https://m.media-amazon.com/images/I/71+2H96GHZL._AC_SL1500_.jpg"
+              src={lapLeft}
               alt="Laptop Image"
-              className="w-1/3"
+              className="w-1/2"
             />
             <ul className="text-left text-gray-700 space-y-4">
-              <li className="flex items-start">
-              <div className="w-0 h-0 mr-3 mt-1.5 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-blue-600"></div> 
-              <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                với người dùng</p>
+              <li className="flex items-start gap-4">
+                <img src={rightArrow} className="w-10 h-10" />
+                <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
+                  với người dùng</p>
               </li>
-              <li className="flex items-start">
-              <div className="w-0 h-0 mr-3 mt-1.5 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-blue-600"></div> 
-              <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                với người dùng</p>
+              <li className="flex items-start gap-4">
+                <img src={rightArrow} className="w-10 h-10" />
+                <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
+                  với người dùng</p>
               </li>
-              <li className="flex items-start">
-              <div className="w-0 h-0 mr-3 mt-1.5 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-blue-600"></div> 
-              <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                với người dùng</p>
+              <li className="flex items-start gap-4">
+                <img src={rightArrow} className="w-10 h-10" />
+                <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
+                  với người dùng</p>
               </li>
-              <li className="flex items-start">
-              <div className="w-0 h-0 mr-3 mt-1.5 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-blue-600"></div> 
-              <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                với người dùng</p>
+              <li className="flex items-start gap-4">
+                <img src={rightArrow} className="w-10 h-10" />
+                <p>Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
+                  với người dùng</p>
               </li>
+              
             </ul>
           </div>
         </section>
@@ -465,51 +394,72 @@ const MainContent = () => {
       <section className="bg-gradient-to-b from-blue-50 to-blue-100 py-16">
   <div className="container mx-auto px-8">
     <h2 className="text-2xl font-semibold text-center text-blue-600">Tại sao lại chọn <span className="text-purple-600">InDocs</span></h2>
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10 items-center">
-      <div className=" grid grid-cols-2 gap-8 mt-10">
-        {/* Box 1 */}
-        <div className="bg-purple-100 rounded-lg p-6 shadow-md flex flex-col items-center text-center">
-          <div className="bg-purple-600 text-white rounded-full p-4 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a4 4 0 004 4h10a4 4 0 004-4V7M7 7a4 4 0 014-4h2a4 4 0 014 4" />
-            </svg>
+    <div className="flex gap-8 mt-10 items-center px-4 py-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full ">
+        
+          <div className="bg-white rounded-lg shadow-lg w-full overflow-hidden">
+            <div className="bg-blue-700 text-white py-2 px-4 h-1/3">
+              <h2 className="text-xl font-bold">Tài liệu học thuật và thiết kế đa dạng</h2>
+            </div>
+            <div className="p-4 bg-blue-100 h-2/3">
+              <p className="text-gray-800 ">
+              Indocs tích hợp nhiều loại tài liệu, giúp người dùng tìm kiếm dễ dàng trên một nền tảng duy nhất.
+              </p>
+            </div>
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Tối ưu Website</h3>
-          <p className="text-gray-600">Mọi thông tin cá nhân sẽ được bảo mật tuyệt đối. Tạo trải nghiệm sử dụng ổn định nhất cho người dùng</p>
-        </div>
-        {/* Box 2 */}
-        <div className="bg-teal-100 rounded-lg p-6 shadow-md flex flex-col items-center text-center">
-          <div className="bg-teal-600 text-white rounded-full p-4 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+          <div className="bg-white rounded-lg shadow-lg w-full overflow-hidden">
+            <div className="bg-blue-700 text-white py-2 px-4 h-1/3">
+              <h2 className="text-xl font-bold">Tối ưu tài liệu cá nhân</h2>
+            </div>
+            <div className="p-4 bg-white h-2/3">
+              <p className="text-gray-800">
+              Chia sẻ tài liệu dễ dàng, xây dựng nguồn tài nguyên học tập phong phú và bền vững.
+              </p>
+            </div>
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Tài liệu Online</h3>
-          <p className="text-gray-600">Mọi thông tin cá nhân sẽ được bảo mật tuyệt đối. Tạo trải nghiệm sử dụng ổn định nhất cho người dùng</p>
-        </div>
-        {/* Box 3 */}
-        <div className="bg-green-100 rounded-lg p-6 shadow-md flex flex-col items-center text-center">
-          <div className="bg-green-600 text-white rounded-full p-4 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2l4-4m1 4h2a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v2a2 2 0 002 2h3m0 4H7a2 2 0 00-2 2v2a2 2 0 002 2h6a2 2 0 002-2v-2a2 2 0 00-2-2h-3" />
-            </svg>
+          <div className="bg-white rounded-lg shadow-lg w-full overflow-hidden">
+            <div className="bg-blue-700 text-white py-2 px-4 h-1/3">
+              <h2 className="text-xl font-bold">ChatBot AI</h2>
+            </div>
+            <div className="p-4 bg-blue-100 h-2/3">
+              <p className="text-gray-800">
+                Chatbot AI luôn sẵn sàng giải đáp, tiếp cận thông tin nhanh chóng và chính xác.
+              </p>
+            </div>
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">BoxChat</h3>
-          <p className="text-gray-600">Mọi thông tin cá nhân sẽ được bảo mật tuyệt đối. Tạo trải nghiệm sử dụng ổn định nhất cho người dùng</p>
-        </div>
-        {/* Box 4 */}
-        <div className="bg-yellow-100 rounded-lg p-6 shadow-md flex flex-col items-center text-center">
-          <div className="bg-yellow-600 text-white rounded-full p-4 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4H7v4H6v-5a1 1 0 011-1h6a1 1 0 011 1v5z" />
-            </svg>
+          <div className="bg-white rounded-lg shadow-lg w-full overflow-hidden">
+            <div className="bg-blue-700 text-white py-2 px-4 h-1/3">
+              <h2 className="text-xl font-bold">Quản lý tài liệu hiệu quả</h2>
+            </div>
+            <div className="p-4 bg-white h-2/3">
+              <p className="text-gray-800">
+              Tìm kiếm mạnh mẽ, kiểm soát quyền truy cập và theo dõi tài liệu giúp người dùng sử dụng tài nguyên dễ dàng và an toàn.              </p>
+            </div>
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Hỗ trợ 24/7</h3>
-          <p className="text-gray-600">Mọi thông tin cá nhân sẽ được bảo mật tuyệt đối. Tạo trải nghiệm sử dụng ổn định nhất cho người dùng</p>
-        </div>
+          <div className="bg-white rounded-lg shadow-lg w-full overflow-hidden">
+            <div className="bg-blue-700 text-white py-2 px-4 h-1/3">
+              <h2 className="text-xl font-bold">Xây dựng thương hiệu cá nhân</h2>
+            </div>
+            <div className="p-4 bg-blue-100 h-2/3">
+              <p className="text-gray-800 ">
+              Giúp người dùng xây dựng được thương hiệu cá nhân uy tín, nâng cao danh tiếng
+              </p>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-lg w-full overflow-hidden">
+            <div className="bg-blue-700 text-white py-2 px-4 h-1/3" >
+              <h2 className="text-xl font-bold">Thu nhập từ tài liệu</h2>
+            </div>
+            <div className="p-4 bg-white h-2/3">
+              <p className="text-gray-800">
+              Đem lại thu nhập cá nhân từ chính những tài liệu người dùng đăng tải.              </p>
+            </div>
+          </div>
+
+        
       </div>
-      <div className="flex justify-center mt-10">
-        <img src="https://www.shutterstock.com/image-photo/man-business-looks-into-laptop-260nw-2208830725.jpg" alt="Laptop Image" className="w-full  rounded-lg shadow-md" />
+      <div className="flex justify-center mt-10 w-1/3">
+        <img src={man} alt="Laptop Image" className="w-full  rounded-lg shadow-md" />
       </div>
     </div>
   </div>
@@ -530,7 +480,7 @@ const MainContent = () => {
         </div>
         <h3 className="text-lg font-semibold text-gray-800">Nguyễn Gia Nguyên</h3>
         <p className="text-gray-600 mt-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text...</p>
-        <a href="#" className="text-blue-600 font-semibold mt-6 inline-block">Đi đến bài biết ↗</a>
+        <Link to="/news" className="text-blue-600 font-semibold mt-6 inline-block">Đi đến bài biết ↗</Link>
       </div>
       {/* Card 2 */}
       <div className="border border-blue-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
@@ -543,7 +493,7 @@ const MainContent = () => {
         </div>
         <h3 className="text-lg font-semibold text-gray-800">Nguyễn Gia Nguyên</h3>
         <p className="text-gray-600 mt-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text...</p>
-        <a href="#" className="text-blue-600 font-semibold mt-6 inline-block">Đi đến bài biết ↗</a>
+        <Link to="/news" className="text-blue-600 font-semibold mt-6 inline-block">Đi đến bài biết ↗</Link>
       </div>
       {/* Card 3 */}
       <div className="border border-blue-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
@@ -556,7 +506,7 @@ const MainContent = () => {
         </div>
         <h3 className="text-lg font-semibold text-gray-800">Nguyễn Gia Nguyên</h3>
         <p className="text-gray-600 mt-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text...</p>
-        <a href="#" className="text-blue-600 font-semibold mt-6 inline-block">Đi đến bài biết ↗</a>
+        <Link to="/news" className="text-blue-600 font-semibold mt-6 inline-block">Đi đến bài biết ↗</Link>
       </div>
     </div>
   </div>
@@ -565,46 +515,52 @@ const MainContent = () => {
 
 {/*FAQ2 */}
 <section className="bg-gradient-to-b from-blue-50 to-blue-100 py-16">
-  <div className="container mx-auto px-8">
-    <h2 className="text-2xl font-semibold text-center text-blue-600 mb-12">FAQ - Các câu hỏi thường gặp</h2>
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div className="container mx-auto w-3/4 px-8">
+    <h2 className="text-2xl font-semibold text-center text-[21409A]">FAQ </h2>
+    <p className="text-center text-gray-600 mb-12"> Các câu hỏi thường gặp</p>
+    <div className="flex justify-center  gap-8">
       {/* FAQ Categories */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-6 w-1/3 flex flex-col">
         <ul className="space-y-4">
-          <li className="flex items-center">
-            <span className="text-teal-600 font-semibold">Tài liệu</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="{2}" d="M9 5l7 7-7 7" />
-            </svg>
+          <li className="flex items-center justify-between border-b-2 border-teal-600 pb-4">
+            <div className="flex items-center justify-center gap-2">
+              <img src={nuocxanh} className="h-6 w-6 text-teal-600 ml-auto" />
+            <span className="text-teal-600 font-semibold">Tài liệu</span></div>
+            
+            <img src={arrowngangxanh}  />
           </li>
-          <li className="flex items-center">
-            <span>Hình ảnh</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="{2}" d="M9 5l7 7-7 7"  />
-            </svg>
+          <li className="flex items-center justify-between">
+            <div className="flex items-center justify-center gap-2">
+                <img src={nuocxam} className="h-6 w-6  ml-auto" />
+              <span className="text-slate-500 font-semibold">Tài liệu</span></div>
+              
+              <img src={arrowCheo}  />
           </li>
-          <li className="flex items-center">
-            <span>Tạo tài khoản</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="{2}" d="M9 5l7 7-7 7"  />
-            </svg>
+          <li className="flex items-center justify-between">
+            <div className="flex items-center justify-center gap-2">
+                <img src={nuocxam} className="h-6 w-6  ml-auto" />
+              <span className="text-slate-500 font-semibold">Tạo tài khoản</span></div>
+              
+              <img src={arrowCheo}  />
           </li>
-          <li className="flex items-center">
-            <span>Đua top RANKING</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="{2}" d="M9 5l7 7-7 7"  />
-            </svg>
+          <li className="flex items-center justify-between">
+            <div className="flex items-center justify-center gap-2">
+                <img src={nuocxam} className="h-6 w-6  ml-auto" />
+              <span className="text-slate-500 font-semibold">top ranking</span></div>
+              
+              <img src={arrowCheo}  />
           </li>
-          <li className="flex items-center">
-            <span>Dịch vụ</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="{2}" d="M9 5l7 7-7 7"  />
-            </svg>
+          <li className="flex items-center justify-between">
+            <div className="flex items-center justify-center gap-2">
+                <img src={nuocxam} className="h-6 w-6  ml-auto" />
+              <span className="text-slate-500 font-semibold">Dịch vụ</span></div>
+              
+              <img src={arrowCheo}  />
           </li>
         </ul>
       </div>
       {/* FAQ Content */}
-      <div className="space-y-4">
+      <div className="space-y-4 w-2/3">
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-teal-600 font-semibold">Làm sao để có thể tìm kiếm chính xác tài liệu mong muốn?</h3>
           <p className="text-gray-600 mt-2">Tìm chính xác từ khóa mà bạn mong muốn, hoặc ở phần đề xuất. Vào trang dịch vụ chọn các topic bạn đang muốn tìm kiếm tài liệu. Dùng thanh công cụ tìm kiếm...</p>
@@ -623,42 +579,7 @@ const MainContent = () => {
   </div>
 </section>
 
-        {/* Contact Form */}
-        <section className="mt-16 bg-teal-500 py-12">
-          <div className="container mx-auto text-center text-white">
-            <h2 className="text-2xl font-semibold mb-4">
-              Liên hệ với chúng tôi
-            </h2>
-            <p className="mb-8">Indocs luôn lắng nghe đóng góp của các bạn</p>
-            <form action="#" className="max-w-lg mx-auto">
-              <div className="grid grid-cols-1 gap-4 mb-4">
-                <input
-                  type="text"
-                  placeholder="Họ và tên"
-                  className="p-4 rounded-lg text-gray-800"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="p-4 rounded-lg text-gray-800"
-                />
-                <input
-                  type="tel"
-                  placeholder="SĐT"
-                  className="p-4 rounded-lg text-gray-800"
-                />
-                <textarea
-                  placeholder="1 vài điều InDocs cần biết?"
-                  className="p-4 rounded-lg text-gray-800"
-                  defaultValue={""}
-                />
-              </div>
-              <button type="submit" className="bg-purple-600 p-4 rounded-lg">
-                Cảm ơn vì tin tưởng
-              </button>
-            </form>
-          </div>
-        </section>
+        
         {/*Contact form 2*/ }
   <section className="bg-teal-700 py-16">
   <div className="container mx-auto px-8">
@@ -672,21 +593,14 @@ const MainContent = () => {
       {/* Contact Form */}
       <div className="bg-white rounded-lg shadow-md p-8">
         <form action="#">
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 font-semibold">Họ và tên</label>
+          <div className="mb-4 flex gap-x-2  items-center">
             <input type="text" id="name" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Họ và tên" />
           </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 font-semibold">Email</label>
-            <input type="email" id="email" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Email" />
+          <div className="mb-4 flex gap-x-2  items-center"><input type="email" id="email" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Email" />
           </div>
-          <div className="mb-4">
-            <label htmlFor="phone" className="block text-gray-700 font-semibold">SDT</label>
-            <input type="text" id="phone" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Số điện thoại" />
+          <div className="mb-4"><input type="text" id="phone" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Số điện thoại" />
           </div>
-          <div className="mb-4">
-            <label htmlFor="message" className="block text-gray-700 font-semibold">1 vài điều InDocs cần biết ?</label>
-            <textarea id="message" rows={4} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Nội dung liên hệ" defaultValue={""} />
+          <div className="mb-4"><textarea id="message" rows={4} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Nội dung liên hệ" defaultValue={""} />
           </div>
           <button type="submit" className="w-full bg-purple-600 text-white rounded-lg p-2 mt-4 hover:bg-purple-700 transition-colors">Cảm ơn vì tin tưởng</button>
         </form>
@@ -704,7 +618,7 @@ const MainContent = () => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Main Event Image & Content */}
       <div className="lg:col-span-2">
-        <img src="https://via.placeholder.com/600x400" alt="Main Event" className="w-full h-auto rounded-lg shadow-md" />
+        <img src={tintuc} alt="Main Event" className="w-full h-auto rounded-lg shadow-md" />
         <div className="mt-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</h3>
           <p className="text-gray-600">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text...</p>
@@ -714,7 +628,7 @@ const MainContent = () => {
       <div className="space-y-6">
         {/* Event Item 1 */}
         <div className="flex items-center space-x-4">
-          <img src="https://via.placeholder.com/100x60" alt="Event 1" className="w-24 h-auto rounded-lg shadow-md" />
+          <img src={tintuc} alt="Event 1" className="w-24 h-auto rounded-lg shadow-md" />
           <div>
             <h4 className="text-gray-800 font-semibold">Lorem Ipsum is simply dummy text</h4>
             <p className="text-gray-600 text-sm">Lorem Ipsum is simply dummy text of the printing and typesetting industry...</p>
@@ -722,7 +636,7 @@ const MainContent = () => {
         </div>
         {/* Event Item 2 */}
         <div className="flex items-center space-x-4">
-          <img src="https://via.placeholder.com/100x60" alt="Event 2" className="w-24 h-auto rounded-lg shadow-md" />
+          <img src={tintuc} alt="Event 2" className="w-24 h-auto rounded-lg shadow-md" />
           <div>
             <h4 className="text-gray-800 font-semibold">Lorem Ipsum is simply dummy text</h4>
             <p className="text-gray-600 text-sm">Lorem Ipsum is simply dummy text of the printing and typesetting industry...</p>
@@ -730,7 +644,7 @@ const MainContent = () => {
         </div>
         {/* Event Item 3 */}
         <div className="flex items-center space-x-4">
-          <img src="https://via.placeholder.com/100x60" alt="Event 3" className="w-24 h-auto rounded-lg shadow-md" />
+          <img src={tintuc} alt="Event 3" className="w-24 h-auto rounded-lg shadow-md" />
           <div>
             <h4 className="text-gray-800 font-semibold">Lorem Ipsum is simply dummy text</h4>
             <p className="text-gray-600 text-sm">Lorem Ipsum is simply dummy text of the printing and typesetting industry...</p>
@@ -738,7 +652,7 @@ const MainContent = () => {
         </div>
         {/* Event Item 4 */}
         <div className="flex items-center space-x-4">
-          <img src="https://via.placeholder.com/100x60" alt="Event 4" className="w-24 h-auto rounded-lg shadow-md" />
+          <img src={tintuc} alt="Event 4" className="w-24 h-auto rounded-lg shadow-md" />
           <div>
             <h4 className="text-gray-800 font-semibold">Lorem Ipsum is simply dummy text</h4>
             <p className="text-gray-600 text-sm">Lorem Ipsum is simply dummy text of the printing and typesetting industry...</p>
@@ -746,7 +660,7 @@ const MainContent = () => {
         </div>
         {/* Event Item 5 */}
         <div className="flex items-center space-x-4">
-          <img src="https://via.placeholder.com/100x60" alt="Event 5" className="w-24 h-auto rounded-lg shadow-md" />
+          <img src={tintuc} alt="Event 5" className="w-24 h-auto rounded-lg shadow-md" />
           <div>
             <h4 className="text-gray-800 font-semibold">Lorem Ipsum is simply dummy text</h4>
             <p className="text-gray-600 text-sm">Lorem Ipsum is simply dummy text of the printing and typesetting industry...</p>

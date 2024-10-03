@@ -62,17 +62,17 @@ interface ListItemProps {
 
 export const DocumentItem = ({id, title, description ,onViewDetail}: ListItemProps) => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-    <div className="h-48 overflow-hidden ">
+    <div className="h-48 overflow-hidden flex justify-center items-center center">
     <LazyLoadImage
       alt={title}
       src={image_116}
       effect="blur"
-      className="h-full w-full object-cover"
+      className="h-full w-full object-cover block px-auto"
     />
     </div>
     <div className="p-4 flex flex-col flex-grow">
-      <h3 className="text-lg font-semibold mb-2 flex-shrink-0 line-clamp-1" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical"}}>{title}</h3>
-      <p className="text-gray-600 mb-2 flex-grow line-clamp-2 "style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{description}</p>
+      <h3 className="text-lg font-semibold mb-2 flex-shrink-0 line-clamp-2 min-h-[56px]" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical"}}>{title}</h3>
+      <p className="text-gray-600 mb-2 flex-grow line-clamp-2 min-h-[48px]"style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{description}</p>
       <div className="mt-auto">
         <button onClick={() => onViewDetail(id)}
          className="w-full bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-300">

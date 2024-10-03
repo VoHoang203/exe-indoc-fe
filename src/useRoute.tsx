@@ -11,13 +11,19 @@ import SellerProfile from './pages/SellerProfile/SellerProfile'
 import NewsPage from './pages/News/NewsPage'
 import SellerRegistration from './pages/SellerRegister/SellerRegistration'
 import Payment from './pages/Payment/Payment'
+import { toast } from 'react-toastify'
 
 
 
 
  function ProtectedRoute() {
-  const {isAuthenticated} = useAuth()
-   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) {
+    toast.error('Bạn cần đăng nhập để truy cập trang này');
+    return <Navigate to='/login' />;
+  }
+
+  return <Outlet />;
  }
 
 function RejectedRoute() {

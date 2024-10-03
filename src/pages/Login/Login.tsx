@@ -11,6 +11,7 @@ import http from "../../utils/http"
 import { useAuth, User } from "../../context/app.context";
 import login from '../../assets/login_register.png'
 import { saveAccessToken } from "../../utils/auth";
+import avatar from '../../assets/avt.png'
 type Inputs = {
   email: string
   password: string
@@ -25,23 +26,39 @@ const Login = () => {
   } = useForm<Inputs>({
     resolver: yupResolver(loginSchema)
   })
-  const { setUser, setIsAuthenticated } = useAuth();
+  const { setUser, setIsAuthenticated,setIsSeller } = useAuth();
+  const fetchUserProfile = async (accessToken: string) => {
+    const response = await http.get('/v1/user/profile', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data;
+  };
  
   const loginMutation = useMutation({
     mutationFn:  async (data: { email: string; password: string }) : Promise<AuthResponse>=> {
       const response = await http.post('/v1/signin', data);
       return response  as unknown as AuthResponse;
     },
-    onSuccess: (response: AuthResponse) => {
+    onSuccess: async (response: AuthResponse) => {
+      console.log(response.data.accessToken)
+      const userProfile = await fetchUserProfile(response.data.accessToken);
+      
       console.log('Login successful:', response)
-      const userInfo : User = {
-        user: "Current User",
-        avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        email: register("email").name,
-        password: register("password").name,
-        bankAccount: "**** **** **** 1234",
-        bankCV: "123"
+      const userInfo: User = {
+        user:  userProfile?.email.split('@')[0],
+        avatar: avatar,
+        email: userProfile?.email || register("email").name,
+        password: register("password").name, 
+        bankAccount: userProfile?.bankName + userProfile?.bankAccountNumber ||  "chưa có thông tin",
+        bankCV: "123" ,
+        phone: userProfile?.phone || "chưa có thông tin",
+        createdAt: userProfile?.createdAt || "chưa có thông tin"
       };
+      if(userProfile?.role === 'seller'){
+        setIsSeller(true)
+      }
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
       setUser(userInfo);
       setIsAuthenticated(true);

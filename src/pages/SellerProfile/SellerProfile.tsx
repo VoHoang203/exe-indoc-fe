@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import addDoc  from "../../assets/addDoc.png"
 import avt from "../../assets/avt.png"
 import edit_icon from "../../assets/edit_icon.png"
@@ -11,6 +11,9 @@ import { getAccessToken } from '../../utils/auth';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import http from '../../utils/http';
+import { useAuth, User } from '../../context/app.context';
+import ReactModal from 'react-modal'
+import { FaCamera } from 'react-icons/fa';
 // }
 interface Document2 {
   id: string;
@@ -22,22 +25,14 @@ interface Document2 {
   date: string;
   author: string;
 }
-// interface Transaction {
-//   id: number;
-//   title: string;
-//   downloads: number;
-//   date: string;
-//   author: string;
-//   amount: number;
-// }
-// interface Transaction2 {
-//   ownerId: string
-//   title: string
-//   description: string
-//   price: string
-//   categoryId: string
-//   filePath: string
-// }
+
+export interface Transaction2 {
+  title: string
+  documentid: string
+  buyerid: string
+  purchasedate: string
+  amount: string
+}
 const fetchPaidDocuments = async () => {
   const accessToken = getAccessToken();
   const response = await fetch('https://indocs.click/api/documents/paid', {
@@ -57,7 +52,7 @@ const fetchPaidDocuments = async () => {
     author: 'Unknown',
   }));
 };
-
+ReactModal.setAppElement('#root');
 const fetchOwnDocuments = async () => {
   const accessToken = getAccessToken();
   const response = await fetch('https://indocs.click/api/documents/own', {
@@ -78,38 +73,107 @@ const fetchOwnDocuments = async () => {
     amount: parseFloat(doc.price),
   }));
 };
+const fetchTransactions = async () => {
+  const accessToken = getAccessToken();
+  const response = await fetch('https://indocs.click/api/v1/seller/transaction', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  });
+  const data = await response.json();
+  return data.data.map((transaction: Transaction2) => ({
+    title: transaction.title,
+    documentId: transaction.documentid,
+    buyerId: transaction.buyerid,
+    purchaseDate: new Date(transaction.purchasedate).toLocaleDateString(),
+    amount: parseFloat(transaction.amount),
+  }));
+};
 const SellerProfile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('purchased');
   const [showAddDocModal, setShowAddDocModal] = useState(false);
   const [showDetailSellerModal, setShowDetailSellerModal] = useState(false);
-  const { data: documents} = useQuery<Document2[]>({
+  const { isSeller } = useAuth(); 
+  const { data: documents,refetch:refetchOwnDocument} = useQuery<Document2[]>({
     queryKey: ['ownDocuments'],
     queryFn: fetchOwnDocuments,
   })
-  const { data: paidDocuments } = useQuery<Document2[]>({
+  const { data: paidDocuments,refetch:refetchPaidDocument } = useQuery<Document2[]>({
     queryKey: ['paidDocuments'],
     queryFn: fetchPaidDocuments,
   });
+  const { data: transactions,refetch:refetchTransaction } = useQuery<Transaction2[]>({
+    queryKey: ['transactions'],
+    queryFn: fetchTransactions,
+  });
+  const [userInfo, setUserInfo] = useState({
+    user: '',
+    email: '',
+    phone: '',
+    role: '',
+    bankAccount: '',
+    avatar: '',
+  });
 
+  useEffect(() => {
+    const storedUserInfo = localStorage.getItem('userInfo');
+    if (storedUserInfo) {
+      setUserInfo(JSON.parse(storedUserInfo));
+    }
+  }, [showDetailSellerModal]);
+  useEffect(() => {
+    refetchOwnDocument();
+    refetchPaidDocument();
+    refetchTransaction();
+  }, [activeTab]);
 
+   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const updatedUserInfo = { ...userInfo, avatar: reader.result as string };
+        setUserInfo(updatedUserInfo);
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo)); // Save to localStorage
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 console.log(paidDocuments)
+console.log(transactions)
 console.log(getAccessToken())
   return (
     <div className="flex gap-5 bg-white w-full h-screen p-5">
       <div className="w-1/3">
-        <a href="#" onClick={() => setShowAddDocModal(true)} className="flex items-center gap-2 text-gray-400 mb-2">
-          <p className="text-lg">Tải tài liệu lên</p>
-          <img src={addDoc} alt="" className="w-12" />
-        </a>
+        {isSeller && ( 
+          <a href="#" onClick={() => setShowAddDocModal(true)} className="flex items-center gap-2 text-gray-400 mb-2">
+            <p className="text-lg">Tải tài liệu lên</p>
+            <img src={addDoc} alt="" className="w-12" />
+          </a>
+        )}
         <div className="bg-gray-100 rounded-xl shadow-md p-5 animate-fadeLeft">
           <div className="flex justify-center">
-            <img src={avt} alt="" className="w-24 mt-6" />
+          <div className="relative">
+                <img src={userInfo.avatar || avt} alt="" className="w-24 mt-6 rounded-full" />
+                <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors">
+                  <FaCamera />
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                  />
+                </label>
+  </div>
           </div>
           <div className="mt-12">
           <table className="w-full text-center border-collapse">
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">Tên</td>
-                <td className="p-4 text-left">Nguyễn Gia Huy</td>
+                <td className="p-4 text-left">{userInfo.user}</td>
                 <td className="p-4  border-l border-gray-300">
                   <a href="#" onClick={() => setShowDetailSellerModal(true)}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -118,7 +182,7 @@ console.log(getAccessToken())
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">Mail</td>
-                <td className="p-4 text-left">gianguy******@gmail.com</td>
+                <td className="p-4 text-left">{userInfo.email}</td>
                 <td className="p-4  border-l border-gray-300">
                   <a href="#" onClick={() => setShowDetailSellerModal(true)}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -127,7 +191,7 @@ console.log(getAccessToken())
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">SĐT</td>
-                <td className="p-4 text-left">0987****166</td>
+                <td className="p-4 text-left">{userInfo.phone}</td>
                 <td className="p-4 border-l border-gray-300">
                   <a href="#" onClick={() => setShowDetailSellerModal(true)}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -136,7 +200,7 @@ console.log(getAccessToken())
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">Role</td>
-                <td className="p-4 text-left">Học sinh</td>
+                <td className="p-4 text-left">{isSeller ? "Người bán" : "Người mua"}</td>
                 <td className="p-4 border-l border-gray-3000">
                   <a href="#" onClick={() => setShowDetailSellerModal(true)}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -145,7 +209,7 @@ console.log(getAccessToken())
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">Bank</td>
-                <td className="p-4 text-left">Mb Bank: ************</td>
+                <td className="p-4 text-left">{userInfo.bankAccount}</td>
                 <td className="p-4 border-l border-gray-300">
                   <a href="#" onClick={() => setShowDetailSellerModal(true)}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -156,7 +220,7 @@ console.log(getAccessToken())
           </div>
         </div>
       </div>
-      <div className="w-2/3">
+      <div className="w-2/3 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
         <div className="border border-teal-500 rounded-xl flex items-center overflow-hidden mb-8">
           <input type="text" placeholder="Tìm kiếm ...." className="w-full p-2 outline-none text-gray-600 text-lg" />
           <img src={search_normal} alt="" className="w-10 p-2" />
@@ -172,7 +236,7 @@ console.log(getAccessToken())
                 <option value="purchased">Tài liệu đã mua</option>
                 <option value="uploaded">Tài liệu tải lên</option>
                 <option value="photos">Hình ảnh</option>
-                <option value="transactions">Các giao dịch</option>
+                {isSeller && <option value="transactions">Các giao dịch</option>}
               </select>
             </div>
           </div>
@@ -186,8 +250,17 @@ console.log(getAccessToken())
               </>
             )}
             {activeTab === 'transactions' && (
-                <TotalTransactions total={160000} date="27/09/2024" />
-              
+              <>
+                 {Array.isArray(transactions) && transactions.map((transaction: Transaction2) => (
+      <TransactionItem key={transaction.buyerid} transaction={transaction} />
+    ))}
+                {transactions && (
+                    <TotalTransactions 
+                    total={transactions.reduce((sum, transaction) => sum + Number(transaction.amount), 0)} 
+                    date={new Date().toLocaleDateString()} 
+                  />
+                  )}
+              </>
             )} 
             {activeTab ===  'purchased' && (
               <>
@@ -200,8 +273,8 @@ console.log(getAccessToken())
           </div>
         </div>
       </div>
-      {showAddDocModal && <AddDocModal onClose={() => setShowAddDocModal(false)} />}
-      {showDetailSellerModal && <DetailSellerModal onClose={() => setShowDetailSellerModal(false)} />}
+      {showAddDocModal && <AddDocModal  isOpen={showAddDocModal} onClose={() => setShowAddDocModal(false)} />}
+      {showDetailSellerModal && <DetailSellerModal  isOpen={showDetailSellerModal} onClose={() => setShowDetailSellerModal(false)} />}
     </div>
   );
 };
@@ -231,29 +304,29 @@ const DocumentItem: React.FC<{ document: Document2 }> = ({ document }) => (
   </div>
 );
 
-// const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction }) => (
-//   <div className="flex items-center gap-2 py-4 border-b border-gray-300">
-//     <img src={board} alt="" className="w-1/12 basis-2" />
-//     <div className="flex-grow">
-//       <h3 className="text-2xl font-bold text-gray-700 mb-2">{transaction.title}</h3>
-//       <div className="flex gap-2 items-center">
-//         <div className="flex items-center gap-1">
-//           <img src={seeicon} alt="" className="w-6" />
-//           <p className="text-gray-400">{transaction.downloads} lượt tải về</p>
-//         </div>
-//         <div className="flex items-center gap-1">
-//           <img src={dateicon} alt="" className="w-6" />
-//           <p className="text-gray-400">{transaction.date}</p>
-//         </div>
-//         <div className="flex items-center gap-1">
-//           <img src={seeicon} alt="" className="w-6" />
-//           <p className="text-gray-400">{transaction.author}</p>
-//         </div>
-//       </div>
-//     </div>
-//     <div className="bg-teal-500 text-white rounded px-4 py-2">+ {transaction.amount.toLocaleString()} vnd</div>
-//   </div>
-// );
+const TransactionItem: React.FC<{ transaction: Transaction2 }> = ({ transaction }) => (
+  <div className="flex items-center gap-2 py-4 border-b border-gray-300">
+    <img src={board} alt="" className="w-1/12 basis-2" />
+    <div className="flex-grow">
+      <h3 className="text-2xl font-bold text-gray-700 mb-2">{transaction.title}</h3>
+      <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-1">
+          <img src={seeicon} alt="" className="w-6" />
+          <p className="text-gray-400">{transaction.amount} lượt tải về</p>
+        </div>
+        <div className="flex items-center gap-1">
+          <img src={dateicon} alt="" className="w-6" />
+          <p className="text-gray-400">{transaction.purchasedate}</p>
+        </div>
+        <div className="flex items-center gap-1">
+          <img src={seeicon} alt="" className="w-6" />
+          <p className="text-gray-400">{transaction.buyerid}</p>
+        </div>
+      </div>
+    </div>
+    <div className="bg-teal-500 text-white rounded px-4 py-2">+ {transaction.amount.toLocaleString()} vnd</div>
+  </div>
+);
 
 const TotalTransactions: React.FC<{ total: number; date: string }> = ({ total, date }) => (
   <div className="flex justify-between items-center p-5 bg-white rounded-xl shadow-md mt-4">
@@ -265,7 +338,7 @@ const TotalTransactions: React.FC<{ total: number; date: string }> = ({ total, d
   </div>
 );
 
-const AddDocModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen,onClose }) => {
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState('85883e4d-9939-43a0-9be9-cb3d46d0757d');
   const [price, setPrice] = useState('');
@@ -288,14 +361,16 @@ const AddDocModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     formData.append('description', description);
     if (file) {
       formData.append('file', file);
+    }else{
+      toast.error('Vui lòng chọn file')
     }
 
-    const response = await http.post('https://indocs.click/api/document/upload', {
+    const response = await http.post('https://indocs.click/api/document/upload',formData, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'multipart/form-data',
       },
-      body: formData,
     });
 
     if (response.status === 200) {
@@ -308,8 +383,13 @@ const AddDocModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     }
   };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white rounded-xl p-8 w-2/3 max-w-2xl">
+    <ReactModal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      contentLabel="Upload Document"
+      className="bg-white rounded-xl p-8 w-2/3 max-w-2xl mx-auto mt-20 my-10"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+    >
       <h3 className="text-center text-2xl font-medium mb-6">Tải tài liệu lên</h3>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -370,56 +450,81 @@ const AddDocModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-400 rounded-xl">Hủy</button>
           <button type="submit" className="px-4 py-2 bg-teal-500 text-white rounded-xl">Lưu lại</button>
         </div>
-      </form>
-    </div>
-  </div>
+      </form></ReactModal>
   )
 };
 
-const DetailSellerModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white rounded-xl p-8 w-2/3 max-w-2xl">
+const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void }> = ({ isOpen,onClose }) => {
+  const { user, setUser } = useAuth();
+  const [name, setName] = useState(user?.user || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [bankAccount, setBankAccount] = useState(user?.bankAccount || '');
+  const [bankCV, setBankCV] = useState(user?.bankCV || '');
+  const [createdAt, setCreatedAt] = useState(user?.createdAt || '');
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const updatedUserInfo = { ...user , email, phone, bankAccount, bankCV };
+    setUser(updatedUserInfo as User);
+    localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+    onClose();
+  };
+  return (
+    <ReactModal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      contentLabel="Edit User Information"
+      className="bg-white rounded-xl p-8 w-2/3 max-w-2xl mx-auto mt-20"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+    >
       <h3 className="text-center text-2xl font-medium mb-6">Chỉnh sửa thông tin người dùng</h3>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block mb-1">Tên</label>
-          <input type="text" className="w-full border rounded-xl p-2" value="Nguyễn Gia Khiêm" />
+          <input type="text" className="w-full border rounded-xl p-2"
+           value={name}
+           onChange={(e) => setName(e.target.value)}/>
         </div>
         <div className="mb-4">
           <label className="block mb-1">Ngày tham gia</label>
-          <input type="text" className="w-full border rounded-xl p-2" value="26/07/2023" />
+          <input type="text" className="w-full border rounded-xl p-2" value={createdAt} 
+          onChange={(e) => setCreatedAt(e.target.value)}/>
         </div>
         <div className="mb-4">
-          <label className="block mb-1">Role</label>
-          <input type="text" className="w-full border rounded-xl p-2" value="Nguời bán tài liệu" />
+          <label className="block mb-1">Số Ngân Hàng</label>
+          <input type="text" className="w-full border rounded-xl p-2" value={bankAccount} 
+          onChange={(e) => setBankAccount(e.target.value)}/>
         </div>
         <div className="mb-4">
           <label className="block mb-1">Email</label>
-          <input type="text" className="w-full border rounded-xl p-2" value="gianguyen300803@gmail.com" />
+          <input type="text" className="w-full border rounded-xl p-2"  value={email}
+              onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className="mb-4">
           <label className="block mb-1">Số điện thoại</label>
-          <input type="text" className="w-full border rounded-xl p-2" value="0987865166" />
+          <input type="text" className="w-full border rounded-xl p-2" value={phone}
+              onChange={(e) => setPhone(e.target.value)} />
         </div>
         <div className="mb-4">
           <label className="block mb-1">Tài khoản ngân hàng</label>
           <div className="flex gap-2">
-            <select className="w-1/2 border rounded-xl p-2">
-              <option>Ngân hàng</option>
-              <option>Mb bank</option>
-              <option>Viettinbank</option>
-            </select>
+              <select
+                className="w-1/2 border rounded-xl p-2"
+                value={bankCV}
+                onChange={(e) => setBankCV(e.target.value)}
+              >
+                <option>Ngân hàng</option>
+                <option value="Mb bank">Mb bank</option>
+                <option value="Viettinbank">Viettinbank</option> </select>
             <input type="text" className="w-1/2 border rounded-xl p-2" placeholder="Số tài khoản" />
           </div>
         </div>
-        <input type="text" className="w-full border rounded-xl p-2 mb-4" value="Nguyễn Văn A" />
         <div className="flex justify-end gap-4">
           <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-400 rounded-xl">Hủy</button>
           <button type="submit" className="px-4 py-2 bg-teal-500 text-white rounded-xl">Lưu lại</button>
         </div>
       </form>
-    </div>
-  </div>
-);
+   </ReactModal>
+)};
 
 export default SellerProfile;

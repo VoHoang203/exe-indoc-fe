@@ -5,6 +5,7 @@ import muitenImage from '../../assets/muiten.png';
 import tick from '../../assets/tick.png';
 import { getAccessToken } from '../../utils/auth';
 import http from '../../utils/http';
+import { useAuth } from '../../context/app.context';
 // Định nghĩa các type cho state
 type SellerInfo = {
   storeName: string;
@@ -48,7 +49,7 @@ const SellerRegistration: React.FC = () => {
     qrCodeImage: null,
     bankOwner: '',
   });
-
+const {setIsSeller} = useAuth()
   const handleSellerInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSellerInfo({ ...sellerInfo, [e.target.name]: e.target.value });
   };
@@ -58,9 +59,17 @@ const SellerRegistration: React.FC = () => {
     setIdentityInfo({ ...identityInfo, [e.target.name]: e.target.value });
   };
 
+  
+  const [previewImages, setPreviewImages] = useState<{ [key: string]: string | null }>({
+    idFrontImage: null,
+    idBackImage: null,
+  });
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setIdentityInfo({ ...identityInfo, [e.target.name]: e.target.files[0] });
+      const file = e.target.files[0];
+      const name = e.target.name;
+      setIdentityInfo({ ...identityInfo, [name]: file });
+      setPreviewImages({ ...previewImages, [name]: URL.createObjectURL(file) });
     }
   };
   const handleTaxInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,8 +100,8 @@ const SellerRegistration: React.FC = () => {
     formData.append('bankOwner', identityInfo.bankOwner);
     if (identityInfo.idFrontImage) formData.append('files', identityInfo.idFrontImage);
     if (identityInfo.idBackImage) formData.append('files', identityInfo.idBackImage);
-    for (const value of formData.values()) {
-      console.log(value); // Logs each form value
+    for (const [name, value] of formData.entries()) {
+      console.log(`${name}: ${value}`); // Logs each form name and value
     }
     console.log(accessToken)
     try {
@@ -104,6 +113,7 @@ const SellerRegistration: React.FC = () => {
       });
       console.log('Registration successful:', response.data);
       setStep(4);
+      setIsSeller(true)
     } catch (error) {
       console.error('Registration failed:', error);
     }
@@ -186,14 +196,14 @@ const SellerRegistration: React.FC = () => {
           hóa đơn điện tử
         </label>
         <input
-          type="email"
+          type="text"
           id="storeName"
-          name="email"
+          name="bankOwner"
           className="w-3/4 p-2 border border-gray-300 rounded"
-          placeholder="Email nhận hóa đơn điện tử"
+          placeholder="Tên chủ sở hữu tài khoản ngân hàng"
           required
-          value={sellerInfo.email}
-          onChange={handleSellerInfoChange}
+          value={identityInfo.bankOwner}
+          onChange={handleIdentityInfoChange}
         />
       </div>
       <div className="flex items-center mb-4">
@@ -304,7 +314,10 @@ const SellerRegistration: React.FC = () => {
     </form>
   );
 
-  const renderStep3 = () => (
+  const renderStep3 = () => {
+    
+    return (
+   
     <form onSubmit={handleSubmit}>
     <div className="bg-blue-100 text-blue-600 p-4 rounded-lg mb-6">
       <p>Vui lòng cung cấp Thông Tin Định Danh của Chủ Shop (nếu là cá nhân), hoặc Người Đại Diện Pháp Lý trên giấy đăng ký kinh doanh.</p>
@@ -381,17 +394,20 @@ const SellerRegistration: React.FC = () => {
                 {index === 0 ? 'Mặt trước' :  'Mặt sau'}
               </span>
               <div className="border-2 border-gray-300 p-4 rounded-lg hover:border-blue-600 hover:text-blue-600">
-                <input
-                  type="file"
-                  id={field}
-                  name={field}
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-                <label htmlFor={field} className="cursor-pointer">
-                  <span className="text-2xl text-gray-400">+</span>
-                </label>
+              <input
+                    type="file"
+                    id={field}
+                    name={field}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                 <label htmlFor={field} className="cursor-pointer">
+                    <span className="text-2xl text-gray-400">+</span>
+                  </label>
+                  {previewImages[field] && (
+                    <img src={previewImages[field]} alt={`Preview ${field}`} className="mt-2" />
+                  )}
               </div>
             </div>
           ))}
@@ -416,7 +432,7 @@ const SellerRegistration: React.FC = () => {
       </button>
     </div>
   </form>
-  );
+  )};
 
   const renderStep4 = () => (
     <div className="text-center">
@@ -426,7 +442,7 @@ const SellerRegistration: React.FC = () => {
         Chúc mừng bạn đã tham gia góp phần xây dựng cộng đồng InDocs
         <br /> Hãy cùng nhau chia sẻ những tài liệu tuyệt vời
       </p>
-      <Link to="/seller" className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600">
+      <Link to="/profile" className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600">
         Thêm tài liệu
       </Link>
     </div>
