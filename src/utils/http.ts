@@ -52,7 +52,7 @@ class Http {
     this.instance.interceptors.response.use(
       (response: AxiosResponse<AuthResponse>) => {
         const { url } = response.config;
-        if (url === "v1/signin" || url === "v1/signup") {
+        if (url === "v1/signin") {
           this.setTokens(response.data);
         }else if (url === "v1/logout") {
           

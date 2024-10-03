@@ -74,8 +74,8 @@ const Register2 :React.FC = () =>{
     resolver: yupResolver(registerSchema)
   })
   const registerMutation = useMutation({
-    mutationFn: async (data: RegisterInputs): Promise<void> => {
-      const response = await http.post('v1/signup', { data});
+    mutationFn: async (data: {email:string, password:string}): Promise<void> => {
+      const response = await http.post('v1/signup', data); // Sửa đoạn này
       console.log(response)
     },
     onSuccess: (response) => {
@@ -88,11 +88,11 @@ const Register2 :React.FC = () =>{
       console.error('Registration error:', error)
     }
   })
-
+  
   const onSubmit = handleSubmit(async (data) => {
     console.log(data)
-    registerMutation.mutate({email:data.email,password:data.password})
-  })
+    registerMutation.mutate({ email: data.email, password: data.password })
+  });
   
 
   return (

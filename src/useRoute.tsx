@@ -54,36 +54,13 @@ export default function useRoute() {
       path: '',
       element: <ProtectedRoute />,
       children: [
-        {
-          path: "/",
-          index: true,
-          element: (
-            <MainLayout>
-              <MainContent />
-            </MainLayout>
-          )
-        },
-        {
-          path: "/service",
-          element: (
-            <MainLayout>
-              <ListItems />
-            </MainLayout>
-          )
-        },
+       
+        
         {
           path: "/profile", // Update this path to use SellerProfile
           element: (
             <MainLayout>
-              <SellerProfile /> // Use SellerProfile here
-            </MainLayout>
-          )
-        },
-        {
-          path: "/news",
-          element: (
-            <MainLayout>
-              <NewsPage />
+              <SellerProfile /> 
             </MainLayout>
           )
         },
@@ -104,6 +81,30 @@ export default function useRoute() {
           )
         }
       ]
+    },
+    {
+      path: "/",
+      index: true,
+      element: (
+        <MainLayout>
+          <MainContent />
+        </MainLayout>
+      )
+    },{
+      path: "/service",
+      element: (
+        <MainLayout>
+          <ListItems />
+        </MainLayout>
+      )
+    },
+    {
+      path: "/news",
+      element: (
+        <MainLayout>
+          <NewsPage />
+        </MainLayout>
+      )
     }
   ]);
   return routeElements;
