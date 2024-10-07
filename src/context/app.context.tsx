@@ -5,11 +5,21 @@ export interface User {
     avatar: string;
     email: string;
     password: string;
-    bankAccount: string;
-    bankCV: string;
-    phone: string;
+    bankAccount?: string;
+    bankCV?: string;
     createdAt: string;
+    isVerified: boolean
+    role: string
+    storeName?: string
+    phoneNumber: string
+    bankName?: string
+    bankAccountNumber?: string
+    bankOwnerName?: string
+    electronicInvoiceEmail?: string
+    accountBalance?: string
   }
+  
+  
 interface AppContextInterface{
     isAuthenticated: boolean
     setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>

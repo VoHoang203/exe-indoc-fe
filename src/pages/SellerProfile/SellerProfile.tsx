@@ -8,12 +8,13 @@ import seeicon from  "../../assets/seeicon.png"
 import dateicon from "../../assets/dateicon.png"
 import useicon from "../../assets/useicon.png"
 import { getAccessToken } from '../../utils/auth';
-import { useQuery } from '@tanstack/react-query';
+import {useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import http from '../../utils/http';
 import { useAuth, User } from '../../context/app.context';
 import ReactModal from 'react-modal'
 import { FaCamera } from 'react-icons/fa';
+import { formatCurrency } from '../Payment/Payment';
 // }
 interface Document2 {
   id: string;
@@ -33,9 +34,24 @@ export interface Transaction2 {
   purchasedate: string
   amount: string
 }
+interface UserInfo {
+  user: string;
+  email: string;
+  phone: string;
+  role: string;
+  bankAccount: string;
+  avatar: string;
+  storeName?: string;
+  accountBalance?: string;
+  bankName?: string;
+  bankAccountNumber?: string;
+  bankOwnerName?: string;
+  createdAt?: string;
+  isVerified?: boolean;
+}
 const fetchPaidDocuments = async () => {
   const accessToken = getAccessToken();
-  const response = await fetch('https://indocs.click/api/documents/paid', {
+  const response = await fetch('documents/paid', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -55,7 +71,7 @@ const fetchPaidDocuments = async () => {
 ReactModal.setAppElement('#root');
 const fetchOwnDocuments = async () => {
   const accessToken = getAccessToken();
-  const response = await fetch('https://indocs.click/api/documents/own', {
+  const response = await fetch('/documents/own', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -75,7 +91,7 @@ const fetchOwnDocuments = async () => {
 };
 const fetchTransactions = async () => {
   const accessToken = getAccessToken();
-  const response = await fetch('https://indocs.click/api/v1/seller/transaction', {
+  const response = await fetch('v1/seller/transaction', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -108,13 +124,20 @@ const SellerProfile: React.FC = () => {
     queryKey: ['transactions'],
     queryFn: fetchTransactions,
   });
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     user: '',
     email: '',
     phone: '',
     role: '',
     bankAccount: '',
     avatar: '',
+    storeName: '',
+    accountBalance: '',
+    bankName: '',
+    bankAccountNumber: '',
+    bankOwnerName: '',
+    createdAt: '',
+    isVerified: false,
   });
 
   useEffect(() => {
@@ -312,7 +335,7 @@ const TransactionItem: React.FC<{ transaction: Transaction2 }> = ({ transaction 
       <div className="flex gap-2 items-center">
         <div className="flex items-center gap-1">
           <img src={seeicon} alt="" className="w-6" />
-          <p className="text-gray-400">{transaction.amount} lượt tải về</p>
+          <p className="text-gray-400">{formatCurrency(Number(transaction.amount))} lượt tải về</p>
         </div>
         <div className="flex items-center gap-1">
           <img src={dateicon} alt="" className="w-6" />
@@ -334,7 +357,7 @@ const TotalTransactions: React.FC<{ total: number; date: string }> = ({ total, d
       <h2 className="text-xl font-medium">Tổng tiền trong tháng</h2>
       <p>{date}</p>
     </div>
-    <div className="text-2xl font-medium text-teal-500">{total.toLocaleString()} vnd</div>
+    <div className="text-2xl font-medium text-teal-500">{ formatCurrency(Number(total))} VND</div>
   </div>
 );
 
@@ -363,9 +386,13 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
       formData.append('file', file);
     }else{
       toast.error('Vui lòng chọn file')
+      return;
     }
-
-    const response = await http.post('https://indocs.click/api/document/upload',formData, {
+    
+    onClose();
+    try {
+    
+    const response = await http.post('document/upload',formData, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -373,15 +400,18 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
       },
     });
 
-    if (response.status === 200) {
-      // Handle successful upload
+    if (response.status === 201) {
+      toast.success('Upload thành công');
       onClose();
     } else {
-      // Handle error
-      toast.error('Upload failed');
-      console.error('Upload failed');
+      toast.error('Upload thất bại');
     }
+  } catch (error) {
+    toast.error('Đã xảy ra lỗi trong quá trình upload');
+    console.error('Upload failed', error);
+  }
   };
+  
   return (
     <ReactModal
       isOpen={isOpen}
@@ -412,10 +442,17 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
             <option value="">Chọn danh mục</option>
             <option value="5ad030a0-ddc5-4c90-84a5-217f367b8fc1">Quản trị truyền thông đa phương tiện</option>
             <option value="feaa5236-df12-4184-8b4f-c02dea2915ae">Digital Marketing</option>
+            <option value="85883e4d-9939-43a0-9be9-cb3d46d0757d">Kinh doanh quốc tế</option>
             <option value="3924cc67-64d1-4ae1-a4e7-b86846f73e7a">Tài chính</option>
             <option value="0fd22189-1265-426b-aac5-1463732bc6ed">Quản trị khách sạn</option>
             <option value="29457e46-d44e-457b-b961-667bf8c3234b">Kĩ thuật phần mềm</option>
             <option value="3569edb7-32e5-45d9-a67f-a38906245606">Hệ thống thông tin</option>
+            <option value="7c56df76-5930-4ea2-87cd-b3a361fcf64d">An toàn thông tin</option>
+            <option value="e7b7b530-b209-4001-a034-1fb947739351">Trí tuệ nhân tạo</option>
+            <option value="6dc5bfe1-5c0a-414f-9e13-617411f913b0">Thiết kế mĩ thuật số</option>
+            <option value="abbd09ea-9d24-4b8a-b67c-bded17077d64">Ngôn ngữ Anh</option>
+            <option value="9287e4a5-a183-49fe-b364-15c94e37a326">Ngôn ngữ Nhật</option>
+            <option value="bb66a421-1d26-486b-90ca-efb3ae88f9e9">Ngôn ngữ Hàn Quốc</option>
           </select>
         </div>
         <div className="mb-4">
@@ -458,7 +495,7 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void }> = ({
   const { user, setUser } = useAuth();
   const [name, setName] = useState(user?.user || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [phone, setPhone] = useState(user?.phone || '');
+  const [phone, setPhone] = useState(user?.phoneNumber || '');
   const [bankAccount, setBankAccount] = useState(user?.bankAccount || '');
   const [bankCV, setBankCV] = useState(user?.bankCV || '');
   const [createdAt, setCreatedAt] = useState(user?.createdAt || '');

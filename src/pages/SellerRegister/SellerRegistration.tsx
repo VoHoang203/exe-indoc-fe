@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import Bookshelf from "../../assets/Bookshelf.png"
 import muitenImage from '../../assets/muiten.png'; 
 import tick from '../../assets/tick.png';
-import { getAccessToken } from '../../utils/auth';
-import http from '../../utils/http';
+import { getAccessToken, removeTokens } from '../../utils/auth';
+// import http from '../../utils/http';
 import { useAuth } from '../../context/app.context';
+import http from '../../utils/http';
+import { toast } from 'react-toastify';
 // Định nghĩa các type cho state
 type SellerInfo = {
   storeName: string;
@@ -14,13 +16,13 @@ type SellerInfo = {
 };
 
 type TaxInfo = {
-  businessType: 'Cá nhân' | 'school' | '';
+  businessType: 'Cá nhân' | 'Trường Học' | '';
   emailInvoice: string;
   taxId: string;
 };
 
 type IdentityInfo = {
-  idType: 'cccd' | 'cmnd' | 'passport' | '';
+  idType: 'cccd' | 'cmnd' | 'hc' | '';
   idNumber: string;
   bank: string;
   accountNumber: string;
@@ -33,6 +35,7 @@ type IdentityInfo = {
 // Component chính
 const SellerRegistration: React.FC = () => {
   const [step, setStep] = useState(0);
+  const navigate = useNavigate()
   const [sellerInfo, setSellerInfo] = useState<SellerInfo>({ storeName: '', email: '', phone: '' });
   const [taxInfo, setTaxInfo] = useState<TaxInfo>({
     businessType: '',
@@ -49,7 +52,7 @@ const SellerRegistration: React.FC = () => {
     qrCodeImage: null,
     bankOwner: '',
   });
-const {setIsSeller} = useAuth()
+const {setIsSeller, setIsAuthenticated, setUser, reset} = useAuth()
   const handleSellerInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSellerInfo({ ...sellerInfo, [e.target.name]: e.target.value });
   };
@@ -76,7 +79,7 @@ const {setIsSeller} = useAuth()
     const { name, value } = e.target;
     setTaxInfo(prev => ({ ...prev, [name]: value }));
   };
-
+  
   // const handleArrayInputChange = (index: number, field: 'emails' | 'phones', value: string) => {
   //   setTaxInfo(prev => {
   //     const newArray = [...prev[field]];
@@ -114,6 +117,11 @@ const {setIsSeller} = useAuth()
       console.log('Registration successful:', response.data);
       setStep(4);
       setIsSeller(true)
+      setIsAuthenticated(false)
+      setUser(null)
+      removeTokens();
+      reset()
+      toast.info("Regis succes")
     } catch (error) {
       console.error('Registration failed:', error);
     }
@@ -192,8 +200,7 @@ const {setIsSeller} = useAuth()
       </div>
       <div className="flex items-center mb-4">
         <label htmlFor="email" className="w-1/4 text-gray-700">
-          <span className="text-red-500">*</span> Email nhận
-          hóa đơn điện tử
+          <span className="text-red-500">*</span> Tên chủ sở hữu tài khoản ngân hàng
         </label>
         <input
           type="text"
@@ -261,8 +268,8 @@ const {setIsSeller} = useAuth()
             <input
               type="radio"
               name="businessType"
-              value="school"
-              checked={taxInfo.businessType === 'school'}
+              value="Trường Học"
+              checked={taxInfo.businessType === 'Trường Học'}
               onChange={handleTaxInfoChange}
               className="mr-2"
             /> Trường học
@@ -326,7 +333,7 @@ const {setIsSeller} = useAuth()
     <div className="flex items-center mb-4">
       <label className="w-1/4 text-gray-700"><span className="text-red-500">*</span> Hình thức định danh</label>
       <div className="w-3/4 flex">
-        {['cccd', 'cmnd', 'passport'].map((type) => (
+        {['cccd', 'cmnd', 'hc'].map((type) => (
           <label key={type} className="mr-6">
             <input
               type="radio"
@@ -393,22 +400,25 @@ const {setIsSeller} = useAuth()
               <span className="text-sm text-gray-500 block mb-2">
                 {index === 0 ? 'Mặt trước' :  'Mặt sau'}
               </span>
-              <div className="border-2 border-gray-300 p-4 rounded-lg hover:border-blue-600 hover:text-blue-600">
-              <input
-                    type="file"
-                    id={field}
-                    name={field}
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
-                 <label htmlFor={field} className="cursor-pointer">
-                    <span className="text-2xl text-gray-400">+</span>
-                  </label>
-                  {previewImages[field] && (
-                    <img src={previewImages[field]} alt={`Preview ${field}`} className="mt-2" />
-                  )}
-              </div>
+              <button
+                onClick={() => document.getElementById(field)?.click()}
+                className="border-2 w-full border-gray-300 p-4 rounded-lg hover:border-blue-600 hover:text-blue-600"
+              >
+                <input
+                  type="file"
+                  id={field}
+                  name={field}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+                <label htmlFor={field} className="cursor-pointer">
+                  <span className="text-2xl text-gray-400">+</span>
+                </label>
+                {previewImages[field] && (
+                  <img src={previewImages[field]} alt={`Preview ${field}`} className="mt-2" />
+                )}
+              </button>
             </div>
           ))}
         </div>
@@ -442,9 +452,9 @@ const {setIsSeller} = useAuth()
         Chúc mừng bạn đã tham gia góp phần xây dựng cộng đồng InDocs
         <br /> Hãy cùng nhau chia sẻ những tài liệu tuyệt vời
       </p>
-      <Link to="/profile" className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600">
+      <button onClick={()=>navigate('/')} className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600">
         Thêm tài liệu
-      </Link>
+      </button>
     </div>
   );
 

@@ -28,7 +28,7 @@ const Header = () => {
       removeTokens();
       setOpen(prev=>!prev)
       reset()
-      window.location.href = '/login';
+      navigate('/');
     },
     onError: (error) => {
       setIsAuthenticated(false)
@@ -36,7 +36,7 @@ const Header = () => {
       removeTokens();
       setOpen(prev=>!prev)
       reset()
-      window.location.href = '/login';
+      navigate('/');;
       console.error("Logout failed:", error);
     },
   });
@@ -117,7 +117,7 @@ const Header = () => {
               )}
               
               
-              {isAuthenticated&&isOpen&&(<div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              {isAuthenticated && isOpen && (<div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <button
                     onClick={() => {navigate("/profile")}}
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"

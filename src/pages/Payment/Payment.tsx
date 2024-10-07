@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import book from '../../assets/book_gtlt.png';
 import payment from '../../assets/payment_indoc.png';
 import { useLocation } from 'react-router-dom';
 import { Document } from '../ListItem/ListItems';
 import { getAccessToken } from '../../utils/auth';
+import { useAuth, User } from '../../context/app.context';
 
 // Types
 type BankOption = 'Vietcombank' | 'Techcombank' | 'VPBank';
@@ -21,7 +21,9 @@ interface PaymentInfo {
   transactionId: string;
   content: string;
 }
-
+export function formatCurrency(currency: number) {
+  return Intl.NumberFormat('vi-VN', { minimumFractionDigits: 0 }).format(currency);
+}
 // BankPopUp Component
 const BankPopUp: React.FC<{ onClose: () => void; onSelect: (bank: BankOption) => void }> = ({ onClose, onSelect }) => {
   const [selectedBank, setSelectedBank] = useState<BankOption | null>(null);
@@ -173,7 +175,7 @@ const ConfirmPayment: React.FC<{ paymentInfo: PaymentInfo }> = ({ paymentInfo })
 };
 
 // GeneralPayment Component
-const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
+const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,user}) => {
   
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
   const [showBankInfo, setShowBankInfo] = useState(false);
@@ -192,17 +194,18 @@ const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
           <div className="p-4 bg-white shadow-lg rounded-lg flex-grow">
             <h2 className="font-bold text-xl mb-2">1. Tên đăng nhập của người dùng/Người mua hàng</h2>
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <p>Tên đăng nhập: 0987656166</p>
-              <p>Người mua hàng: Nguyễn Gia Nguyên</p>
+              <p>Tên đăng nhập: {user.email}</p>
+              <p>Người mua hàng: {user?.user}</p>
             </div>
           </div>
           <div className="p-4 bg-white shadow-lg rounded-lg flex-grow">
             <h2 className="font-bold text-xl mb-2">2. Sản phẩm thanh toán</h2>
             <div className="flex items-center bg-white p-4 rounded-lg shadow-sm">
-              <img src={book} alt="Book Image" className="w-20 h-28 object-cover mr-4" />
+            <iframe src={`https://docs.google.com/viewer?url=${encodeURIComponent(document.previewPath)}&embedded=true#page=1`} className="w-56 h-56 mr-4" />
+              {/* <img src={book} alt="Book Image" className="w-20 h-28 object-cover mr-4" /> */}
               <div>
-                <p className="font-bold">Giải thuật và lập trình</p>
-                <p>by Lê Minh Hoàng</p>
+                <p className="font-bold">{document.title}</p>
+                {/* <p>by {document.author}</p> */}
               </div>
             </div>
           </div>
@@ -212,9 +215,8 @@ const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
             {showBankInfo && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg">
                 <p className="text-lg font-bold">Thông tin chuyển khoản:</p>
-                <p>Ngân hàng: MB bank</p>
-                <p>Số tài khoản: 0987865166</p>
-                <p>Chủ tài khoản: Nguyễn Gia Nguyên</p>
+                <p>Số tài khoản: {user.bankAccount}</p>
+                <p>Chủ tài khoản: {user.user}</p>
               </div>
             )}
           </div>
@@ -223,8 +225,8 @@ const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
           <div className="p-4 bg-white shadow-lg rounded-lg flex-grow">
             <h2 className="font-bold text-xl mb-2">4. Xác nhận thông tin</h2>
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-500 border-dashed">
-              <p>Người mua: Nguyễn Gia Nguyên</p>
-              <p>Ngày mua: 12/8/2024</p>
+              <p>Người mua: {user.user}</p>
+              <p>Ngày mua: {new Date().toLocaleDateString()}</p>
             </div>
             <div className="border-t border-gray-300 my-4"></div>
             <h2 className="text-xl mb-2">Chi tiết thanh toán</h2>
@@ -233,29 +235,29 @@ const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
                 <p className="text-gray-500">Sản phẩm</p>
               </div>
               <div className="flex justify-between items-center mb-2">
-                <p className="text-lg text-gray-800">Giải thuật và lập trình</p>
-                <p className="text-red-500 font-bold">200.000 VND</p>
+                <p className="text-lg text-gray-800">{document.title}</p>
+                <p className="text-red-500 font-bold">{formatCurrency(Number(document.price))} VND</p>
               </div>
               <hr className="my-2" />
               <div className="flex justify-between items-center">
                 <p className="text-lg">Tổng thanh toán</p>
-                <p className="text-red-500 font-bold">200.000 VND</p>
+                <p className="text-red-500 font-bold">{formatCurrency(Number(document.price))} VND</p>
               </div>
             </div>
             <div className="border-t border-gray-300 my-4"></div>
             <h2 className="text-xl mb-2">Phương thức thanh toán</h2>
             {selectedPaymentMethod ? (
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-500 border-dashed">
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-500 border-dashed">
                 <div className="flex justify-between items-center mb-2">
-                  <img src={`/path-to-${selectedPaymentMethod.toLowerCase()}-logo.png`} alt={selectedPaymentMethod} className="mr-2" style={{ height: '20px' }} />
-                  <p className="text-cyan-500 font-semibold cursor-pointer" onClick={() => setSelectedPaymentMethod(null)}>
-                    Đổi phương thức
-                  </p>
+                  <p className="text-gray-500">Phương thức thanh toán</p>
                 </div>
                 <div className="flex justify-between items-center">
                   <button className="py-1 px-3 bg-gray-200 text-gray-700 rounded-lg text-sm" style={{ lineHeight: 1 }}>
-                    {selectedPaymentMethod === 'Visa' ? 'Thẻ tín dụng' : 'Ví điện tử'}
+                    Thẻ tín dụng/Ví điện tử
                   </button>
+                </div>
+                <div className="mt-2">
+                  <p className="text-gray-700">Tài khoản ngân hàng: {user.bankAccount}</p>
                 </div>
               </div>
             ) : (
@@ -268,7 +270,7 @@ const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
             </div>
             <button className="w-full bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600" disabled={!selectedPaymentMethod} onClick={async () => {
               // Gọi API và chuyển hướng đến order_url
-              const response = await fetch('https://indocs.click/api/create-order', {
+              const response = await fetch('create-order', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -281,7 +283,7 @@ const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
               });
               const data = await response.json();
               if (data.return_code === 1) {
-                window.open(data.order_url, '_blank'); // Mở cửa sổ mới
+                window.location.href = data.order_url; // Mở cửa sổ mới
               } else {
                 alert('Giao dịch thất bại');
               }
@@ -295,12 +297,12 @@ const GeneralPayment: React.FC<{ document: Document }> = ({ document }) => {
             </div>
             <div className="flex justify-between items-center mb-2">
               <p className="text-lg text-gray-800">{document.title ?? 'N/A'}</p>
-              <p className="text-red-500 font-bold">{document.price ?? 'N/A'} VND</p>
+              <p className="text-red-500 font-bold">{formatCurrency(Number(document.price)) ?? 'N/A'} VND</p>
             </div>
             <hr className="my-2" />
             <div className="flex justify-between items-center">
               <p className="text-lg">Tổng thanh toán</p>
-              <p className="text-red-500 font-bold">{document.price ?? 'N/A'} VND</p>
+              <p className="text-red-500 font-bold">{formatCurrency(Number(document.price)) ?? 'N/A'} VND</p>
             </div>
           </div>
         </div>
@@ -334,6 +336,7 @@ const Payment: React.FC = () => {
   const [paymentStep ] = useState<'general' | 'confirm'>('general');
   const [selectedBank, setSelectedBank] = useState<BankOption | null>(null);
   const location = useLocation();
+  const {user} = useAuth();
   const document = location.state?.document as Document;
 
   const handleBankSelect = (bank: BankOption) => {
@@ -347,16 +350,16 @@ const Payment: React.FC = () => {
   // };
 
   const paymentInfo: PaymentInfo = {
-    amount: 200000,
+    amount: parseFloat(document.price.replace(/[^0-9.-]+/g,"")),
     transactionId: '03162263046264',
-    content: 'Người dùng "Nguyễn Gia Nguyên" đã mua tài liệu "Giải thuật và lập trình" của Lê Minh Hoàng bằng ví điện tử Visa vào ngày 8/12/2024',
+    content: `Người dùng ${user?.user} đã mua tài liệu "${document.title}" của ${document.author} bằng ví điện tử Visa vào ngày 8/12/2024`,
   };
 
   return (
     <div>
       {selectedBank && <p>Selected bank: {selectedBank}</p>}
       {paymentStep === 'general' && (
-        <GeneralPayment document={document} />
+        <GeneralPayment document={document} user={user as User}/>
       )}
       {paymentStep === 'confirm' && (
         <ConfirmPayment paymentInfo={paymentInfo} />

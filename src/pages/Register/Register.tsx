@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query"
 // import logoGoogle from "../../assets/logo_google.png"
 // import tick from "../../assets/tick.png"
 import login from '../../assets/login_register.png'
+import { AxiosError } from "axios"
 // import { getAccessToken } from "../../utils/auth"
 export type RegisterInputs = Pick<Schema,"email"|"password"|"confirm_password" >
 // enum RegisterStep {
@@ -83,10 +84,12 @@ const Register2 :React.FC = () =>{
       toast.success('Registration successful')
       navigate('/login')
     },
-    onError: (error) => {
-      toast.error('Registration failed: ' + (error as Error).message)
-      console.error('Registration error:', error)
-    }
+    onError: (error:AxiosError) => {
+      const statusCode = error.response?.status;
+      const errorMessage = (error.response?.data as { message?: string }).message || error.message;
+      toast.error(`Registration failed:  ${statusCode}: ${errorMessage}`);
+      console.error('Login error:', { statusCode, errorMessage });
+    },
   })
   
   const onSubmit = handleSubmit(async (data) => {

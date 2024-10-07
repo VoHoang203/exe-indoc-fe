@@ -12,6 +12,7 @@ import { useAuth, User } from "../../context/app.context";
 import login from '../../assets/login_register.png'
 import { saveAccessToken } from "../../utils/auth";
 import avatar from '../../assets/avt.png'
+import {AxiosError} from "axios";
 type Inputs = {
   email: string
   password: string
@@ -27,8 +28,8 @@ const Login = () => {
     resolver: yupResolver(loginSchema)
   })
   const { setUser, setIsAuthenticated,setIsSeller } = useAuth();
-  const fetchUserProfile = async (accessToken: string) => {
-    const response = await http.get('/v1/user/profile', {
+  const fetchUserProfile  = async (accessToken: string) => {
+    const response  = await http.get('/v1/user/profile', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -44,30 +45,50 @@ const Login = () => {
     onSuccess: async (response: AuthResponse) => {
       console.log(response.data.accessToken)
       const userProfile = await fetchUserProfile(response.data.accessToken);
-      
       console.log('Login successful:', response)
-      const userInfo: User = {
-        user:  userProfile?.email.split('@')[0],
-        avatar: avatar,
-        email: userProfile?.email || register("email").name,
-        password: register("password").name, 
-        bankAccount: userProfile?.bankName + userProfile?.bankAccountNumber ||  "chưa có thông tin",
-        bankCV: "123" ,
-        phone: userProfile?.phone || "chưa có thông tin",
-        createdAt: userProfile?.createdAt || "chưa có thông tin"
-      };
       if(userProfile?.role === 'seller'){
         setIsSeller(true)
+        const userInfo: User = {
+          user:  userProfile?.email?.split('@')[0],
+          avatar: avatar,
+          email: userProfile?.email || register("email").name,
+          password: register("password").name, 
+          storeName: userProfile?.storeName,
+          bankAccount: userProfile?.bankName + " " + userProfile?.bankAccountNumber ||  "chưa có thông tin",
+          bankCV: "123" ,
+          createdAt: userProfile?.createdAt || "chưa có thông tin",
+          bankOwnerName: userProfile?.bankOwnerName || "chưa có thông tin",
+          isVerified: userProfile?.isVerified || false,
+          role: userProfile?.role ,
+          phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
+          bankName: userProfile?.bankName || "chưa có thông tin",
+        };
+          localStorage.setItem('userInfo', JSON.stringify(userInfo));
+          setUser(userInfo);
+      }else {
+          const userInfo :User= {
+            user:  userProfile?.email?.split('@')[0],
+            avatar: avatar,
+            isVerified: userProfile?.isVerified || false,
+            email: userProfile?.email || register("email").name,
+            password: register("password").name, 
+            role: userProfile?.role ,
+            phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
+            createdAt: userProfile?.createdAt || "chưa có thông tin"
+          };
+          localStorage.setItem('userInfo', JSON.stringify(userInfo));
+          setUser(userInfo);
       }
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
-      setUser(userInfo);
+      
       setIsAuthenticated(true);
       saveAccessToken(response.data.accessToken)
       navigate('/')
     },
-    onError: (error) => {
-      toast.error('Login failed: ' + (error as Error).message)
-      console.error('Login error:', error)
+    onError: (error:AxiosError) => {
+      const statusCode = error.response?.status;
+      const errorMessage = (error.response?.data as { message?: string }).message || error.message;
+      toast.error(`Error ${statusCode}: ${errorMessage}`);
+      console.error('Login error:', { statusCode, errorMessage });
     }
   })
   const onSubmit = handleSubmit(async (data)=>{

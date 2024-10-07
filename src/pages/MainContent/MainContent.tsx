@@ -17,7 +17,11 @@ import nuocxanh from "../../assets/nuocxanh.png"
 import nuocxam from "../../assets/nuocxam.png"
 import tintuc from "../../assets/tintuc.jpg"
 import { Link } from "react-router-dom"
+import { useAuth } from "../../context/app.context"
 const MainContent = () => {
+  const {user} = useAuth()
+  console.log(user)
+  console.log(localStorage.getItem("test"))
   return (
     <>
       {/* Main Section */}
