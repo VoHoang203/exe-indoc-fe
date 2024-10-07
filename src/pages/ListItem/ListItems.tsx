@@ -7,6 +7,7 @@ import Layout from '../../components/Layout';
 import image_116 from "../../assets/image 116.png"
 import { useQuery } from '@tanstack/react-query';
 import http from "../../utils/http"
+import { formatCurrency } from '../Payment/Payment';
 export interface Document {
   id: string;
   title: string;
@@ -487,7 +488,7 @@ const ProductDetail: React.FC <{ document: Document; onBack: () => void }> = ({ 
         </div>
         <div className="">
           <h1 className="text-3xl font-bold mb-4">{document.title}</h1>
-          <p className="text-xl font-semibold mb-2">{document.price}</p>
+          <p className="text-xl font-semibold mb-2">{formatCurrency(Number(document.price)) } VND</p>
           <p className="text-gray-600 mb-4">{document.description}</p>
           <div className="flex items-center space-x-4 mb-6">
             <button
