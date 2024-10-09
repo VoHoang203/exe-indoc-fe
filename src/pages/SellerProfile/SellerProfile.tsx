@@ -51,14 +51,13 @@ interface UserInfo {
 }
 const fetchPaidDocuments = async () => {
   const accessToken = getAccessToken();
-  const response = await fetch('documents/paid', {
-    method: 'GET',
+  const response = await http.get('documents/paid', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   });
-  const data = await response.json();
+  const data = await response.data;
   return data.data.map((doc: Document2, index: number) => ({
     id: index,
     title: doc.title,
@@ -71,14 +70,13 @@ const fetchPaidDocuments = async () => {
 ReactModal.setAppElement('#root');
 const fetchOwnDocuments = async () => {
   const accessToken = getAccessToken();
-  const response = await fetch('/documents/own', {
-    method: 'GET',
+  const response = await http.get('/documents/own', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   });
-  const data = await response.json();
+  const data = await response.data;
   return data.data.map((doc: Document2, index: number) => ({
     id: index,
     title: doc.title,
@@ -91,14 +89,14 @@ const fetchOwnDocuments = async () => {
 };
 const fetchTransactions = async () => {
   const accessToken = getAccessToken();
-  const response = await fetch('v1/seller/transaction', {
+  const response = await http.get('/v1/seller/transaction', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   });
-  const data = await response.json();
+  const data = await response.data;
   return data.data.map((transaction: Transaction2) => ({
     title: transaction.title,
     documentId: transaction.documentid,
@@ -367,15 +365,19 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
     }
   };
-
+  if(isLoading===true){
+    toast.info('Uploading...')
+  }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    
     const accessToken = getAccessToken();
     const formData = new FormData();
     formData.append('title', title);
@@ -392,13 +394,17 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
     onClose();
     try {
     
-    const response = await http.post('document/upload',formData, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    
+    const response = await http.post('/document/upload',formData, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+    
+      setIsLoading(false);
 
     if (response.status === 201) {
       toast.success('Upload thành công');

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import {  useNavigate } from 'react-router-dom';
 import Bookshelf from "../../assets/Bookshelf.png"
 import muitenImage from '../../assets/muiten.png'; 
 import tick from '../../assets/tick.png';
@@ -35,7 +34,6 @@ type IdentityInfo = {
 // Component chính
 const SellerRegistration: React.FC = () => {
   const [step, setStep] = useState(0);
-  const navigate = useNavigate()
   const [sellerInfo, setSellerInfo] = useState<SellerInfo>({ storeName: '', email: '', phone: '' });
   const [taxInfo, setTaxInfo] = useState<TaxInfo>({
     businessType: '',
@@ -52,7 +50,7 @@ const SellerRegistration: React.FC = () => {
     qrCodeImage: null,
     bankOwner: '',
   });
-const {setIsSeller, setIsAuthenticated, setUser, reset} = useAuth()
+const { reset} = useAuth()
   const handleSellerInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSellerInfo({ ...sellerInfo, [e.target.name]: e.target.value });
   };
@@ -106,9 +104,20 @@ const {setIsSeller, setIsAuthenticated, setUser, reset} = useAuth()
     for (const [name, value] of formData.entries()) {
       console.log(`${name}: ${value}`); // Logs each form name and value
     }
+    if (identityInfo.idFrontImage) {
+      formData.append('files', identityInfo.idFrontImage);
+    } else {
+      toast.warn('Front image is missing!');
+    }
+  
+    if (identityInfo.idBackImage) {
+      formData.append('files', identityInfo.idBackImage);
+    } else {
+      toast.warn('Back image is missing!');
+    }
     console.log(accessToken)
     try {
-      const response = await http.post('/seller/register',formData, {
+      const response = await http.post('https://1e17-2001-ee0-41a1-66b5-f15b-72cf-824b-23a4.ngrok-free.app/api/seller/register',formData, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data',
@@ -116,12 +125,9 @@ const {setIsSeller, setIsAuthenticated, setUser, reset} = useAuth()
       });
       console.log('Registration successful:', response.data);
       setStep(4);
-      setIsSeller(true)
-      setIsAuthenticated(false)
-      setUser(null)
-      removeTokens();
-      reset()
-      toast.info("Regis succes")
+      
+      
+      toast.info("Regis success: Đăng ký thành công mời bạn đăng xuất để đăng nhập thành người bán")
     } catch (error) {
       console.error('Registration failed:', error);
     }
@@ -452,8 +458,8 @@ const {setIsSeller, setIsAuthenticated, setUser, reset} = useAuth()
         Chúc mừng bạn đã tham gia góp phần xây dựng cộng đồng InDocs
         <br /> Hãy cùng nhau chia sẻ những tài liệu tuyệt vời
       </p>
-      <button onClick={()=>navigate('/')} className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600">
-        Thêm tài liệu
+      <button onClick={()=>{removeTokens();  reset()}} className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600">
+        Đăng xuất
       </button>
     </div>
   );
