@@ -271,16 +271,15 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
             </div>
             <button className="w-full bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600" disabled={!selectedPaymentMethod} onClick={async () => {
               // Gọi API và chuyển hướng đến order_url
-              const response = await http.post('create-order', {
+              const response = await http.post('/create-order',{
+                documentId: document.id,
+                amount: Number.parseInt(document.price),
+              }, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${getAccessToken()}`,
-                },
-                body: JSON.stringify({
-                  documentId: document.id,
-                  amount: 100000,
-                }),
+                }
               });
               const data = await response.data;
               if (data.return_code === 1) {

@@ -49,6 +49,13 @@ interface UserInfo {
   createdAt?: string;
   isVerified?: boolean;
 }
+interface FormDataInterface {
+  title:string;
+  categoryId:string;
+  price:string;
+  description:string;
+  file:File | undefined;
+};
 const fetchPaidDocuments = async () => {
   const accessToken = getAccessToken();
   const response = await http.get('documents/paid', {
@@ -394,15 +401,17 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
     onClose();
     try {
     
-    
-    const response = await http.post('/document/upload',formData, {
+    const loadingToastId = toast.loading('Uploading...')
+    const response = await http.post<FormDataInterface >('/document/upload',formData, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data',
         },
       })
-
+      toast.dismiss(loadingToastId);
+      
+      
     
       setIsLoading(false);
 
@@ -417,7 +426,7 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
     console.error('Upload failed', error);
   }
   };
-  
+ 
   return (
     <ReactModal
       isOpen={isOpen}
