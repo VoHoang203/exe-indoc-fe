@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { Document } from '../ListItem/ListItems';
 import { getAccessToken } from '../../utils/auth';
 import { useAuth, User } from '../../context/app.context';
+import http from '../../utils/http';
 
 // Types
 type BankOption = 'Vietcombank' | 'Techcombank' | 'VPBank';
@@ -270,7 +271,7 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
             </div>
             <button className="w-full bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600" disabled={!selectedPaymentMethod} onClick={async () => {
               // Gọi API và chuyển hướng đến order_url
-              const response = await fetch('create-order', {
+              const response = await http.post('create-order', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -281,7 +282,7 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
                   amount: 100000,
                 }),
               });
-              const data = await response.json();
+              const data = await response.data;
               if (data.return_code === 1) {
                 window.location.href = data.order_url; // Mở cửa sổ mới
               } else {

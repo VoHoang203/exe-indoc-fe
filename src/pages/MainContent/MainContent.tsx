@@ -21,7 +21,7 @@ import { useAuth } from "../../context/app.context"
 const MainContent = () => {
   const {user} = useAuth()
   console.log(user)
-  console.log(localStorage.getItem("test"))
+  console.log(localStorage.getItem("userInfo"))
   return (
     <>
       {/* Main Section */}
