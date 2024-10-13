@@ -117,7 +117,7 @@ const SellerProfile: React.FC = () => {
   const [showAddDocModal, setShowAddDocModal] = useState(false);
   const [showDetailSellerModal, setShowDetailSellerModal] = useState(false);
   const { isSeller,setUser,user } = useAuth(); 
-  const { data: documents,refetch:refetchOwnDocument} = useQuery<Document2[]>({
+  const { data: documents,refetch:refetchOwnDocument, isLoading:isLoadingOwnDocument} = useQuery<Document2[]>({
     queryKey: ['ownDocuments'],
     queryFn: fetchOwnDocuments,
   })
@@ -284,17 +284,26 @@ console.log(getAccessToken())
           <div className="bg-gray-100 rounded-b-xl rounded-tr-xl p-10 shadow-md overflow-y-auto">
           {activeTab === 'uploaded' && (
               <>
-                 {Array.isArray(documents) && documents.map((doc: Document2) => (
+                  {isLoadingOwnDocument ? (
+                                <div role="status">
+                <svg aria-hidden="true" className="inline w-full h-full text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                </svg>
+                      <span className="sr-only">Loading...</span>
+                  </div>
+
+                  ):(Array.isArray(documents) && documents.map((doc: Document2) => (
                   <DocumentItem key={doc.id} document={doc} />
 
-                ))}
+                )))}
               </>
             )}
             {activeTab === 'transactions' && (
               <>
                  {Array.isArray(transactions) && transactions.map((transaction: Transaction2) => (
-      <TransactionItem key={transaction.buyerid} transaction={transaction} />
-    ))}
+                    <TransactionItem key={transaction.buyerid} transaction={transaction} />
+                  ))}
                 {transactions && (
                     <TotalTransactions 
                     total={transactions.reduce((sum, transaction) => sum + Number(transaction.amount), 0)} 
@@ -406,9 +415,10 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
     }
     
     onClose();
+    const loadingToastId = toast.loading('Uploading...')
     try {
     
-      const loadingToastId = toast.loading('Uploading...')
+      
     const response = await http.post<FormDataInterface >('/document/upload',formData, {
         method: 'POST',
         headers: {
@@ -416,7 +426,7 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
           'Content-Type': 'multipart/form-data',
         },
       })
-      toast.dismiss(loadingToastId)
+      
 
     if (response.status === 201) {
       toast.success('Upload thành công');
@@ -425,9 +435,11 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
       toast.error('Upload thất bại');
     }
   } catch (error) {
-    toast.error('Đã xảy ra lỗi trong quá trình upload');
-    console.error('Upload failed', error);
-  }
+    const axiosError = error as { response?: { data: { message: string; error: string; statusCode: number } } };
+    toast.error('Đã xảy ra lỗi trong quá trình upload, mã: '+ axiosError.response?.data.statusCode + ' Nội dung: ' + axiosError.response?.data.message);
+    console.error('Upload failed', axiosError.response?.data.message);
+}
+    toast.dismiss(loadingToastId)
   };
  
   return (
