@@ -23,12 +23,12 @@ export type RegisterInputs = Pick<Schema,"email"|"password"|"confirm_password" >
 
 // const Register: React.FC = () => {
 //   const [step, setStep] = useState<RegisterStep>(RegisterStep.Index);
-//   const [phoneOrEmail, setPhoneOrEmail] = useState<string>('');
+//   const [email, setEmail] = useState<string>('');
 //   const [verificationCode, setVerificationCode] = useState<string>('');
 //   const [password, setPassword] = useState<string>('');
-
+//   const navigate = useNavigate();
 //   const handleIndexNext = (value: string) => {
-//     setPhoneOrEmail(value);
+//     setEmail(value);
 //     setStep(RegisterStep.XacMinh);
 //   };
 
@@ -41,17 +41,56 @@ export type RegisterInputs = Pick<Schema,"email"|"password"|"confirm_password" >
 //     setPassword(pass);
 //     setStep(RegisterStep.HoanThanh);
 //   };
-  
+//   const checkEmailMutation = useMutation({
+//     mutationFn: async (email: string) => {
+//       const response = await http.post('http://localhost:3001/api/auth/check-email', { email });
+//       return response.data;
+//     },
+//     onSuccess: () => {
+//       setStep(2); // Move to OTP verification step
+//       toast.success('OTP has been sent to your email.');
+//     },
+//     onError: (error: AxiosError<{ message?: string }>) => {
+//       toast.error(error.response?.data.message || 'Email already exists.');
+//     },
+//   });
+
+//   const confirmOtpMutation = useMutation({
+//     mutationFn: async (data: { OTP: string; email: string }) => {
+//       const response = await http.post('http://localhost:3001/api/v1/confirm/otp', data);
+//       return response.data;
+//     },
+//     onSuccess: () => {
+//       setStep(3); // Move to password creation step
+//       toast.success('OTP confirmed successfully.');
+//     },
+//     onError: (error: AxiosError<{ message?: string }>) => {
+//       toast.error(error.response?.data.message || 'Failed to confirm OTP.');
+//     },
+//   });
+//   const registerMutation = useMutation({
+//     mutationFn: async (data: { email: string; password: string }) => {
+//       const response = await http.post('http://localhost:3001/api/v1/signup', data);
+//       return response.data;
+//     },
+//     onSuccess: () => {
+//       toast.success('Registration successful.');
+//       navigate('/login');
+//     },
+//     onError: (error: AxiosError<{ message?: string }>) => {
+//       toast.error(error.response?.data.message || 'Registration failed.');
+//     },
+//   });
 //   const renderStep = () => {
 //     switch (step) {
 //       case RegisterStep.Index:
 //         return <RegisterIndex onNext={handleIndexNext} />;
 //       case RegisterStep.XacMinh:
-//         return <RegisterXacMinh onNext={handleXacMinhNext} phoneNumber={phoneOrEmail} currentStep={1}/>;
+//         return <RegisterXacMinh onNext={handleXacMinhNext} phoneNumber={email} currentStep={1}/>;
 //       case RegisterStep.TaoMatKhau:
 //         return <RegisterTaoMatKhau onNext={handleTaoMatKhauNext} currentStep={2}/>;
 //       case RegisterStep.HoanThanh:
-//         return <RegisterHoanThanh phoneNumber={phoneOrEmail} currentStep={3}/>;
+//         return <RegisterHoanThanh phoneNumber={email} currentStep={3}/>;
 //     }
 //   };
 //   useEffect(() => {
@@ -197,15 +236,15 @@ const Register2 :React.FC = () =>{
 
 export default Register2
 // interface RegisterIndexProps {
-//   onNext: (phoneOrEmail: string) => void;
+//   onNext: (email: string) => void;
 // }
 
 // const RegisterIndex: React.FC<RegisterIndexProps> = ({ onNext }) => {
-//   const [phoneOrEmail, setPhoneOrEmail] = useState<string>('');
+//   const [email, setEmail] = useState<string>('');
 
 //   const handleSubmit = (e: React.FormEvent) => {
 //     e.preventDefault();
-//     onNext(phoneOrEmail);
+//     onNext(email);
 //   };
 
 //   return (
@@ -214,8 +253,8 @@ export default Register2
 //       <form onSubmit={handleSubmit}>
 //         <input
 //           type="email"
-//           value={phoneOrEmail}
-//           onChange={(e) => setPhoneOrEmail(e.target.value)}
+//           value={email}
+//           onChange={(e) => setEmail(e.target.value)}
 //           placeholder=" Email"
 //           className="w-full h-10 px-3 rounded border border-[#8D8C8C] focus:border-[#868585] outline-none text-[#8D8C8C] transition-all duration-300"
 //         />

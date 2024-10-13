@@ -46,9 +46,10 @@ const Login = () => {
       console.log(response.data.accessToken)
       const userProfile = await fetchUserProfile(response.data.accessToken);
       console.log('Login successful:', response)
+      let userInfo: User;
       if(userProfile?.role === 'seller'){
         setIsSeller(true)
-        const userInfo: User = {
+        userInfo = {
           user:  userProfile?.email?.split('@')[0],
           avatar: avatar,
           email: userProfile?.email || register("email").name,
@@ -66,20 +67,22 @@ const Login = () => {
           localStorage.setItem('userInfo', JSON.stringify(userInfo));
           setUser(userInfo);
       }else {
-          const userInfo :User= {
-            user:  userProfile?.email?.split('@')[0],
+          userInfo= {
+            user: userProfile?.email?.split('@')[0],
             avatar: avatar,
-            isVerified: userProfile?.isVerified || false,
             email: userProfile?.email || register("email").name,
-            password: register("password").name, 
-            role: userProfile?.role ,
+            password: register("password").name,
+            createdAt: userProfile?.createdAt || "chưa có thông tin",
+            isVerified: userProfile?.isVerified || false,
+            role: userProfile?.role,
             phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
-            createdAt: userProfile?.createdAt || "chưa có thông tin"
           };
           localStorage.setItem('userInfo', JSON.stringify(userInfo));
           setUser(userInfo);
       }
       
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+        setUser(userInfo);
       setIsAuthenticated(true);
       saveAccessToken(response.data.accessToken)
       navigate('/')

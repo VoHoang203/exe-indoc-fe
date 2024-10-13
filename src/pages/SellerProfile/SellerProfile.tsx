@@ -116,7 +116,7 @@ const SellerProfile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('purchased');
   const [showAddDocModal, setShowAddDocModal] = useState(false);
   const [showDetailSellerModal, setShowDetailSellerModal] = useState(false);
-  const { isSeller } = useAuth(); 
+  const { isSeller,setUser,user } = useAuth(); 
   const { data: documents,refetch:refetchOwnDocument} = useQuery<Document2[]>({
     queryKey: ['ownDocuments'],
     queryFn: fetchOwnDocuments,
@@ -162,12 +162,25 @@ const SellerProfile: React.FC = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const updatedUserInfo = { ...userInfo, avatar: reader.result as string };
+        const updatedUserInfo = { 
+          ...userInfo, 
+          avatar: reader.result as string,
+          password: user?.password|| '', // Ensure password is included
+          phoneNumber: user?.phoneNumber || '' // Ensure phoneNumber is included
+        };
         setUserInfo(updatedUserInfo);
+        setUser(updatedUserInfo as User);
         localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo)); // Save to localStorage
       };
       reader.readAsDataURL(file);
     }
+  };
+  const handleAddDocModalToggle = () => {
+    setShowAddDocModal((prev) => !prev);
+  };
+
+  const handleDetailSellerModalToggle = () => {
+    setShowDetailSellerModal((prev) => !prev);
   };
 console.log(paidDocuments)
 console.log(transactions)
@@ -176,26 +189,26 @@ console.log(getAccessToken())
     <div className="flex gap-5 bg-white w-full h-screen p-5">
       <div className="w-1/3">
         {isSeller && ( 
-          <a href="#" onClick={() => setShowAddDocModal(true)} className="flex items-center gap-2 text-gray-400 mb-2">
+          <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
             <p className="text-lg">Tải tài liệu lên</p>
             <img src={addDoc} alt="" className="w-12" />
-          </a>
+          </button>
         )}
         <div className="bg-gray-100 rounded-xl shadow-md p-5 animate-fadeLeft">
           <div className="flex justify-center">
-          <div className="relative">
-                <img src={userInfo.avatar || avt} alt="" className="w-24 mt-6 rounded-full" />
-                <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors">
-                  <FaCamera />
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleAvatarChange}
-                  />
-                </label>
-  </div>
+            <div className="relative">
+                  <img src={userInfo.avatar || avt} alt="" className="w-24 mt-6 rounded-full" />
+                  <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors">
+                    <FaCamera />
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarChange}
+                    />
+                  </label>
+            </div>
           </div>
           <div className="mt-12">
           <table className="w-full text-center border-collapse">
@@ -203,52 +216,52 @@ console.log(getAccessToken())
                 <td className="p-4 font-medium text-left border-r border-gray-300">Tên</td>
                 <td className="p-4 text-left">{userInfo.user}</td>
                 <td className="p-4  border-l border-gray-300">
-                  <a href="#" onClick={() => setShowDetailSellerModal(true)}>
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
-                  </a>
+                  </button>
                 </td>
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">Mail</td>
                 <td className="p-4 text-left">{userInfo.email}</td>
                 <td className="p-4  border-l border-gray-300">
-                  <a href="#" onClick={() => setShowDetailSellerModal(true)}>
+                  <button onClick={() => handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
-                  </a>
+                  </button>
                 </td>
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">SĐT</td>
                 <td className="p-4 text-left">{userInfo.phone}</td>
                 <td className="p-4 border-l border-gray-300">
-                  <a href="#" onClick={() => setShowDetailSellerModal(true)}>
+                  <button onClick={() => handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
-                  </a>
+                  </button>
                 </td>
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">Role</td>
                 <td className="p-4 text-left">{isSeller ? "Người bán" : "Người mua"}</td>
                 <td className="p-4 border-l border-gray-3000">
-                  <a href="#" onClick={() => setShowDetailSellerModal(true)}>
+                  <button onClick={() => handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
-                  </a>
+                  </button>
                 </td>
               </tr>
               <tr className='border-b border-gray-300 last:border-b-0'>
                 <td className="p-4 font-medium text-left border-r border-gray-300">Bank</td>
                 <td className="p-4 text-left">{userInfo.bankAccount}</td>
                 <td className="p-4 border-l border-gray-300">
-                  <a href="#" onClick={() => setShowDetailSellerModal(true)}>
+                  <button onClick={() => handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
-                  </a>
+                  </button>
                 </td>
               </tr>
             </table>
           </div>
         </div>
       </div>
-      <div className="w-2/3 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+      <div className="w-2/3 " style={{ maxHeight: 'calc(100vh - 200px)' }}>
         <div className="border border-teal-500 rounded-xl flex items-center overflow-hidden mb-8">
           <input type="text" placeholder="Tìm kiếm ...." className="w-full p-2 outline-none text-gray-600 text-lg" />
           <img src={search_normal} alt="" className="w-10 p-2" />
@@ -268,7 +281,7 @@ console.log(getAccessToken())
               </select>
             </div>
           </div>
-          <div className="bg-gray-100 rounded-b-xl rounded-tr-xl p-10 shadow-md">
+          <div className="bg-gray-100 rounded-b-xl rounded-tr-xl p-10 shadow-md overflow-y-auto">
           {activeTab === 'uploaded' && (
               <>
                  {Array.isArray(documents) && documents.map((doc: Document2) => (
@@ -372,19 +385,13 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
     }
   };
-  if(isLoading===true){
-    toast.info('Uploading...')
-  }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    
     const accessToken = getAccessToken();
     const formData = new FormData();
     formData.append('title', title);
@@ -401,7 +408,7 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
     onClose();
     try {
     
-    const loadingToastId = toast.loading('Uploading...')
+      const loadingToastId = toast.loading('Uploading...')
     const response = await http.post<FormDataInterface >('/document/upload',formData, {
         method: 'POST',
         headers: {
@@ -409,11 +416,7 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
           'Content-Type': 'multipart/form-data',
         },
       })
-      toast.dismiss(loadingToastId);
-      
-      
-    
-      setIsLoading(false);
+      toast.dismiss(loadingToastId)
 
     if (response.status === 201) {
       toast.success('Upload thành công');

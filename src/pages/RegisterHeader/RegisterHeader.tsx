@@ -1,6 +1,6 @@
 import logo_indocs from '../../assets/logo_indocs.png'
 const RegisterHeader = () => {
-  const current = window.location.href
+  const current = window.location.pathname
   console.log(current)
   return (
     <header className="py-5 shadow">
