@@ -12,8 +12,9 @@ import NewsPage from './pages/News/NewsPage'
 import SellerRegistration from './pages/SellerRegister/SellerRegistration'
 import Payment from './pages/Payment/Payment'
 import { toast } from 'react-toastify'
+import PaymentDetails from './pages/Payment/PaymentDetail'
 
-
+ 
 
 
  function ProtectedRoute() {
@@ -109,6 +110,20 @@ export default function useRoute() {
       element: (
         <MainLayout>
           <NewsPage />
+        </MainLayout>
+      )
+    },
+    {
+      path: "/paymentdetail",
+      element: (
+        <MainLayout>
+          <PaymentDetails
+          bank="ACB"
+        accountNumber="41450997"
+        accountName="LE THI CAM TIEN"
+        amount={500000.00}
+        note="TJY26UJJUE"
+        expirationTime={30} />
         </MainLayout>
       )
     }

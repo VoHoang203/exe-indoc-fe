@@ -45,6 +45,7 @@ const Login = () => {
     onSuccess: async (response: AuthResponse) => {
       console.log(response.data.accessToken)
       const userProfile = await fetchUserProfile(response.data.accessToken);
+      console.log(userProfile)
       console.log('Login successful:', response)
       let userInfo: User;
       if(userProfile?.role === 'seller'){
@@ -77,8 +78,7 @@ const Login = () => {
             role: userProfile?.role,
             phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
           };
-          localStorage.setItem('userInfo', JSON.stringify(userInfo));
-          setUser(userInfo);
+          
       }
       
         localStorage.setItem('userInfo', JSON.stringify(userInfo));
