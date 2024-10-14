@@ -96,7 +96,7 @@ export default function ListItems() {
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const {data:documentsList, refetch ,isLoading} = useQuery<Document[]>({
     queryKey:  ["document list" , {selectedCategory}],
-    queryFn:  async () => {const response = await http.post("https://indocs.click/api/document/category",{
+    queryFn:  async () => {const response = await http.post("document/category",{
           "categoryId": selectedCategory 
       })
       return response.data.data

@@ -17,7 +17,6 @@ type SellerInfo = {
 type TaxInfo = {
   businessType: 'Cá nhân' | 'Trường Học' | '';
   emailInvoice: string;
-  taxId: string;
 };
 
 type IdentityInfo = {
@@ -25,8 +24,6 @@ type IdentityInfo = {
   idNumber: string;
   bank: string;
   accountNumber: string;
-  idFrontImage: File | null;
-  idBackImage: File | null;
   qrCodeImage: File | null;
   bankOwner: string; 
 };
@@ -38,15 +35,12 @@ const SellerRegistration: React.FC = () => {
   const [taxInfo, setTaxInfo] = useState<TaxInfo>({
     businessType: '',
     emailInvoice: '',
-    taxId: ''
   });
   const [identityInfo, setIdentityInfo] = useState<IdentityInfo>({
     idType: '',
     idNumber: '',
     bank: '',
     accountNumber: '',
-    idFrontImage: null,
-    idBackImage: null,
     qrCodeImage: null,
     bankOwner: '',
   });
@@ -61,19 +55,6 @@ const { reset} = useAuth()
     setIdentityInfo({ ...identityInfo, [e.target.name]: e.target.value });
   };
 
-  
-  const [previewImages, setPreviewImages] = useState<{ [key: string]: string | null }>({
-    idFrontImage: null,
-    idBackImage: null,
-  });
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
-      const name = e.target.name;
-      setIdentityInfo({ ...identityInfo, [name]: file });
-      setPreviewImages({ ...previewImages, [name]: URL.createObjectURL(file) });
-    }
-  };
   const handleTaxInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTaxInfo(prev => ({ ...prev, [name]: value }));
@@ -95,28 +76,15 @@ const { reset} = useAuth()
     formData.append('electronicInvoiceEmail', taxInfo.emailInvoice);
     formData.append('phoneNumber', sellerInfo.phone);
     formData.append('typeOfBusiness', taxInfo.businessType);
-    formData.append('taxCode', taxInfo.taxId);
     formData.append('typeOfAuthen', identityInfo.idType);
     formData.append('idNumber', identityInfo.idNumber);
     formData.append('bankName', identityInfo.bank);
     formData.append('bankNumber', identityInfo.accountNumber);
     formData.append('bankOwner', identityInfo.bankOwner);
-    if (identityInfo.idFrontImage) formData.append('files', identityInfo.idFrontImage);
-    if (identityInfo.idBackImage) formData.append('files', identityInfo.idBackImage);
     for (const [name, value] of formData.entries()) {
       console.log(`${name}: ${value}`); // Logs each form name and value
     }
-    if (identityInfo.idFrontImage) {
-      formData.append('files', identityInfo.idFrontImage);
-    } else {
-      toast.warn('Front image is missing!');
-    }
-  
-    if (identityInfo.idBackImage) {
-      formData.append('files', identityInfo.idBackImage);
-    } else {
-      toast.warn('Back image is missing!');
-    }
+    
     console.log(accessToken)
     try {
       const response = await http.post('/seller/register',formData, {
@@ -232,7 +200,7 @@ const { reset} = useAuth()
           id="storeName"
           name="phone"
           className="w-3/4 p-2 border border-gray-300 rounded"
-          placeholder="Điền tên cửa hàng của bạn"
+          placeholder="Số điện thoại của bạn"
           required
           value={sellerInfo.phone}
           onChange={handleSellerInfoChange}
@@ -259,7 +227,7 @@ const { reset} = useAuth()
 
   const renderStep2 = () => (
     <form onSubmit={(e) => { e.preventDefault(); setStep(3); }}>
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-6">
         <label className="w-1/4 text-gray-700">
           <span className="text-red-500">*</span> Loại hình kinh doanh
         </label>
@@ -287,7 +255,7 @@ const { reset} = useAuth()
         </div>
       </div>
   
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-6">
         <label htmlFor="emailInvoice" className="w-1/4 text-gray-700">
           <span className="text-red-500">*</span> Email nhận hóa đơn điện tử
         </label>
@@ -303,7 +271,7 @@ const { reset} = useAuth()
         />
       </div>
   
-      <div className="flex items-center mb-4">
+      {/* <div className="flex items-center mb-4">
         <label htmlFor="taxId" className="w-1/4 text-gray-700">
           <span className="text-red-500">*</span> Mã số thuế
         </label>
@@ -317,7 +285,7 @@ const { reset} = useAuth()
           value={taxInfo.taxId}
           onChange={handleTaxInfoChange}
         />
-      </div>
+      </div> */}
   
       <div className="border-t border-gray-300 my-4" />
       <div className="flex justify-between">
@@ -401,7 +369,7 @@ const { reset} = useAuth()
       </div>
     </div>
 
-    <div className="flex items-center mb-4">
+    {/* <div className="flex items-center mb-4">
       <label className="w-1/4 text-gray-700"><span className="text-red-500">*</span> Hình chụp của thẻ {identityInfo.idType}</label>
       <div className="w-3/4">
         <div className="flex space-x-4">
@@ -433,7 +401,7 @@ const { reset} = useAuth()
           ))}
         </div>
       </div>
-    </div>
+    </div> */}
 
     <div className="flex items-center mb-4">
       <label className="flex items-center space-x-3">

@@ -77,7 +77,7 @@ const fetchPaidDocuments = async () => {
 ReactModal.setAppElement('#root');
 const fetchOwnDocuments = async () => {
   const accessToken = getAccessToken();
-  const response = await http.get('/documents/own', {
+  const response = await http.get('documents/own', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
@@ -212,51 +212,113 @@ console.log(getAccessToken())
           </div>
           <div className="mt-12">
           <table className="w-full text-center border-collapse">
-              <tr className='border-b border-gray-300 last:border-b-0'>
-                <td className="p-4 font-medium text-left border-r border-gray-300">Tên</td>
-                <td className="p-4 text-left">{userInfo.user}</td>
-                <td className="p-4  border-l border-gray-300">
+          {isSeller ? (
+                <>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Email</td>
+                    <td className="p-4 text-left">{userInfo.email}</td>
+                    <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
                   </button>
                 </td>
-              </tr>
-              <tr className='border-b border-gray-300 last:border-b-0'>
-                <td className="p-4 font-medium text-left border-r border-gray-300">Mail</td>
-                <td className="p-4 text-left">{userInfo.email}</td>
-                <td className="p-4  border-l border-gray-300">
-                  <button onClick={() => handleDetailSellerModalToggle()}>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Tên cửa hàng</td>
+                    <td className="p-4 text-left">{userInfo.storeName}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
                   </button>
                 </td>
-              </tr>
-              <tr className='border-b border-gray-300 last:border-b-0'>
-                <td className="p-4 font-medium text-left border-r border-gray-300">SĐT</td>
-                <td className="p-4 text-left">{userInfo.phone}</td>
-                <td className="p-4 border-l border-gray-300">
-                  <button onClick={() => handleDetailSellerModalToggle()}>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">SĐT</td>
+                    <td className="p-4 text-left">{userInfo.phone}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
                   </button>
                 </td>
-              </tr>
-              <tr className='border-b border-gray-300 last:border-b-0'>
-                <td className="p-4 font-medium text-left border-r border-gray-300">Role</td>
-                <td className="p-4 text-left">{isSeller ? "Người bán" : "Người mua"}</td>
-                <td className="p-4 border-l border-gray-3000">
-                  <button onClick={() => handleDetailSellerModalToggle()}>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Số dư tài khoản</td>
+                    <td className="p-4 text-left">{userInfo.accountBalance}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
                   </button>
                 </td>
-              </tr>
-              <tr className='border-b border-gray-300 last:border-b-0'>
-                <td className="p-4 font-medium text-left border-r border-gray-300">Bank</td>
-                <td className="p-4 text-left">{userInfo.bankAccount}</td>
-                <td className="p-4 border-l border-gray-300">
-                  <button onClick={() => handleDetailSellerModalToggle()}>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Ngân hàng</td>
+                    <td className="p-4 text-left">{userInfo.bankName}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
                   </button>
                 </td>
-              </tr>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Số tài khoản</td>
+                    <td className="p-4 text-left">{userInfo.bankAccountNumber}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
+                    <img src={edit_icon} alt="" className="w-5 h-5" />
+                  </button>
+                </td>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Chủ tài khoản</td>
+                    <td className="p-4 text-left">{userInfo.bankOwnerName}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
+                    <img src={edit_icon} alt="" className="w-5 h-5" />
+                  </button>
+                </td>
+                  </tr>
+                </>
+              ) : (
+                <>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Email</td>
+                    <td className="p-4 text-left">{userInfo.email}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
+                    <img src={edit_icon} alt="" className="w-5 h-5" />
+                  </button>
+                </td>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Ngày tham gia</td>
+                    <td className="p-4 text-left">{userInfo.createdAt}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
+                    <img src={edit_icon} alt="" className="w-5 h-5" />
+                  </button>
+                </td>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Đã xác thực</td>
+                    <td className="p-4 text-left">{userInfo.isVerified ? "Có" : "Không"}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
+                    <img src={edit_icon} alt="" className="w-5 h-5" />
+                  </button>
+                </td>
+                  </tr>
+                  <tr className='border-b border-gray-300 last:border-b-0'>
+                    <td className="p-4 font-medium text-left border-r border-gray-300">Role</td>
+                    <td className="p-4 text-left">{isSeller ? "Người bán" : "Người mua"}</td>
+                    <td className="p-4  border-l border-gray-300">
+                  <button onClick={() =>handleDetailSellerModalToggle()}>
+                    <img src={edit_icon} alt="" className="w-5 h-5" />
+                  </button>
+                </td>
+                  </tr>
+                </>
+              )}
+              
             </table>
           </div>
         </div>
@@ -324,7 +386,7 @@ console.log(getAccessToken())
         </div>
       </div>
       {showAddDocModal && <AddDocModal  isOpen={showAddDocModal} onClose={() => setShowAddDocModal(false)} />}
-      {showDetailSellerModal && <DetailSellerModal  isOpen={showDetailSellerModal} onClose={() => setShowDetailSellerModal(false)} />}
+      {showDetailSellerModal && <DetailSellerModal  isOpen={showDetailSellerModal} onClose={() => setShowDetailSellerModal(false)} isSeller={isSeller}  userInfo={userInfo}/>}
     </div>
   );
 };
@@ -521,14 +583,14 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
   )
 };
 
-const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void }> = ({ isOpen,onClose }) => {
+const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSeller: boolean; userInfo: UserInfo }> = ({ isOpen,onClose,isSeller, userInfo }) => {
   const { user, setUser } = useAuth();
   const [name, setName] = useState(user?.user || '');
-  const [email, setEmail] = useState(user?.email || '');
+  const [email] = useState(user?.email || '');
   const [phone, setPhone] = useState(user?.phoneNumber || '');
-  const [bankAccount, setBankAccount] = useState(user?.bankAccount || '');
-  const [bankCV, setBankCV] = useState(user?.bankCV || '');
-  const [createdAt, setCreatedAt] = useState(user?.createdAt || '');
+  const [bankAccount] = useState(user?.bankAccount || '');
+  const [bankCV] = useState(user?.bankCV || '');
+  const [createdAt] = useState(user?.createdAt || '');
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const updatedUserInfo = { ...user , email, phone, bankAccount, bankCV };
@@ -546,46 +608,45 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void }> = ({
     >
       <h3 className="text-center text-2xl font-medium mb-6">Chỉnh sửa thông tin người dùng</h3>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block mb-1">Tên</label>
-          <input type="text" className="w-full border rounded-xl p-2"
-           value={name}
-           onChange={(e) => setName(e.target.value)}/>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1">Ngày tham gia</label>
-          <input type="text" className="w-full border rounded-xl p-2" value={createdAt} 
-          onChange={(e) => setCreatedAt(e.target.value)}/>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1">Số Ngân Hàng</label>
-          <input type="text" className="w-full border rounded-xl p-2" value={bankAccount} 
-          onChange={(e) => setBankAccount(e.target.value)}/>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1">Email</label>
-          <input type="text" className="w-full border rounded-xl p-2"  value={email}
-              onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1">Số điện thoại</label>
-          <input type="text" className="w-full border rounded-xl p-2" value={phone}
-              onChange={(e) => setPhone(e.target.value)} />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1">Tài khoản ngân hàng</label>
-          <div className="flex gap-2">
-              <select
-                className="w-1/2 border rounded-xl p-2"
-                value={bankCV}
-                onChange={(e) => setBankCV(e.target.value)}
-              >
-                <option>Ngân hàng</option>
-                <option value="Mb bank">Mb bank</option>
-                <option value="Viettinbank">Viettinbank</option> </select>
-            <input type="text" className="w-1/2 border rounded-xl p-2" placeholder="Số tài khoản" />
-          </div>
-        </div>
+      {isSeller ? (
+          <>
+            <div className="mb-4">
+              <label className="block mb-1">Tên cửa hàng</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">SĐT</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Số dư tài khoản</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.accountBalance} readOnly />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Ngân hàng</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.bankName} readOnly />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Số tài khoản</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.bankAccountNumber} readOnly />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Chủ tài khoản</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.bankOwnerName} readOnly />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mb-4">
+              <label className="block mb-1">Ngày tham gia</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={createdAt} readOnly />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Đã xác thực</label>
+              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.isVerified ? "Có" : "Không"} readOnly />
+            </div>
+          </>
+        )}
         <div className="flex justify-end gap-4">
           <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-400 rounded-xl">Hủy</button>
           <button type="submit" className="px-4 py-2 bg-teal-500 text-white rounded-xl">Lưu lại</button>

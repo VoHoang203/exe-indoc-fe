@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import payment from '../../assets/payment_indoc.png';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Document } from '../ListItem/ListItems';
 import { getAccessToken } from '../../utils/auth';
 import { useAuth, User } from '../../context/app.context';
@@ -180,7 +180,7 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
   
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
   const [showBankInfo, setShowBankInfo] = useState(false);
-
+  const navigate = useNavigate();
   const handlePaymentMethodSelect = (method: PaymentMethod) => {
     setSelectedPaymentMethod(method);
     setShowBankInfo(true);
@@ -283,7 +283,8 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
               });
               const data = await response.data;
               if (data.return_code === 1) {
-                window.location.href = data.order_url; // Mở cửa sổ mới
+                localStorage.setItem('order_url', data);
+                navigate('/paymentdetail');
               } else {
                 alert('Giao dịch thất bại');
               }
