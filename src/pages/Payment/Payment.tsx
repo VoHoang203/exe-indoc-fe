@@ -282,7 +282,7 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
                 }
               });
               const data = await response.data;
-              if (data.return_code === 200) {
+              if (response.status === 200) {
                 localStorage.setItem('order_url', data);
                 navigate('/paymentdetail');
               } else {
