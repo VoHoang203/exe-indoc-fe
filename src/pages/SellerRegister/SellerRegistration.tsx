@@ -84,20 +84,35 @@ const { reset} = useAuth()
     for (const [name, value] of formData.entries()) {
       console.log(`${name}: ${value}`); // Logs each form name and value
     }
-    
+    const requestBody = {
+      storeName: sellerInfo.storeName,
+      electronicInvoiceEmail: taxInfo.emailInvoice,
+      phoneNumber: sellerInfo.phone,
+      typeOfBusiness: taxInfo.businessType,
+      typeOfAuthen: identityInfo.idType,
+      idNumber: identityInfo.idNumber,
+      bankName: identityInfo.bank,
+      bankNumber: identityInfo.accountNumber,
+      bankOwner: identityInfo.bankOwner,
+    };
     console.log(accessToken)
     try {
-      const response = await http.post('/seller/register',formData, {
+      const response = await http.post('/seller/register',requestBody, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         }
       });
+      console.log(response.data)
+      if(response.status === 201){
       console.log('Registration successful:', response.data);
       setStep(4);
-      
-      
       toast.info("Regis success: Đăng ký thành công mời bạn đăng xuất để đăng nhập thành người bán")
+      }else{
+        toast.error("Regis failed: Đăng ký thất bại")
+      }
+      
+      
     } catch (error) {
       console.error('Registration failed:', error);
     }finally {
