@@ -8,9 +8,10 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { AppProvider } from './context/app.context.tsx'
+
 export const queryClient = new QueryClient({
-  defaultOptions:{
-    queries:{
+  defaultOptions: {
+    queries: {
       refetchOnWindowFocus: false
     }
   }
