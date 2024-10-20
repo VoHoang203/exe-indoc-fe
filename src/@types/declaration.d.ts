@@ -1,6 +1,9 @@
-declare module "*.png"
+declare module 'stylis-plugin-rtl';
 declare module "*.jpg"
-
+declare module '*.png' {
+    const value: string;
+    export default value;
+  }
 declare global {
     /**
      * Now declare things that go in the global namespace,
@@ -15,5 +18,4 @@ declare global {
         secondary?: boolean;
     }
 }
-
 export {};

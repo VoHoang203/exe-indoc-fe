@@ -14,9 +14,9 @@ import Payment from './pages/Payment/Payment'
 import { toast } from 'react-toastify'
 import PaymentDetails from './pages/Payment/PaymentDetail'
 import SignIn from './pages/Admin/view'
-import AdminLayout from './pages/Admin/layouts/admin'
+ import AdminLayout from './pages/Admin/layouts/admin'
 import Dasboard from './pages/Admin/view/Dasboard'
-import initialTheme from '././components/theme/theme.tsx'; //  { themeGreen }
+ import initialTheme from '././components/theme/theme.tsx'; //  { themeGreen }
 
 
 function ProtectedRoute() {

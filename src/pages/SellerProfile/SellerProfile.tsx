@@ -282,7 +282,7 @@ console.log(getAccessToken())
                 <>
                   <tr className='border-b border-gray-300 last:border-b-0'>
                     <td className="p-4 font-medium text-left border-r border-gray-300">Email</td>
-                    <td className="p-4 text-left">{userInfo.email}</td>
+                    <td className="p-4 text-sm text-left">{userInfo.email}</td>
                     <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
