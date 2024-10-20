@@ -71,3 +71,4 @@ export const AppProvider = ({children}:{children:React.ReactNode})=>{
         isAuthenticated, setIsAuthenticated, user, setUser,reset ,setIsSeller, isSeller
     }}>{children}</AppContext.Provider>)
 }
+

@@ -13,11 +13,13 @@ import SellerRegistration from './pages/SellerRegister/SellerRegistration'
 import Payment from './pages/Payment/Payment'
 import { toast } from 'react-toastify'
 import PaymentDetails from './pages/Payment/PaymentDetail'
+import SignIn from './pages/Admin/view'
+ import AdminLayout from './pages/Admin/layouts/admin'
+import Dasboard from './pages/Admin/view/Dasboard'
+ import initialTheme from '././components/theme/theme.tsx'; //  { themeGreen }
 
- 
 
-
- function ProtectedRoute() {
+function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     toast.error('Bạn cần đăng nhập để truy cập trang này');
@@ -25,15 +27,27 @@ import PaymentDetails from './pages/Payment/PaymentDetail'
   }
 
   return <Outlet />;
- }
+}
 
 function RejectedRoute() {
-  const {isAuthenticated} = useAuth()
+  const { isAuthenticated } = useAuth()
   return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
 }
 
 export default function useRoute() {
   const routeElements = useRoutes([
+    {
+      path: "/auth/sign-in",
+      element: (
+        <SignIn />
+      )
+    },
+    {
+      path: "/admin",
+      element: (
+        <Dasboard />
+      )
+    },
     {
       path: '',
       element: <RejectedRoute />,
@@ -55,19 +69,18 @@ export default function useRoute() {
             </AuthForm>
           )
         },
+
       ]
     },
     {
       path: '',
       element: <ProtectedRoute />,
       children: [
-       
-        
         {
           path: "/profile", // Update this path to use SellerProfile
           element: (
             <MainLayout>
-              <SellerProfile /> 
+              <SellerProfile />
             </MainLayout>
           )
         },
@@ -97,7 +110,7 @@ export default function useRoute() {
           <MainContent />
         </MainLayout>
       )
-    },{
+    }, {
       path: "/service",
       element: (
         <MainLayout>
@@ -118,15 +131,16 @@ export default function useRoute() {
       element: (
         <MainLayout>
           <PaymentDetails
-          bank="ACB"
-        accountNumber="41450997"
-        accountName="LE THI CAM TIEN"
-        amount={500000.00}
-        note="TJY26UJJUE"
-        expirationTime={30} />
+            bank="ACB"
+            accountNumber="41450997"
+            accountName="LE THI CAM TIEN"
+            amount={500000.00}
+            note="TJY26UJJUE"
+            expirationTime={30} />
         </MainLayout>
       )
-    }
+    },
   ]);
+
   return routeElements;
 }

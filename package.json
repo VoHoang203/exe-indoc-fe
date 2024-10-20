@@ -11,12 +11,17 @@
     "proxy": "https://indocs.click"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.19",
+    "@chakra-ui/react": "^2.8.2",
+    "@chakra-ui/system": "2.5.7",
+    "@chakra-ui/theme-tools": "^1.3.6",
     "@floating-ui/react-dom": "^2.1.1",
     "@floating-ui/react-dom-interactions": "^0.13.3",
     "@hookform/resolvers": "^3.9.0",
     "@tanstack/react-query": "^5.56.2",
     "@types/react-lazy-load-image-component": "^1.6.4",
     "@types/react-modal": "^3.16.3",
+    "antd": "^5.21.4",
     "axios": "^1.7.7",
     "firebase": "^10.13.1",
     "floating-ui": "^5.2.8",
@@ -30,9 +35,11 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.1",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.13.0",
     "rollup": "^4.22.4",
     "yup": "^1.4.0",
-    "zustand": "^4.5.5"
+    "zustand": "^4.5.5",
+    "react-custom-scrollbars-2": "^4.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

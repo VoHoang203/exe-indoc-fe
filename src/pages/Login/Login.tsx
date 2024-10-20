@@ -9,9 +9,9 @@ import { useMutation } from '@tanstack/react-query'
 import { AuthResponse }   from "../../utils/http";
 import http from "../../utils/http"
 import { useAuth, User } from "../../context/app.context";
-import login from '../../assets/login_register.png'
+ import login from '../../assets/login_register.png';
 import { saveAccessToken } from "../../utils/auth";
-import avatar from '../../assets/avt.png'
+ import avatar from '../../assets/avt.png'
 import {AxiosError} from "axios";
 type Inputs = {
   email: string
@@ -52,7 +52,8 @@ const Login = () => {
         setIsSeller(true)
         userInfo = {
           user:  userProfile?.email?.split('@')[0],
-          avatar: avatar,
+           avatar: avatar,
+          //avatar: '',
           email: userProfile?.email || register("email").name,
           password: register("password").name, 
           storeName: userProfile?.storeName,
@@ -70,7 +71,8 @@ const Login = () => {
       }else {
           userInfo= {
             user: userProfile?.email?.split('@')[0],
-            avatar: avatar,
+             avatar: avatar,
+            //avatar: '',
             email: userProfile?.email || register("email").name,
             password: register("password").name,
             createdAt: userProfile?.createdAt || "chưa có thông tin",
@@ -105,7 +107,9 @@ const Login = () => {
       <div className="container">
         <div className="grid grid-cols-1 py-6 lg:grid-cols-5 lg:py-12 lg:pr-5">
             <div className="hidden lg:flex justify-center items-center lg:col-span-2 lg:col-start-1">
-                <img className="max-h-[500px]" src={login} alt="Illustration"/>
+                <img className="max-h-[500px]" alt="Illustration"
+                 src={login} 
+                />
             </div>
           <div className="lg:col-span-2 lg:col-start-4">
             <form className="rounded bg-white p-10 shadow-sm" onSubmit={onSubmit}>
@@ -146,6 +150,12 @@ const Login = () => {
                       )}
                     Đăng nhập
                 </button>
+                <a
+                  href="/auth/sign-in"
+                  className="text-[#1AB3BC] hover:underline hover:text-red-400"
+                >
+                  Đăng nhập với quyền admin
+                </a>
                 {/* <a
                   href="#"
                   className="text-[#1AB3BC] hover:underline hover:text-red-400"

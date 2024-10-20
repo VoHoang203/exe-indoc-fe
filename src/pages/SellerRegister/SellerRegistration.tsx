@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+// eslint-disable-next-line import/no-unresolved
 import Bookshelf from "../../assets/Bookshelf.png"
-import muitenImage from '../../assets/muiten.png'; 
-import tick from '../../assets/tick.png';
+import muitenImage from "../../assets/muiten.png"; 
+import tick from "../../assets/tick.png";
 import { getAccessToken, removeTokens } from '../../utils/auth';
 // import http from '../../utils/http';
 import { useAuth } from '../../context/app.context';
