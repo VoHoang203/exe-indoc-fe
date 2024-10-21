@@ -17,7 +17,17 @@ export interface Document {
   downloads: number;
   date: string;
   author: string;}
-const categories = [
+  interface Subcategory {
+    id: string;
+    name: string;
+  }
+  
+  interface Category {
+    id: string;
+    name: string;
+    subcategories: Subcategory[];
+  }
+const categories: Category[] = [
   {
       id: "bc65da8f-036b-4f04-9661-ababa9d75f61",
       name: "KINH TẾ",
@@ -175,7 +185,9 @@ useEffect(() => {
         </div>
       </form>
 
-      <h2 className="text-2xl font-bold mb-6">Các tài liệu bán chạy nhất</h2>
+      <h2 className="text-2xl font-bold mb-6">{selectedCategory ? transformedCategories.find(cat => 
+            cat.subcategories.some(sub => sub.id === selectedCategory)
+          )?.name : "Các tài liệu bán chạy nhất"}</h2>
       {isLoading ? (
             <div className="flex justify-center items-center">
               <div className="loader">Loading...</div> {/* Add your spinner component or CSS here */}
@@ -479,7 +491,7 @@ const ProductDetail: React.FC <{ document: Document; onBack: () => void }> = ({ 
         &larr; Back to list
       </button>
       <div className=" ">
-        <div className=" w-full h-[1000px]">
+        <div className=" w-full h-[1000px] mb-5">
           <iframe
             src={`https://docs.google.com/viewer?url=${encodeURIComponent(document.previewPath)}&embedded=true`}
             className="w-full h-[1000px] rounded-lg shadow-lg"

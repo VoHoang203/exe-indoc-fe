@@ -24,6 +24,7 @@ export const saveRefreshToken = (refresh_token: string) => {
   
   // Hàm tiện ích để xóa cả access token và refresh token
   export const removeTokens = () => {
+    localStorage.clear()
     localStorage.removeItem("userInfo")
     removeAccessToken();
     removeRefreshToken();

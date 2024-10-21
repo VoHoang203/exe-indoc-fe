@@ -131,9 +131,9 @@ export default function useRoute() {
       element: (
         <MainLayout>
           <PaymentDetails
-            bank="ACB"
-            accountNumber="41450997"
-            accountName="LE THI CAM TIEN"
+            bank="MB BANK"
+            accountNumber="0310113108888"
+            accountName="PHẠM THI THANH HUYỀN"
             amount={500000.00}
             note="TJY26UJJUE"
             expirationTime={30} />

@@ -10,3 +10,12 @@ export const formatCurrency = (amount: number | undefined | null): string => {
     currency: 'USD',
   });
 };
+export function formatDate(isoDateString: string): string {
+  const date = new Date(isoDateString); // Chuyển từ chuỗi ISO sang đối tượng Date
+
+  const day: string = String(date.getUTCDate()).padStart(2, '0'); // Định dạng ngày
+  const month: string = String(date.getUTCMonth() + 1).padStart(2, '0'); // Định dạng tháng
+  const year: number = date.getUTCFullYear(); // Lấy năm
+
+  return `${day}/${month}/${year}`; // Trả về chuỗi với định dạng dd/mm/yyyy
+}

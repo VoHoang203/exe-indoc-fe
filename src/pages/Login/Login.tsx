@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm} from "react-hook-form";
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import {schema} from "../../utils/validation"
@@ -13,16 +13,22 @@ import { useAuth, User } from "../../context/app.context";
 import { saveAccessToken } from "../../utils/auth";
  import avatar from '../../assets/avt.png'
 import {AxiosError} from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState } from "react";
+import { formatDate } from "../../utils/formatCurrency";
 type Inputs = {
   email: string
   password: string
 }
 const Login = () => {
   const loginSchema = schema.pick(["email","password"])
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState(""); 
   const navigate = useNavigate()
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Inputs>({
     resolver: yupResolver(loginSchema)
@@ -45,7 +51,7 @@ const Login = () => {
     onSuccess: async (response: AuthResponse) => {
       console.log(response.data.accessToken)
       const userProfile = await fetchUserProfile(response.data.accessToken);
-      console.log(userProfile)
+      console.log("login:",userProfile)
       console.log('Login successful:', response)
       let userInfo: User;
       if(userProfile?.role === 'seller'){
@@ -59,8 +65,10 @@ const Login = () => {
           storeName: userProfile?.storeName,
           bankAccount: userProfile?.bankName + " " + userProfile?.bankAccountNumber ||  "chưa có thông tin",
           bankCV: "123" ,
-          createdAt: userProfile?.createdAt || "chưa có thông tin",
+          createdAt: formatDate(userProfile?.createdAt) || "chưa có thông tin",
           bankOwnerName: userProfile?.bankOwnerName || "chưa có thông tin",
+          bankAccountNumber: userProfile?.bankAccountNumber || "chưa có thông tin",
+          accountBalance: "0",
           isVerified: userProfile?.isVerified || false,
           role: userProfile?.role ,
           phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
@@ -75,7 +83,7 @@ const Login = () => {
             //avatar: '',
             email: userProfile?.email || register("email").name,
             password: register("password").name,
-            createdAt: userProfile?.createdAt || "chưa có thông tin",
+            createdAt: formatDate(userProfile?.createdAt) || "chưa có thông tin",
             isVerified: userProfile?.isVerified || false,
             role: userProfile?.role,
             phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
@@ -120,13 +128,34 @@ const Login = () => {
                 className="mt-8 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm"
                 placeholder="Số điện thoại/Tên đăng nhập"
               />
-              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">{errors.email?.message}</div>
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm ">{errors.email?.message}</div>
+              <div className=" mt-1 relative  p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm">
               <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {setPassword(e.target.value); setValue("password", e.target.value)}}
+                placeholder="Mật Khẩu"
+                className="w-full appearance-none block   border-none focus:outline-none  sm:text-sm "
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                onClick={() => {
+                  setShowPassword(!showPassword); }}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <FaEye className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
+            </div>
+              {/* <input
               {...register("password")}
                 type="password"
                 className="mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm"
                 placeholder="Mật khẩu"
-              />
+              /> */}
               <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">{errors.password?.message}</div>
               <div className="mt-3">
                 <button type="submit" className="flex  w-full items-center justify-center rounded-2xl bg-[#1AB3BC] py-4 px-2 text-sm uppercase text-white hover:bg-blue-600">

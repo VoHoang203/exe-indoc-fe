@@ -4,7 +4,7 @@ export interface User {
     user: string;
     avatar: string;
     email: string;
-    password: string;
+    password?: string;
     bankAccount?: string;
     bankCV?: string;
     createdAt: string;
