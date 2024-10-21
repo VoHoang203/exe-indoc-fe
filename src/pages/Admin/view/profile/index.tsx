@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
 import { Tabs, Input, Button, Avatar, Row, Col, Spin, message } from 'antd';
 import { Box } from '@chakra-ui/react';
 import { LoadingOutlined } from '@ant-design/icons';

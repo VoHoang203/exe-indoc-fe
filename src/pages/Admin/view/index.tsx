@@ -19,7 +19,8 @@ import {
 // import illustration from 'assets/img/auth/auth.png';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
-import { Checkbox, Form, message } from 'antd';
+// Checkbox, Form,
+import { message } from 'antd';
 import AuthIllustration from '../layouts/auth/Default';
 import illustration from '/src/assets/admin/auth.png';
 
@@ -55,25 +56,25 @@ const SignIn = () => {
       message.error('An error occurred. Please try again later.');
     }
   };
-  const handleSignInAdmin = async (values: any) => {
-    console.log(values);
-    // e.preventDefault();
-    if (!values.email) {
-      message.warning('Please enter your email');
-      return;
-    }
-    if (!values.password) {
-      message.warning('Please enter your password');
-      return;
-    }
+  // const handleSignInAdmin = async (values: any) => {
+  //   console.log(values);
+  //   // e.preventDefault();
+  //   if (!values.email) {
+  //     message.warning('Please enter your email');
+  //     return;
+  //   }
+  //   if (!values.password) {
+  //     message.warning('Please enter your password');
+  //     return;
+  //   }
 
-    try {
-      message.success('Login successful!');
-      navigate('/admin'); // Điều hướng về trang chủ sau khi đăng nhập thành công
-    } catch (err) {
-      message.error('An error occurred. Please try again later.');
-    }
-  };
+  //   try {
+  //     message.success('Login successful!');
+  //     navigate('/admin'); // Điều hướng về trang chủ sau khi đăng nhập thành công
+  //   } catch (err) {
+  //     message.error('An error occurred. Please try again later.');
+  //   }
+  // };
 
   const textColor = useColorModeValue('navy.700', 'white');
   const textColorSecondary = 'gray.400';

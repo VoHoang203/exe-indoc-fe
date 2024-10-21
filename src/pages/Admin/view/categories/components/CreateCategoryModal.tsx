@@ -9,7 +9,7 @@ import {
   Button,
   Image,
 } from "@chakra-ui/react";
-import React, { useState, ChangeEvent } from "react";
+import  { useState, ChangeEvent } from "react";
 import { Input, message } from "antd";
 
 interface CreateCategoryModalProps {

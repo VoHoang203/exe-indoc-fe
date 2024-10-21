@@ -8,7 +8,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Table, Button, Popconfirm, Pagination, Input } from 'antd';
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { message } from 'antd';
 // import Card from 'components/card/Card';
@@ -173,6 +173,7 @@ export default function Category() {
       title: 'Action',
       key: 'action',
       align: 'center' as 'center', // Ensure the type is a specific align value
+      // @ts-ignore
       render: (text: any, record: Category) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button

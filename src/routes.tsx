@@ -1,8 +1,8 @@
 import { Icon } from '@chakra-ui/react';
+//MD-Lock
 import {
   MdPerson,
   MdHome,
-  MdLock,
   MdOutlineShoppingCart,
   MdCategory,
   MdOutlineReceiptLong,

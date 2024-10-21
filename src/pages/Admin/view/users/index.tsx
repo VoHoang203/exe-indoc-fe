@@ -24,7 +24,7 @@ interface User {
   address: string;
   role: string;
   isEnable: boolean;
-  avatar: string | null;
+  avatar?: string | null;
   firstName: string;
   lastName: string;
 }
@@ -72,6 +72,7 @@ const mockData: { users: User[]; currentPage: number; totalPages: number } = {
 export default function UserManagement() {
   const [users, setUsers] = useState<User[]>(mockData.users); // Use mock data with User type
   const [currentPage, setCurrentPage] = useState<number>(mockData.currentPage);
+  // @ts-ignore
   const [totalPages, setTotalPages] = useState<number>(mockData.totalPages);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [editUserData, setEditUserData] = useState<User | null>(null); // For the edit modal
@@ -191,6 +192,7 @@ export default function UserManagement() {
       title: 'Actions',
       key: 'actions',
       align: 'center' as const, // Ensure alignment is typed correctly
+      // @ts-ignore
       render: (text: string, record: User) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button

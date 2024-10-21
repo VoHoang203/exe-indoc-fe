@@ -19,7 +19,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { Table, DatePicker, Select } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   MdAttachMoney,
   MdPeople,
@@ -111,6 +111,7 @@ export default function Dasboard() {
     dayjs(),
     dayjs(),
   ]);
+  // @ts-ignore
   const [type, setType] = useState<string>('day');
 
   const handleTypeChange = (value: string) => {

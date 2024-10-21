@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  CircularProgress,
   useDisclosure,
   Button as ChakraButton,
   useColorModeValue,
@@ -16,7 +15,7 @@ import {
   Select,
   Switch,
 } from 'antd';
-import React, { useEffect, useState, useCallback } from 'react';
+import  {  useState, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { message } from 'antd';
 import CreateProductModal from './components/CreateProductModal';
@@ -101,11 +100,14 @@ const mockData = {
 
 export default function ProductManagement() {
   const [products, setProducts] = useState<Product[]>(mockData.products || []); // Ensure it's an array
+  // @ts-ignore
   const [categories, setCategories] = useState<Category[]>(
     categoriesData || [],
   ); // Ensure it's an array
   const [currentPage, setCurrentPage] = useState<number>(mockData.currentPage);
+  // @ts-ignore
   const [totalPages, setTotalPages] = useState<number>(mockData.totalPages);
+  // @ts-ignore
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [categoryId, setCategoryId] = useState<string>('');
@@ -235,6 +237,7 @@ export default function ProductManagement() {
       title: 'Actions',
       key: 'actions',
       align: 'center' as 'center', // Fixed the alignment type
+      // @ts-ignore
       render: (text: any, record: Product) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button
@@ -321,12 +324,13 @@ export default function ProductManagement() {
           isOpen={isCreateOpen}
           onClose={onCreateClose}
         />
-        {editProductData && (
+        
+         {editProductData && (
           <EditProductModal
             categories={categories}
             isOpen={isEditOpen}
             onClose={onEditClose}
-            product={editProductData}
+            product={editProductData as Product}
           />
         )}
       </CustomCard>

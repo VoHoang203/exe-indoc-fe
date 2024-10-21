@@ -27,7 +27,7 @@ interface Product {
   color: string;
   badge: string;
   tag: string;
-  discount: number;
+  discount: number | null;
   description: string;
   stock: number;
   categoryId: { _id: string; name: string };
@@ -178,7 +178,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
             />
             <Input
               placeholder="Discount"
-              value={editProduct.discount}
+              value={editProduct.discount ?? ''}
               onChange={(e) =>
                 setEditProduct({
                   ...editProduct,

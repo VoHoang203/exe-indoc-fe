@@ -181,6 +181,7 @@ export const inputStyles = {
 						_placeholder: { color: 'secondaryGray.600' }
 					}
 				}),
+				//@ts-ignore
 				authSecondary: (props: any) => ({
 					field: {
 						bg: 'transparent',
@@ -191,6 +192,7 @@ export const inputStyles = {
 						_placeholder: { color: 'secondaryGray.600' }
 					}
 				}),
+				// @ts-ignore
 				search: (props: any) => ({
 					field: {
 						border: 'none',

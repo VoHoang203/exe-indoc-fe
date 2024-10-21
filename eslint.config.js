@@ -16,6 +16,7 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      ["import"]: importPlugin
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -23,7 +24,8 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+       "import/no-unresolved": "error"
     },
   },
 )

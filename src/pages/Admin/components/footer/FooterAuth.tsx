@@ -1,9 +1,11 @@
 /* eslint-disable */
-
-import { Flex, Link, List, ListItem, Text, useColorModeValue } from '@chakra-ui/react';
+// Link, List, ListItem, Text,
+import { Flex, useColorModeValue } from '@chakra-ui/react';
 
 export default function Footer() {
+	// @ts-ignore
 	let textColor = useColorModeValue('gray.400', 'white');
+	// @ts-ignore
 	let linkColor = useColorModeValue({ base: 'gray.400', lg: 'white' }, 'white');
 	return (
 		<Flex

@@ -1,6 +1,4 @@
-
-
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css'
 import './index.css'
 
