@@ -177,14 +177,14 @@ const ConfirmPayment: React.FC<{ paymentInfo: PaymentInfo }> = ({ paymentInfo })
 
 // GeneralPayment Component
 const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,user}) => {
-  
+  //@ts-ignore
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
-  const [showBankInfo, setShowBankInfo] = useState(false);
-  const navigate = useNavigate();
   const handlePaymentMethodSelect = (method: PaymentMethod) => {
     setSelectedPaymentMethod(method);
-    setShowBankInfo(true);
   };
+
+  const navigate = useNavigate();
+  
   if (!document) {
     return <p>Document not found or not provided.</p>;
   }
@@ -213,13 +213,7 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
           <div className="p-4 bg-white shadow-lg rounded-lg flex-grow">
             <h2 className="font-bold text-xl mb-2">3. Phương thức thanh toán</h2>
             <img src={payment} alt="Book Image" className="w-50 h-28 object-cover mr-4" onClick={() => handlePaymentMethodSelect('ZaloPay')} />
-            {showBankInfo && (
-              <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                <p className="text-lg font-bold">Thông tin chuyển khoản:</p>
-                <p>Số tài khoản: {user.bankAccount}</p>
-                <p>Chủ tài khoản: {user.user}</p>
-              </div>
-            )}
+            
           </div>
         </div>
         <div className="w-2/5 space-y-6 flex flex-col justify-between">
@@ -248,17 +242,16 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
             <div className="border-t border-gray-300 my-4"></div>
             <h2 className="text-xl mb-2">Phương thức thanh toán</h2>
             {selectedPaymentMethod ? (
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-500 border-dashed">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-gray-500">Phương thức thanh toán</p>
-                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-500 border-dashed ">
                 <div className="flex justify-between items-center">
-                  <button className="py-1 px-3 bg-gray-200 text-gray-700 rounded-lg text-sm" style={{ lineHeight: 1 }}>
-                    Thẻ tín dụng/Ví điện tử
+                  <button className="py-1  rounded-lg text-md text-cyan-500" style={{ lineHeight: 1 }}>
+                    Bạn đang thanh toán cho
                   </button>
                 </div>
-                <div className="mt-2">
-                  <p className="text-gray-700">Tài khoản ngân hàng: {user.bankAccount}</p>
+                <div className="mt-2 flex flex-col">
+                <p className="text-cyan-500 font-bold">Tên chủ TK: PHẠM THI THANH HUYỀN</p>
+                  <p className="text-cyan-500  font-bold"> Số TK: 0310113108888</p>
+                  <p className="text-cyan-500 font-bold"> Ngân hàng MB BANK</p>
                 </div>
               </div>
             ) : (
@@ -292,20 +285,7 @@ const GeneralPayment: React.FC<{ document: Document ,user:User}> = ({ document ,
               Thanh toán ngay
             </button>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-300">
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-gray-500">Sản phẩm</p>
-            </div>
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-lg text-gray-800">{document.title ?? 'N/A'}</p>
-              <p className="text-red-500 font-bold">{formatCurrency(Number(document.price)) ?? 'N/A'} VND</p>
-            </div>
-            <hr className="my-2" />
-            <div className="flex justify-between items-center">
-              <p className="text-lg">Tổng thanh toán</p>
-              <p className="text-red-500 font-bold">{formatCurrency(Number(document.price)) ?? 'N/A'} VND</p>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>

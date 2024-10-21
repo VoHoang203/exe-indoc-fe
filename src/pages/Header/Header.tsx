@@ -28,7 +28,7 @@ const Header = () => {
       removeTokens();
       setOpen(prev => !prev)
       reset()
-      navigate('/auth/sign-in');
+      navigate('/login');
     },
     onError: (error) => {
       setIsAuthenticated(false)

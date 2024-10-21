@@ -3,7 +3,7 @@ const RegisterHeader = () => {
   const current = window.location.pathname
   console.log(current)
   return (
-    <header className="py-5 shadow">
+    <header className="bg-white shadow sticky top-0 z-50">
       <div className="container bg-white  mx-auto flex justify-between items-center py-4 px-6">
         <nav className="flex items-center">
         <img

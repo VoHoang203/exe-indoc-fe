@@ -1,4 +1,4 @@
-import { FieldErrors, useForm, UseFormRegister } from "react-hook-form"
+import { FieldErrors, useForm, UseFormRegister, UseFormSetValue } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup'
 import {schema,Schema} from "../../utils/validation"
 import { useNavigate } from "react-router-dom"
@@ -31,6 +31,7 @@ const Register: React.FC = () => {
   const {
     register,
     getValues ,
+    setValue,
     formState: { errors },
   } = useForm<RegisterInputs>({
     resolver: yupResolver(registerSchema)
@@ -47,7 +48,7 @@ const Register: React.FC = () => {
       toast.success('OTP has been sent to your email.');
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      toast.error(error.response?.data.message || 'Email already exists.');
+      toast.error(error.response?.data.message );
     },
   });
 
@@ -103,7 +104,7 @@ const Register: React.FC = () => {
   const renderStep = () => {
     switch (step) {
       case RegisterStep.Index:
-        return <RegisterIndex  emailSubmit={handleEmailSubmit} register={register} errors={errors}/>;
+        return <RegisterIndex  emailSubmit={handleEmailSubmit} setValue={setValue} register={register} errors={errors}/>;
       case RegisterStep.XacMinh:
         return <RegisterXacMinh email={getValues("email")} currentStep={1} otpSubmit={handleOtpSubmit} resetStep={resetStep }/>;
       case RegisterStep.TaoMatKhau:
@@ -257,18 +258,35 @@ export default Register
 interface RegisterIndexProps {
   emailSubmit: (emai:string) => void;
   register: UseFormRegister<RegisterInputs>;
+  setValue: UseFormSetValue<RegisterInputs>;
   errors: FieldErrors<RegisterInputs>;
 }
 
-const RegisterIndex: React.FC<RegisterIndexProps> = ({emailSubmit,register,errors }) => {
+const RegisterIndex: React.FC<RegisterIndexProps> = ({emailSubmit ,setValue}) => {
  
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get('email') as string;
-     emailSubmit(email);
-  };
+  const emailSchema = schema.pick(["email"])
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<{email:string}>({
+    resolver: yupResolver(emailSchema),
+  });
+  // useEffect(() => {
+  //   const validateEmail = async () => {
+  //     try {
+  //       await emailSchema.validate({ email});
+  //     } catch (err) {
+  //       const errorMessage = (err as Error).message; // Type assertion to Error
+  //       console.log(JSON.stringify(errorMessage)); // Set error message
+  //     }
+  //   }; validateEmail();
+  // }, [email]);
+  const onSubmit = handleSubmit(() => {
+    setValue("email", getValues("email"))
+     emailSubmit(getValues("email"));
+  });
 
   return (
     <div className="grid grid-cols-1 py-6 lg:grid-cols-5 lg:py-12 lg:pr-5">
@@ -279,14 +297,14 @@ const RegisterIndex: React.FC<RegisterIndexProps> = ({emailSubmit,register,error
     <div className="bg-white rounded-lg shadow-md p-10 w-[520px]  opacity-1 animate-fadeIn">
      
       <h3 className="text-xl font-medium text-[#504C4C] mb-12">Đăng ký</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <input
           type="email"
           {...register("email")}
           placeholder=" Email"
           className="w-full h-10 px-3 rounded border border-[#8D8C8C] focus:border-[#868585] outline-none text-[#8D8C8C] transition-all duration-300"
         />
-        <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">{errors.email?.message}</div>
+         <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">{errors.email?.message}</div>
         <button type="submit" className="w-full mt-10 py-3 bg-[#1AB3BC] hover:bg-[#1699a0] text-white rounded cursor-pointer transition-colors duration-300">
             Gửi OTP
         </button>
@@ -346,7 +364,7 @@ const RegisterXacMinh: React.FC<RegisterXacMinhProps> = ({email,currentStep ,otp
   });
 
   const handleResendOtp = () => {
-    
+    setVerificationCode(Array(6).fill('')); 
     resendOtpMutation.mutate(email);
   };
   useEffect(() => {
@@ -369,6 +387,7 @@ const RegisterXacMinh: React.FC<RegisterXacMinhProps> = ({email,currentStep ,otp
     const code = verificationCode.join('');
     if (code.length === 6) {
       otpSubmit(code,email)
+      setVerificationCode(Array(6).fill('')); 
     }
   };
 

@@ -15,6 +15,9 @@ import { useAuth, User } from '../../context/app.context';
 import ReactModal from 'react-modal'
 import { FaCamera } from 'react-icons/fa';
 import { formatCurrency } from '../Payment/Payment';
+import { formatDate } from '../../utils/formatCurrency';
+import request from "../../assets/hugeicons_money-receive-circle.png"
+import upload from "../../assets/hugeicons_money-send-circle.png"
 // }
 interface Document2 {
   id: string;
@@ -34,21 +37,21 @@ export interface Transaction2 {
   purchasedate: string
   amount: string
 }
-interface UserInfo {
-  user: string;
-  email: string;
-  phone: string;
-  role: string;
-  bankAccount: string;
-  avatar: string;
-  storeName?: string;
-  accountBalance?: string;
-  bankName?: string;
-  bankAccountNumber?: string;
-  bankOwnerName?: string;
-  createdAt?: string;
-  isVerified?: boolean;
-}
+// interface UserInfo {
+//   user: string;
+//   email: string;
+//   phone: string;
+//   role: string;
+//   bankAccount: string;
+//   avatar: string;
+//   storeName?: string;
+//   accountBalance?: string;
+//   bankName?: string;
+//   bankAccountNumber?: string;
+//   bankOwnerName?: string;
+//   createdAt?: string;
+//   isVerified?: boolean;
+// }
 interface FormDataInterface {
   title:string;
   categoryId:string;
@@ -129,10 +132,10 @@ const SellerProfile: React.FC = () => {
     queryKey: ['transactions'],
     queryFn: fetchTransactions,
   });
-  const [userInfo, setUserInfo] = useState<UserInfo>({
+  const [userInfo, setUserInfo] = useState<User>({
     user: '',
     email: '',
-    phone: '',
+    phoneNumber: '',
     role: '',
     bankAccount: '',
     avatar: '',
@@ -186,13 +189,22 @@ console.log(paidDocuments)
 console.log(transactions)
 console.log(getAccessToken())
   return (
-    <div className="flex gap-5 bg-white w-full h-screen p-5">
-      <div className="w-1/3">
-        {isSeller && ( 
+    <div className="flex gap-5 bg-white w-full h-screen p-5 overflow-y-auto mb-10 pb-5">
+      <div className={` ${isSeller ? 'w-2/5' : 'w-1/3'}`}>
+        {isSeller && ( <div className='flex gap-2 justify-between'>
           <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
-            <p className="text-lg">Tải tài liệu lên</p>
-            <img src={addDoc} alt="" className="w-12" />
+            <img src={upload} alt="" className="w-6" />
+            <p className="text-lg text-cyan-500 focus:underline">Tải tài liệu lên</p>
           </button>
+          <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
+            <img src={request} alt="" className="w-6" />
+            <p className="text-lg text-cyan-500 focus:underline">Request</p>
+          </button>
+          <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
+            <img src={addDoc} alt="" className="w-6" />
+            <p className="text-lg text-cyan-500 focus:underline">Thay đổi mật khẩu</p>
+          </button>
+          </div>
         )}
         <div className="bg-gray-100 rounded-xl shadow-md p-5 animate-fadeLeft">
           <div className="flex justify-center">
@@ -211,7 +223,7 @@ console.log(getAccessToken())
             </div>
           </div>
           <div className="mt-12">
-          <table className="w-full text-center border-collapse">
+          <table className="w-full text-center border-collapse pb-5">
           {isSeller ? (
                 <>
                   <tr className='border-b border-gray-300 last:border-b-0'>
@@ -234,7 +246,7 @@ console.log(getAccessToken())
                   </tr>
                   <tr className='border-b border-gray-300 last:border-b-0'>
                     <td className="p-4 font-medium text-left border-r border-gray-300">SĐT</td>
-                    <td className="p-4 text-left">{userInfo.phone}</td>
+                    <td className="p-4 text-left">{userInfo.phoneNumber}</td>
                     <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -243,7 +255,7 @@ console.log(getAccessToken())
                   </tr>
                   <tr className='border-b border-gray-300 last:border-b-0'>
                     <td className="p-4 font-medium text-left border-r border-gray-300">Số dư tài khoản</td>
-                    <td className="p-4 text-left">{userInfo.accountBalance}</td>
+                    <td className="p-4 text-left">{userInfo.accountBalance? userInfo.accountBalance +" VND" : "0 VND"}</td>
                     <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -291,7 +303,7 @@ console.log(getAccessToken())
                   </tr>
                   <tr className='border-b border-gray-300 last:border-b-0'>
                     <td className="p-4 font-medium text-left border-r border-gray-300">Ngày tham gia</td>
-                    <td className="p-4 text-left">{userInfo.createdAt}</td>
+                    <td className="p-4 text-left">{formatDate(userInfo.createdAt || '') }</td>
                     <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -300,7 +312,7 @@ console.log(getAccessToken())
                   </tr>
                   <tr className='border-b border-gray-300 last:border-b-0'>
                     <td className="p-4 font-medium text-left border-r border-gray-300">Đã xác thực</td>
-                    <td className="p-4 text-left">{userInfo.isVerified ? "Có" : "Không"}</td>
+                    <td className="p-4 text-left">{userInfo.isVerified ? "Đã xác thực" : "Chưa xác thực"}</td>
                     <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -323,7 +335,7 @@ console.log(getAccessToken())
           </div>
         </div>
       </div>
-      <div className="w-2/3 " style={{ maxHeight: 'calc(100vh - 200px)' }}>
+      <div className={` ${isSeller ? 'w-3/5' : 'w-2/3'}`}style={{ maxHeight: 'calc(100vh - 200px)' }}>
         <div className="border border-teal-500 rounded-xl flex items-center overflow-hidden mb-8">
           <input type="text" placeholder="Tìm kiếm ...." className="w-full p-2 outline-none text-gray-600 text-lg" />
           <img src={search_normal} alt="" className="w-10 p-2" />
@@ -583,9 +595,9 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
   )
 };
 
-const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSeller: boolean; userInfo: UserInfo }> = ({ isOpen,onClose,isSeller, userInfo }) => {
+const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSeller: boolean; userInfo: User }> = ({ isOpen,onClose,isSeller, userInfo }) => {
   const { user, setUser } = useAuth();
-  const [name, setName] = useState(user?.user || '');
+  const [name, setName] = useState(user?.storeName || '');
   const [email] = useState(user?.email || '');
   const [phone, setPhone] = useState(user?.phoneNumber || '');
   const [bankAccount] = useState(user?.bankAccount || '');
@@ -620,7 +632,7 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSelle
             </div>
             <div className="mb-4">
               <label className="block mb-1">Số dư tài khoản</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.accountBalance} readOnly />
+              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.accountBalance + " VNĐ"} readOnly />
             </div>
             <div className="mb-4">
               <label className="block mb-1">Ngân hàng</label>
@@ -639,7 +651,7 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSelle
           <>
             <div className="mb-4">
               <label className="block mb-1">Ngày tham gia</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={createdAt} readOnly />
+              <input type="text" className="w-full border rounded-xl p-2" value={formatDate(createdAt || '')} readOnly />
             </div>
             <div className="mb-4">
               <label className="block mb-1">Đã xác thực</label>

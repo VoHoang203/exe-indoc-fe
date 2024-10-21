@@ -43,8 +43,8 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
     <div className="flex  items-center h-screen bg-white p-6 rounded-lg shadow-md w-full max-w-xxl mx-auto mt-10 mb-6">
       
 
-      <div className="text-center w-1/2 items-center">
-        <img src={order_url || qrCodeImage} alt="VietQR Code" className="w-56 h-4/5 mb-4 mx-auto" />
+      <div className="text-center w-2/3 items-center">
+        <img src={order_url || qrCodeImage} alt="VietQR Code" className="w-[450px] h-auto mb-4 mx-auto" />
         <p className="text-sm text-gray-500 mb-6">Thời gian hết hạn: <span className="text-red-500">{formatCountdown(countdown)}</span></p>
 
         <button  onClick={() => {
@@ -57,7 +57,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
           TẢI XUỐNG QR CODE
         </button>
       </div>
-<div className="w-1/2">
+<div className="w-1/3">
       <div className="w-full flex flex-col space-y-4 mb-8">
         <div className="flex justify-between">
           <p className="text-gray-600">Ngân Hàng:</p>

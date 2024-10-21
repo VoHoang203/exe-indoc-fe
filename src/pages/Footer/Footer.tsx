@@ -1,7 +1,7 @@
 import logo_indocs from '../../assets/logo_indocs.png'
 const Footer = () => {
   return (
-    <footer className="bg-neutral-100 shadow w-full">
+    <footer className="bg-neutral-100 shadow w-full ">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
         <div className="flex flex-col items-center md:items-start text-center md:text-left mb-8 md:mb-0">
         <img
