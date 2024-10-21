@@ -23,7 +23,7 @@ interface UserData {
   phone: string;
   address: string;
   role: string;
-  avatar?: string;
+  avatar?: string | null;
 }
 
 interface UpdateUserModalProps {

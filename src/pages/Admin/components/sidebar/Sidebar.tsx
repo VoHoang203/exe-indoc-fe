@@ -59,7 +59,7 @@ export function SidebarResponsive(props: { routes: RoutesType[] }) {
 	let menuColor = useColorModeValue('gray.400', 'white');
 	// // SIDEBAR
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const btnRef = React.useRef();
+	const btnRef = React.useRef<HTMLButtonElement>(null);
 
 	const { routes } = props;
 	// let isWindows = navigator.platform.startsWith("Win");
@@ -67,6 +67,7 @@ export function SidebarResponsive(props: { routes: RoutesType[] }) {
 
 	return (
 		<Flex display={{ sm: 'flex', xl: 'none' }} alignItems='center'>
+			{/* @ts-ignore */}
 			<Flex ref={btnRef} w='max-content' h='max-content' onClick={onOpen}>
 				<Icon
 					as={IoMenuOutline}

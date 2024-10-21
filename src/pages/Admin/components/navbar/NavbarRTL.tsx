@@ -1,8 +1,9 @@
 /* eslint-disable */
 // Chakra Imports
+// @ts-ignore
 import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Link, Text, useColorModeValue } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
-import AdminNavbarLinks from 'components/navbar/NavbarLinksAdmin';
+import AdminNavbarLinks from '../../components/navbar/NavbarLinksAdmin';
 
 export default function AdminNavbar(props: {
 	secondary: boolean;
@@ -38,6 +39,7 @@ export default function AdminNavbar(props: {
 	let gap = '0px';
 	const changeNavbar = () => {
 		if (window.scrollY > 1) {
+			console.log('Scrolled:',scrolled)
 			setScrolled(true);
 		} else {
 			setScrolled(false);

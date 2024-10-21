@@ -229,9 +229,9 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           <p>
             $
             {(
-              order?.totalPrice -
-              order?.shippingCharge +
-              order?.discount
+              (order?.totalPrice || 0) -
+              (order?.shippingCharge || 0) +
+              (order?.discount || 0)
             ).toFixed(2)}
           </p>
         </div>

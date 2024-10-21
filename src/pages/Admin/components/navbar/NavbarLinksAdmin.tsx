@@ -18,20 +18,31 @@ import routes from '../../../../routes';
 import { useNavigate } from 'react-router-dom';
 export default function HeaderLinks(props: { secondary: boolean }) {
   const { secondary } = props;
+  // @ts-ignore
   const { colorMode, toggleColorMode } = useColorMode();
   // Chakra Color Mode
+  // @ts-ignore
   const navbarIcon = useColorModeValue('gray.400', 'white');
+  // @ts-ignore
   let menuBg = useColorModeValue('white', 'navy.800');
+  // @ts-ignore
   const textColor = useColorModeValue('secondaryGray.900', 'white');
+  // @ts-ignore
   const textColorBrand = useColorModeValue('brand.700', 'brand.400');
+  // @ts-ignore
   const ethColor = useColorModeValue('gray.700', 'white');
+  // @ts-ignore
   const borderColor = useColorModeValue('#E6ECFA', 'rgba(135, 140, 189, 0.3)');
+  // @ts-ignore
   const ethBg = useColorModeValue('secondaryGray.300', 'navy.900');
+  // @ts-ignore
   const ethBox = useColorModeValue('white', 'navy.800');
+ 
   const shadow = useColorModeValue(
     '14px 17px 40px 4px rgba(112, 144, 176, 0.18)',
     '14px 17px 40px 4px rgba(112, 144, 176, 0.06)',
   );
+  // @ts-ignore
   const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
   const navigate = useNavigate();
 

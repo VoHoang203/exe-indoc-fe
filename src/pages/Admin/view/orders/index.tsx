@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import{ useState, useCallback } from 'react';
 import { Box, Flex, CircularProgress, Text } from '@chakra-ui/react';
 import { Table, Pagination, Button, Input, Select } from 'antd';
 import OrderDetailModal from './components/OrderDetailModal';
@@ -35,11 +35,11 @@ interface Order {
 }
 
 // Define OrderDetailModalProps Interface
-interface OrderDetailModalProps {
-  visible: boolean;
-  onClose: () => void;
-  order: Order | null;
-}
+// interface OrderDetailModalProps {
+//   visible: boolean;
+//   onClose: () => void;
+//   order: Order | null;
+// }
 
 const mockData = {
   orders: [
@@ -259,6 +259,7 @@ export default function OrderManagement() {
       title: 'Actions',
       key: 'actions',
       align: 'center' as 'center',
+      // @ts-ignore
       render: (text: any, record: Order) => (
         <Button onClick={() => handleViewDetail(record)}>Detail</Button>
       ),
