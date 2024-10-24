@@ -19,7 +19,7 @@ class Http {
     this.accessToken = getAccessToken();
     this.refreshToken = getRefreshToken();
     this.instance = axios.create({
-      baseURL: "http://indocs.click/api/",
+      baseURL: "http://localhost:3001/api/",
       timeout: 100000,
       headers:{
         "Content-Type": "application/json"
@@ -114,26 +114,6 @@ class Http {
     const response = await this.instance.post<AuthResponse>('v1/signup', { email, password });
     this.setTokens(response.data);
   }
-
-  // async logout() {
-  //   const token = this.accessToken || getAccessToken();
-    
-  //   try {
-  //     await this.instance.delete('/logout', {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`
-  //       },
-        
-  //     });
-      
-  //     removeTokens();
-  //     this.accessToken = ''; 
-  //   this.refreshToken = ''; // Đảm bảo xóa cả refreshToken
-  //   } catch (error) {
-  //     console.error('Logout failed:', error);
-  //     throw error;
-  //   }
-  // }
   
 }
 

@@ -18,10 +18,51 @@ import nuocxam from "../../assets/nuocxam.png"
 import tintuc from "../../assets/tintuc.jpg"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../context/app.context"
+import http from "../../utils/http"
+import { useState } from "react"
+import { toast } from "react-toastify"
+
+interface FeedbackData {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  feedback: string;
+}
 const MainContent = () => {
   const {user} = useAuth()
   console.log(user)
   console.log(localStorage.getItem("userInfo"))
+  const [fullName, setFullName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [feedback, setFeedback] = useState<string>('');
+
+  const handleSubmit = async (e:  React.FormEvent<HTMLFormElement>) : Promise<void>=> {
+    e.preventDefault();
+      const loading = toast.loading('Loading...');
+    const feedbackData: FeedbackData = {
+      fullName : fullName,
+      email : email,
+      phoneNumber : phoneNumber,
+      feedback : feedback,
+    };
+    console.log(feedbackData)
+
+    try {
+      const response = await http.post('/feedback/create', feedbackData);
+      if (response.status === 201) {
+        toast.success('Feedback submitted successfully!');
+        // Reset form fields
+        setFullName('');
+        setEmail('');
+        setPhoneNumber('');
+        setFeedback('');
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'An error occurred while submitting feedback.');
+    }
+    toast.dismiss(loading);
+  };
   return (
     <>
       {/* Main Section */}
@@ -596,15 +637,15 @@ const MainContent = () => {
       </div>
       {/* Contact Form */}
       <div className="bg-white rounded-lg shadow-md p-8">
-        <form action="#">
+        <form action="#" onSubmit={(e)=>handleSubmit(e)}>
           <div className="mb-4 flex gap-x-2  items-center">
-            <input type="text" id="name" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Họ và tên" />
+            <input type="text" id="fullName" value={fullName} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Họ và tên"  onChange={(e) => setFullName(e.target.value)}/>
           </div>
-          <div className="mb-4 flex gap-x-2  items-center"><input type="email" id="email" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Email" />
+          <div className="mb-4 flex gap-x-2  items-center"><input type="email" id="email" value={email} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
           </div>
-          <div className="mb-4"><input type="text" id="phone" className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Số điện thoại" />
+          <div className="mb-4"><input type="text" id="phone" value={phoneNumber} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Số điện thoại" onChange={(e) => setPhoneNumber(e.target.value)}/>
           </div>
-          <div className="mb-4"><textarea id="message" rows={4} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Nội dung liên hệ" defaultValue={""} />
+          <div className="mb-4"><textarea id="message" rows={4} value={feedback} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Nội dung liên hệ"  onChange={(e) => setFeedback(e.target.value)}/>
           </div>
           <button type="submit" className="w-full bg-purple-600 text-white rounded-lg p-2 mt-4 hover:bg-purple-700 transition-colors">Cảm ơn vì tin tưởng</button>
         </form>
