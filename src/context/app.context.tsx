@@ -35,7 +35,7 @@ const initialAppContext : AppContextInterface = {
     user: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')!) as User : null,
     setUser: () => {},
     reset: () => {},
-    isSeller: false, // Initialize isSeller
+    isSeller: localStorage.getItem("role") === "seller", // Initialize isSeller
     setIsSeller: () => {}, // Initialize setIsSeller
 }
 export const AppContext= createContext<AppContextInterface>(initialAppContext)
@@ -43,17 +43,20 @@ export const AppContext= createContext<AppContextInterface>(initialAppContext)
 export const useAuth = () => useContext(AppContext);
 
 export const AppProvider = ({children}:{children:React.ReactNode})=>{
-    useEffect(() => {
-        const checkAuth = () => {
-          const token = getAccessToken();
-          if (!token) {
-            setIsAuthenticated(false);
-            setUser(null);
-          }
-        };
-      
-        checkAuth();
-      }, []);
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = getAccessToken();
+      if (!token) {
+        setIsAuthenticated(false);
+        setUser(null);
+        setIsSeller(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
         return Boolean(getAccessToken());
     });
@@ -61,12 +64,24 @@ export const AppProvider = ({children}:{children:React.ReactNode})=>{
         const userInfo = localStorage.getItem('userInfo');
         return userInfo ? JSON.parse(userInfo) : null;
       });
-      const [isSeller, setIsSeller] = useState<boolean>(false); 
+      const [isSeller, setIsSeller] = useState<boolean>(() => {
+        return localStorage.getItem("role") === "seller"; // Check if role is "seller"
+      }); 
       const reset = () => {
         setIsAuthenticated(false)
         setUser(null)
         setIsSeller(false);
+        localStorage.removeItem("role"); 
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("addmin_token");
     }
+   
+  useEffect(() => {
+    if (user?.role) {
+      localStorage.setItem("role", user.role);
+      setIsSeller(user.role === "seller");
+    }
+  }, [user]);
     return( <AppContext.Provider value={{
         isAuthenticated, setIsAuthenticated, user, setUser,reset ,setIsSeller, isSeller
     }}>{children}</AppContext.Provider>)

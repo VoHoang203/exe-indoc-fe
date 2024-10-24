@@ -105,7 +105,7 @@ export default function ListItems() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>("29457e46-d44e-457b-b961-667bf8c3234b");
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const {data:documentsList, refetch ,isLoading} = useQuery<Document[]>({
-    queryKey:  ["document list" , {selectedCategory}],
+    queryKey:  ["document_list" , {selectedCategory}],
     queryFn:  async () => {const response = await http.post("document/category",{
           "categoryId": selectedCategory 
       })
@@ -161,6 +161,7 @@ useEffect(() => {
       setSearchQuery={setSearchQuery}
       handleSearch={handleSearch}
       categories={transformedCategories }
+      isLoading={isLoading}
       commentsSidebar={selectedDocument ? <CommentsSidebar /> : undefined}>
         {selectedDocument ? (
         <ProductDetail document={selectedDocument} onBack={() => setSelectedDocument(null)} />
@@ -189,8 +190,8 @@ useEffect(() => {
             cat.subcategories.some(sub => sub.id === selectedCategory)
           )?.name : "Các tài liệu bán chạy nhất"}</h2>
       {isLoading ? (
-            <div className="flex justify-center items-center">
-              <div className="loader">Loading...</div> {/* Add your spinner component or CSS here */}
+            <div className="flex justify-center items-center min-h-[100vh] align-baseline">
+              <div className="loader ">Loading...</div> {/* Add your spinner component or CSS here */}
             </div>
           ) : filteredDocuments && filteredDocuments.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">

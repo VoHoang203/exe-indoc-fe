@@ -14,9 +14,9 @@ import Payment from './pages/Payment/Payment'
 import { toast } from 'react-toastify'
 import PaymentDetails from './pages/Payment/PaymentDetail'
 import SignIn from './pages/Admin/view'
- //import AdminLayout from './pages/Admin/layouts/admin'
 import Dasboard from './pages/Admin/view/Dasboard'
- //import initialTheme from '././components/theme/theme.tsx'; //  { themeGreen }
+import ForgotPassword from './pages/forgotpass/ForgotPassword'
+
 
 
 function ProtectedRoute() {
@@ -64,11 +64,18 @@ export default function useRoute() {
         {
           path: "/register",
           element: (
-            <AuthForm>
+            <AuthForm >
               <Register />
             </AuthForm>
           )
-        },
+        },{
+          path: "/forgotpass",
+          element: (
+            <AuthForm>
+              <ForgotPassword />
+            </AuthForm>
+          )
+        }
 
       ]
     },

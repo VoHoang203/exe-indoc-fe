@@ -13,26 +13,26 @@ import React, { useState, useEffect } from 'react';
 import { message, Input, Select } from 'antd';
 
 const { Option } = Select;
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 // Define types for props and user data
 interface UserData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address: string;
-  role: string;
-  avatar?: string | null;
+  usersId: string;
+  usersEmail: string;
+  usersRole: string;
+  accountBalance: string;
+  createdAt: string;
+  isVerified: boolean;
 }
 
 interface UpdateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   userData: UserData | null;
+  onSave: (updatedUser: UserData) => void;
 }
 
-interface UpdatedUser extends Omit<UserData, 'avatar'> {
+interface UpdatedUser extends UserData {
   avatar: File | null;
   avatarPreview: string | null;
 }
@@ -41,14 +41,15 @@ export default function UpdateUserModal({
   isOpen,
   onClose,
   userData,
+  onSave,
 }: UpdateUserModalProps) {
   const [updatedUser, setUpdatedUser] = useState<UpdatedUser>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    role: 'user',
+    usersId: '',
+    usersEmail: '',
+    usersRole: '',
+    accountBalance: '',
+    createdAt: '',
+    isVerified: false,
     avatar: null,
     avatarPreview: null,
   });
@@ -61,13 +62,13 @@ export default function UpdateUserModal({
   useEffect(() => {
     if (userData) {
       setUpdatedUser({
-        firstName: userData.firstName || '',
-        lastName: userData.lastName || '',
-        email: userData.email,
-        phone: userData.phone,
-        address: userData.address,
-        role: userData.role,
-        avatarPreview: userData.avatar || PLACEHOLDER_IMAGE,
+        usersId: userData.usersId || '',
+        usersEmail: userData.usersEmail || '',
+        usersRole: userData.usersRole || '',
+        accountBalance: userData.accountBalance || '',
+        createdAt: userData.createdAt || '',
+        isVerified: userData.isVerified || false,
+        avatarPreview: PLACEHOLDER_IMAGE,
         avatar: null,
       });
     }
@@ -94,27 +95,24 @@ export default function UpdateUserModal({
     setLoading(true);
 
     // Validation checks
-    if (!updatedUser.firstName || !updatedUser.lastName) {
-      message.warning('Please enter both first name and last name.');
-      setLoading(false);
-      return;
-    }
-
-    if (!updatedUser.email) {
+    if (!updatedUser.usersEmail) {
       message.warning('Please enter an email.');
       setLoading(false);
       return;
     }
 
-    if (!updatedUser.phone) {
-      message.warning('Please enter a phone number.');
+    if (!updatedUser.usersRole) {
+      message.warning('Please enter a role.');
       setLoading(false);
       return;
     }
 
+    
+
     try {
       // Add logic for updating the user
       message.success('User updated successfully');
+      onSave(updatedUser);
       onClose();
     } catch (error) {
       message.error(
@@ -133,7 +131,7 @@ export default function UpdateUserModal({
         <ModalCloseButton />
         <ModalBody>
           {/* First Name and Last Name Input Fields in one line */}
-          <div style={{ display: 'flex', gap: '16px' }}>
+          {/* <div style={{ display: 'flex', gap: '16px' }}>
             <Input
               placeholder="First Name"
               value={updatedUser.firstName}
@@ -152,20 +150,20 @@ export default function UpdateUserModal({
               style={{ marginBottom: '16px', height: '40px', flex: 1 }}
               allowClear
             />
-          </div>
+          </div> */}
 
           {/* Email Input */}
           <Input
             placeholder="Email"
-            value={updatedUser.email}
+            value={updatedUser.usersEmail}
             onChange={(e) =>
-              setUpdatedUser({ ...updatedUser, email: e.target.value })
+              setUpdatedUser({ ...updatedUser, usersEmail: e.target.value })
             }
             style={{ marginBottom: '16px', height: '40px' }}
             allowClear
           />
           {/* Phone Input */}
-          <Input
+          {/* <Input
             placeholder="Phone"
             value={updatedUser.phone}
             onChange={(e) =>
@@ -173,29 +171,29 @@ export default function UpdateUserModal({
             }
             style={{ marginBottom: '16px', height: '40px' }}
             allowClear
-          />
+          /> */}
           {/* Address Input as TextArea */}
-          <TextArea
-            placeholder="Address"
-            value={updatedUser.address}
+          <Input
+            placeholder="Balance"
+            value={updatedUser.accountBalance}
             onChange={(e) =>
-              setUpdatedUser({ ...updatedUser, address: e.target.value })
+              setUpdatedUser({ ...updatedUser, accountBalance: e.target.value })
             }
-            style={{ marginBottom: '16px', height: '100px' }}
+            style={{ marginBottom: '16px', height: '40px' }}
             allowClear
           />
           {/* Role Select */}
           <Select
             placeholder="Select Role"
-            value={updatedUser.role}
+            value={updatedUser.usersRole}
             onChange={(value) =>
-              setUpdatedUser({ ...updatedUser, role: value })
+              setUpdatedUser({ ...updatedUser, usersRole: value })
             }
             style={{ marginBottom: '16px', width: '100%', height: '40px' }}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             <Option value="user">User</Option>
-            <Option value="admin">Admin</Option>
+            <Option value="seller">seller</Option>
           </Select>
 
           {/* Image Preview */}

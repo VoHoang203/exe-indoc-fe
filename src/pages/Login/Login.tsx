@@ -68,7 +68,7 @@ const Login = () => {
           createdAt: formatDate(userProfile?.createdAt) || "chưa có thông tin",
           bankOwnerName: userProfile?.bankOwnerName || "chưa có thông tin",
           bankAccountNumber: userProfile?.bankAccountNumber || "chưa có thông tin",
-          accountBalance: "0",
+          accountBalance: userProfile?.accountBalance  || 0,
           isVerified: userProfile?.isVerified || false,
           role: userProfile?.role ,
           phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
@@ -179,18 +179,22 @@ const Login = () => {
                       )}
                     Đăng nhập
                 </button>
+                <div className="flex justify-between">
                 <a
                   href="/auth/sign-in"
                   className="text-[#1AB3BC] hover:underline hover:text-red-400"
                 >
                   Đăng nhập với quyền admin
                 </a>
-                {/* <a
-                  href="#"
+                
+                 <a
+                  href="/forgotpass"
                   className="text-[#1AB3BC] hover:underline hover:text-red-400"
                 >
                   Quên mật khẩu
-                </a> */}
+                </a> 
+                </div>
+                
               </div>
                {/*---------------- Hoặc---------------*/}
           <div className="relative my-8 flex justify-center text-gray-400 w-full">
