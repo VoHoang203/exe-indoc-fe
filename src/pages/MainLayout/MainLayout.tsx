@@ -2,15 +2,19 @@ import React from 'react'
 import Header from '../Header/Header';
 import Footer from '../Footer';
 import Breadcrumbs from '../../components/BreadCrumbs';
+import { Link, useLocation } from 'react-router-dom';
+
 interface Props {
     children?: React.ReactNode;
   }
 const MainLayout = ({ children }: Props) => {
+  const location = useLocation();
+  console.log('test', location.pathname);
   return (
-    <div className='bg-gradient-to-b from-blue-50 to-blue-100 animate-fadeIn'>
+    <div className='bg-[#F5F7FA] animate-fadeIn'>
       <Header/>
-      <Breadcrumbs />
-        <div className='py-0 w-full  px-[5%] mt-5 animate-fadeIn'>
+      {location.pathname !== '/' && <Breadcrumbs />}  
+        <div className='py-0 w-full animate-fadeIn'>
           {children}
          </div>
       <Footer />

@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth, User } from "../../context/app.context";
 import { useMutation } from "@tanstack/react-query";
 import http from "../../utils/http"
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { getAccessToken, removeTokens } from "../../utils/auth";
 import logo_indocs from '../../assets/logo_indocs.png'
 const Header = () => {
+  const location = useLocation();
   const [isOpen, setOpen] = useState(false)
   const { isAuthenticated, setUser, setIsAuthenticated, reset, isSeller } = useAuth()
   const user = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')!) as User : null
@@ -62,19 +63,20 @@ const Header = () => {
           <nav className=" hidden md:flex justify-center space-x-8">
             <Link
               to="/"
-              className="text-center my-auto text-black hover:underline"
+              className={`text-center my-auto text-black hover:underline ${location.pathname === "/" ? "underline font-semibold leading-5" : ""}`}
             >
               Trang chủ
             </Link>
             <Link
               to="/service"
-              className="text-center my-auto text-black hover:underline"
+              className={`text-center my-auto text-black hover:underline ${location.pathname === "/service" ? "underline font-semibold" : ""}`}
             >
               Dịch vụ
             </Link>
             <Link
               to="/news"
-              className="text-center my-auto text-black hover:underline"
+              className={`text-center my-auto text-black hover:underline ${location.pathname === "/news" ? "underline font-semibold" : ""}`}
+
             >
               Tin tức
             </Link>
