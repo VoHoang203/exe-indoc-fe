@@ -3,7 +3,7 @@ import avt from "../../assets/avt.png"
 import edit_icon from "../../assets/edit_icon.png"
 import search_normal from "../../assets/search-normal.png"
 import board from "../../assets/board.png"
-import seeicon from  "../../assets/seeicon.png"
+// import seeicon from  "../../assets/seeicon.png"
 import dateicon from "../../assets/dateicon.png"
 import { getAccessToken } from '../../utils/auth';
 import {useQuery } from '@tanstack/react-query';

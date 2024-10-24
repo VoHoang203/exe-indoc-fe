@@ -10,8 +10,8 @@ import cntt from "../../assets/icon-park_code-computer.png";
 import imageLogo from "../../assets/image-logo.png";
 import groupLogo from "../../assets/group-logo.png";
 import faqLogo from "../../assets/information-logo.png";
-import dohoa from "../../assets/ic_outline-draw.png";
-import marketing from "../../assets/nimbus_marketing.png";
+// import dohoa from "../../assets/ic_outline-draw.png";
+// import marketing from "../../assets/nimbus_marketing.png";
 import aboutImage from "../../assets/about-image.png";
 import lineBackground from "../../assets/line-background.png";
 import lineBackground2 from "../../assets/line-background-2.png";
@@ -363,7 +363,7 @@ const MainContent = () => {
           <p className="text-xl font-medium mt-2 relative z-10">
             “InDocs” là sự kết hợp của Innovation & Insight Documents.
           </p>
-          <p className="w-[80%] mx-auto text-center mt-2 mb-18 text-base text-justify relative z-10">
+          <p className="w-[80%] mx-auto  mt-2 mb-18 text-base text-justify relative z-10">
             Website InDocs là website tích hợp đa dạng loại hình tài liệu, từ
             các văn bản học thuật cho tới hình ảnh, tài nguyên thiết kế, giúp
             người dùng dễ dàng truy cập, tra cứu, lưu trữ và đăng tải tài liệu.
@@ -388,7 +388,7 @@ const MainContent = () => {
           <img
             src={lineBackground}
             alt="line-background"
-            className="w-[100%] mx-auto absolute z-[1] mt-[200px] left-0 -z-[3]"
+            className="w-[100%] mx-auto absolute mt-[200px] left-0 -z-[3]"
           />
           <div className="circle-background w-[300px] h-[300px] bg-[#23ABBB4D] rounded-full absolute mt-[300px] left-0 z-0 blur-[40px]"></div>
 
@@ -758,30 +758,6 @@ const MainContent = () => {
                 </div>
               </div>
             </div>
-
-        
-        {/*Contact form 2*/ }
-  <section className="bg-teal-700 py-16">
-  <div className="container mx-auto px-8">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Contact Information */}
-      <div className="text-white">
-        <h2 className="text-2xl font-semibold mb-4">Liên hệ với chúng tôi</h2>
-        <p className="mb-4">Indocs luôn lắng nghe đóng góp của các bạn.</p>
-        <p className="mb-4">Việc cung cấp thông tin liên hệ đầy đủ và rõ ràng sẽ giúp tăng cường sự tin tưởng và tạo điều kiện thuận lợi cho khách hàng khi cần liên hệ với INDOCS.</p>
-      </div>
-      {/* Contact Form */}
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <form action="#" onSubmit={(e)=>handleSubmit(e)}>
-          <div className="mb-4 flex gap-x-2  items-center">
-            <input type="text" id="fullName" value={fullName} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Họ và tên"  onChange={(e) => setFullName(e.target.value)}/>
-          </div>
-          <div className="mb-4 flex gap-x-2  items-center"><input type="email" id="email" value={email} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
-          </div>
-          <div className="mb-4"><input type="text" id="phone" value={phoneNumber} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Số điện thoại" onChange={(e) => setPhoneNumber(e.target.value)}/>
-          </div>
-          <div className="mb-4"><textarea id="message" rows={4} value={feedback} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Nội dung liên hệ"  onChange={(e) => setFeedback(e.target.value)}/>
-
           </div>
         </section>
 
@@ -805,13 +781,15 @@ const MainContent = () => {
               </div>
               {/* Contact Form */}
               <div className="bg-white rounded-lg shadow-md p-8">
-                <form action="#">
+                <form  onSubmit={(e)=>handleSubmit(e)}>
                   <div className="mb-4 flex gap-x-2  items-center">
                     <input
                       type="text"
                       id="name"
                       className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
                       placeholder="Họ và tên"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                     />
                   </div>
                   <div className="mb-4 flex gap-x-2  items-center">
@@ -820,6 +798,8 @@ const MainContent = () => {
                       id="email"
                       className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
                       placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="mb-4">
@@ -828,6 +808,8 @@ const MainContent = () => {
                       id="phone"
                       className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
                       placeholder="Số điện thoại"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                   </div>
                   <div className="mb-4">
@@ -836,7 +818,8 @@ const MainContent = () => {
                       rows={4}
                       className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
                       placeholder="Nội dung liên hệ"
-                      defaultValue={""}
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
                     />
                   </div>
                   <button
