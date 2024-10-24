@@ -3,17 +3,18 @@ import { Icon } from '@chakra-ui/react';
 import {
   MdPerson,
   MdHome,
-  MdOutlineShoppingCart,
-  MdCategory,
   MdOutlineReceiptLong,
   MdOutlinePeopleAlt,
+  MdOutlineWallet,
+  MdOutlineFeedback,
 } from 'react-icons/md';
 import Dasboard from './pages/Admin/view/Dasboard';
-import Category from './pages/Admin/view/categories';
 import OrderManagement from './pages/Admin/view/orders';
 import ProductManagement from './pages/Admin/view/products';
 import UserManagement from './pages/Admin/view/users';
 import Profile from './pages/Admin/view/profile';
+import OrderManagement2 from './pages/Admin/view/orders_copy_2';
+import ProductManagement3 from './pages/Admin/view/Transaction';
 
 // Admin Imports
 // import MainDashboard from 'views/admin/default';
@@ -35,26 +36,49 @@ const routes = [
     component: <Dasboard />,
   },
   {
-    name: 'Category',
+    name: 'Withdraw',
     layout: '/admin',
-    path: '/category',
-    icon: <Icon as={MdCategory} width="20px" height="20px" color="inherit" />,
-    component: <Category />,
-    secondary: true,
-  },
-  {
-    name: 'Order',
-    layout: '/admin',
-    path: '/order',
+    path: '/withdraw',
     icon: (
       <Icon
-        as={MdOutlineShoppingCart}
+        as={MdOutlineWallet}
         width="20px"
         height="20px"
         color="inherit"
       />
     ),
     component: <OrderManagement />,
+    secondary: true,
+  },
+  {
+    name: 'FeedBack',
+    layout: '/admin',
+    path: '/feedback',
+    icon: (
+      <Icon
+        as={MdOutlineFeedback}
+        width="20px"
+        height="20px"
+        color="inherit"
+      />
+    ),
+    component: <OrderManagement2 />,
+    secondary: true,
+  },
+  
+  {
+    name: 'Transaction',
+    layout: '/admin',
+    path: '/transaction',
+    icon: (
+      <Icon
+        as={MdOutlinePeopleAlt}
+        width="20px"
+        height="20px"
+        color="inherit"
+      />
+    ),
+    component: <ProductManagement3 />,
     secondary: true,
   },
   {

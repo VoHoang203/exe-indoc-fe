@@ -1,3 +1,4 @@
+
 import man from "../../assets/man.png";
 import lapLeft from "../../assets/lapLeft.png";
 import rightArrow from "../../assets/bxs_up-arrow.png";
@@ -24,10 +25,19 @@ import nuocxanh from "../../assets/nuocxanh.png";
 import nuocxam from "../../assets/nuocxam.png";
 import tintuc from "../../assets/tintuc.jpg";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/app.context";
 import ResourceCard from "../../components/card/ResourceCard";
+import { useAuth } from "../../context/app.context"
+import http from "../../utils/http"
+import { useState } from "react"
+import { toast } from "react-toastify"
 
-const cardData = [
+interface FeedbackData {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  feedback: string;
+}
+    const cardData = [
   {
     title: "Công nghệ thông tin",
     description: "Tổng hợp các tài liệu liên quan chuyên ngành công nghệ TT",
@@ -115,11 +125,42 @@ const cardData = [
     linkColor: "purple",
   },
 ];
-
 const MainContent = () => {
-  const { user } = useAuth();
-  console.log(user);
-  console.log(localStorage.getItem("userInfo"));
+  const {user} = useAuth()
+  console.log(user)
+  console.log(localStorage.getItem("userInfo"))
+  const [fullName, setFullName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [feedback, setFeedback] = useState<string>('');
+
+  const handleSubmit = async (e:  React.FormEvent<HTMLFormElement>) : Promise<void>=> {
+    e.preventDefault();
+      const loading = toast.loading('Loading...');
+    const feedbackData: FeedbackData = {
+      fullName : fullName,
+      email : email,
+      phoneNumber : phoneNumber,
+      feedback : feedback,
+    };
+    console.log(feedbackData)
+
+    try {
+      const response = await http.post('/feedback/create', feedbackData);
+      if (response.status === 201) {
+        toast.success('Feedback submitted successfully!');
+        // Reset form fields
+        setFullName('');
+        setEmail('');
+        setPhoneNumber('');
+        setFeedback('');
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'An error occurred while submitting feedback.');
+    }
+    toast.dismiss(loading);
+  };
+
   return (
     <>
       {/* Main Section */}
@@ -663,6 +704,7 @@ const MainContent = () => {
                       </span>
                     </div>
 
+
                     <img src={arrowCheo} />
                   </li>
                   <li className="flex items-center justify-between">
@@ -716,6 +758,30 @@ const MainContent = () => {
                 </div>
               </div>
             </div>
+
+        
+        {/*Contact form 2*/ }
+  <section className="bg-teal-700 py-16">
+  <div className="container mx-auto px-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Contact Information */}
+      <div className="text-white">
+        <h2 className="text-2xl font-semibold mb-4">Liên hệ với chúng tôi</h2>
+        <p className="mb-4">Indocs luôn lắng nghe đóng góp của các bạn.</p>
+        <p className="mb-4">Việc cung cấp thông tin liên hệ đầy đủ và rõ ràng sẽ giúp tăng cường sự tin tưởng và tạo điều kiện thuận lợi cho khách hàng khi cần liên hệ với INDOCS.</p>
+      </div>
+      {/* Contact Form */}
+      <div className="bg-white rounded-lg shadow-md p-8">
+        <form action="#" onSubmit={(e)=>handleSubmit(e)}>
+          <div className="mb-4 flex gap-x-2  items-center">
+            <input type="text" id="fullName" value={fullName} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Họ và tên"  onChange={(e) => setFullName(e.target.value)}/>
+          </div>
+          <div className="mb-4 flex gap-x-2  items-center"><input type="email" id="email" value={email} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
+          </div>
+          <div className="mb-4"><input type="text" id="phone" value={phoneNumber} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Số điện thoại" onChange={(e) => setPhoneNumber(e.target.value)}/>
+          </div>
+          <div className="mb-4"><textarea id="message" rows={4} value={feedback} className="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Nội dung liên hệ"  onChange={(e) => setFeedback(e.target.value)}/>
+
           </div>
         </section>
 

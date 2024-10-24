@@ -114,26 +114,6 @@ class Http {
     const response = await this.instance.post<AuthResponse>('v1/signup', { email, password });
     this.setTokens(response.data);
   }
-
-  // async logout() {
-  //   const token = this.accessToken || getAccessToken();
-    
-  //   try {
-  //     await this.instance.delete('/logout', {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`
-  //       },
-        
-  //     });
-      
-  //     removeTokens();
-  //     this.accessToken = ''; 
-  //   this.refreshToken = ''; // Đảm bảo xóa cả refreshToken
-  //   } catch (error) {
-  //     console.error('Logout failed:', error);
-  //     throw error;
-  //   }
-  // }
   
 }
 

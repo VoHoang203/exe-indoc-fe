@@ -8,6 +8,8 @@ import image_116 from "../../assets/image 116.png"
 import { useQuery } from '@tanstack/react-query';
 import http from "../../utils/http"
 import { formatCurrency } from '../Payment/Payment';
+import { getAccessToken } from '../../utils/auth';
+import { useAuth } from '../../context/app.context';
 export interface Document {
   id: string;
   title: string;
@@ -70,6 +72,45 @@ interface ListItemProps {
   price: string;
   onViewDetail: (id: string) => void;
 }
+const checkDocumentOwnership = async (documentId: string, accessToken: string) => {
+  try {
+    const response = await http.post(
+      '/document/check-owner',
+      { documentId },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.status === 200; // Trả về true nếu thành công
+  } catch (error:any) {
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message); // Trả về thông báo lỗi
+    }
+    throw new Error('An error occurred while checking document ownership.');
+  }
+};
+
+const checkDocumentPurchased = async (documentId: string, accessToken: string) => {
+  try {
+    const response = await http.post(
+      '/document/check-purchased',
+      { documentId },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.status === 200; // Trả về true nếu thành công
+  } catch (error:any) {
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message); // Trả về thông báo lỗi
+    }
+    throw new Error('An error occurred while checking document purchase status.');
+  }
+};
 
 export const DocumentItem = ({id, title, description ,onViewDetail}: ListItemProps) => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:-translate-y-1 hover:shadow-lg">
@@ -105,7 +146,7 @@ export default function ListItems() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>("29457e46-d44e-457b-b961-667bf8c3234b");
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const {data:documentsList, refetch ,isLoading} = useQuery<Document[]>({
-    queryKey:  ["document list" , {selectedCategory}],
+    queryKey:  ["document_list" , {selectedCategory}],
     queryFn:  async () => {const response = await http.post("document/category",{
           "categoryId": selectedCategory 
       })
@@ -161,6 +202,7 @@ useEffect(() => {
       setSearchQuery={setSearchQuery}
       handleSearch={handleSearch}
       categories={transformedCategories }
+      isLoading={isLoading}
       commentsSidebar={selectedDocument ? <CommentsSidebar /> : undefined}>
         {selectedDocument ? (
         <ProductDetail document={selectedDocument} onBack={() => setSelectedDocument(null)} />
@@ -189,8 +231,8 @@ useEffect(() => {
             cat.subcategories.some(sub => sub.id === selectedCategory)
           )?.name : "Các tài liệu bán chạy nhất"}</h2>
       {isLoading ? (
-            <div className="flex justify-center items-center">
-              <div className="loader">Loading...</div> {/* Add your spinner component or CSS here */}
+            <div className="flex justify-center items-center min-h-[100vh] align-baseline">
+              <div className="loader ">Loading...</div> {/* Add your spinner component or CSS here */}
             </div>
           ) : filteredDocuments && filteredDocuments.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
@@ -269,15 +311,15 @@ const CommentsSidebar: React.FC = () => {
   const [newComment, setNewComment] = useState('');
   const [newReply, setNewReply] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | number | null>(null);
-
+  const {user} = useAuth();
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim() === '') return;
-
+    
     const newCommentObj: Comment = {
       id: Date.now().toString(),
-      user: 'Current User',
-      avatar: 'https://example.com/current-user-avatar.jpg',
+      user: user?.email || 'Curent User',
+      avatar: user?.avatar || "",
       text: newComment,
       timestamp: 'Just now',
       likes: 0,
@@ -294,8 +336,8 @@ const CommentsSidebar: React.FC = () => {
 
     const newReplyObj: Reply = {
       id: `${commentId}-${Date.now()}`,
-      user: 'Current User',
-      avatar: 'https://example.com/current-user-avatar.jpg',
+      user: user?.email || 'Curent User',
+      avatar: user?.avatar || "",
       text: newReply,
       timestamp: 'Just now',
       likes: 0,
@@ -479,8 +521,26 @@ const ProductDetail: React.FC <{ document: Document; onBack: () => void }> = ({ 
     }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async (documentId:string) => {
+    const accessToken = getAccessToken();
+  try {
+    const isOwner = await checkDocumentOwnership(documentId, accessToken);
+    const isPurchased = await checkDocumentPurchased(documentId, accessToken);
+
+    if (isOwner) {
+      alert('You cannot purchase the document that you uploaded.');
+      return;
+    }
+
+    if (isPurchased) {
+      alert('You already bought this document.');
+      return;
+    }
     navigate('/payment', { state: { document } });
+  } catch (error:any) {
+    alert(error.message); // Hiển thị thông báo lỗi cho người dùng
+  }
+  
   };
 
   
@@ -520,7 +580,7 @@ const ProductDetail: React.FC <{ document: Document; onBack: () => void }> = ({ 
               <span>Share</span>
             </button>
             <button
-            onClick={handleBuyNow}
+            onClick={() => handleBuyNow(document.id)}
             className="flex items-center space-x-2 px-4 py-2 rounded-full bg-green-500 text-white transition-colors duration-300 hover:bg-green-600"
             aria-label="Buy now"
           >

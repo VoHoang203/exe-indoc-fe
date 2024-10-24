@@ -5,9 +5,9 @@ export const formatCurrency = (amount: number | undefined | null): string => {
   }
 
   // Sử dụng phương thức toLocaleString để định dạng
-  return amount.toLocaleString('en-US', {
+  return amount.toLocaleString('vi-VN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'VND',
   });
 };
 export function formatDate(isoDateString: string): string {
@@ -18,4 +18,9 @@ export function formatDate(isoDateString: string): string {
   const year: number = date.getUTCFullYear(); // Lấy năm
 
   return `${day}/${month}/${year}`; // Trả về chuỗi với định dạng dd/mm/yyyy
+}
+export interface ErrorResponse {
+  message: string
+  error: string
+  statusCode: number
 }

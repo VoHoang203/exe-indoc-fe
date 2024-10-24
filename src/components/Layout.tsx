@@ -9,7 +9,7 @@ import { RiFilterLine } from "react-icons/ri";
     searchQuery: string;
     setSearchQuery: (query: string) => void;
     handleSearch: (e: React.FormEvent) => void;
-    
+    isLoading: boolean;
     categories: {
       id: string;
       name: string;
@@ -26,7 +26,7 @@ import { RiFilterLine } from "react-icons/ri";
   //   { id: "f6c90cad-8d8c-400b-8199-9aba7e5b8757", name: "Chuyên ngành Ngôn ngữ" },
   // ];
 const Layout = ({ children, categories,commentsSidebar ,
-    onCategoryChange}: LayoutProps) => {
+    onCategoryChange, isLoading}: LayoutProps) => {
       const [activeCategory, setActiveCategory] = React.useState<string | null>(
         null
       );
@@ -81,6 +81,7 @@ const Layout = ({ children, categories,commentsSidebar ,
             <li key={index} className="mb-4 w-full">
               <div className="flex items-start justify-between">
                 <button
+                disabled={isLoading}
                   className={`text-left focus:outline-none font-semibold ${
                     activeCategory === category.id ? "text-cyan-500" : "text-gray-600"
                   }`}
@@ -107,7 +108,7 @@ const Layout = ({ children, categories,commentsSidebar ,
                   {category.subcategories.map((sub, index) => (
                     <li
                       key={index}
-                      className={`flex items-center space-x-2 text-sm cursor-pointer ${
+                      className={`flex items-center space-x-2 text-sm cursor-pointer ${isLoading ? 'opacity-50 cursor-not-allowed' : ''} ${
                         activeSubcategory === `${index}-${sub.id}`
                           ? "text-cyan-500"
                           : "text-gray-500"
