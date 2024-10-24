@@ -23,6 +23,10 @@ import { RiEyeCloseLine } from 'react-icons/ri';
 import { message } from 'antd';
 import AuthIllustration from '../layouts/auth/Default';
 import illustration from '/src/assets/admin/auth.png';
+import http, { AuthResponse } from '../../../utils/http';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { ErrorResponse } from '../../../utils/formatCurrency';
 
 // Định nghĩa kiểu cho sự kiện form
 type FormEvent = React.FormEvent<HTMLFormElement>;
@@ -34,8 +38,28 @@ const SignIn = () => {
   const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
 
   const handleClick = () => setShow(!show);
-
+  
   // Hàm đăng nhập, kiểu sự kiện là FormEvent
+  const mutation = useMutation({
+    mutationFn: async (data: { email: string; password: string }) : Promise<AuthResponse>=> {
+      const response = await http.post('/v1/admin/signin', data);
+      return response  as unknown as AuthResponse;
+    },
+    onSuccess:async (response: AuthResponse) => {
+      // Handle successful login (e.g., store tokens, redirect)
+      console.log(response); // You can store tokens in localStorage or context
+      message.success('Login successful!');
+      localStorage.setItem('admin_token', response.data.accessToken);
+      setEmail('');
+      setPassword('');
+      navigate('/admin'); // Redirect after successful login
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      message.error('Login failed: '+error.response?.data.message + '. Status code:  ' + error.response?.data.statusCode); // Set error message
+      console.error(error);
+    },
+  });
+
   const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
     if (!email) {
@@ -47,15 +71,33 @@ const SignIn = () => {
       return;
     }
 
-    try {
-      message.success('Login successful!');
-      setEmail('');
-      setPassword('');
-      navigate('/admin'); // Điều hướng về trang chủ sau khi đăng nhập thành công
-    } catch (err) {
-      message.error('An error occurred. Please try again later.');
-    }
+    mutation.mutate({email,password}); // Trigger the login mutation
   };
+
+
+
+
+
+  // const handleSignIn = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   if (!email) {
+  //     message.warning('Please enter your email');
+  //     return;
+  //   }
+  //   if (!password) {
+  //     message.warning('Please enter your password');
+  //     return;
+  //   }
+
+  //   try {
+  //     message.success('Login successful!');
+  //     setEmail('');
+  //     setPassword('');
+  //     navigate('/admin'); // Điều hướng về trang chủ sau khi đăng nhập thành công
+  //   } catch (err) {
+  //     message.error('An error occurred. Please try again later.');
+  //   }
+  // };
   // const handleSignInAdmin = async (values: any) => {
   //   console.log(values);
   //   // e.preventDefault();
@@ -187,6 +229,7 @@ const SignIn = () => {
                 >
                   Sign In
                 </Button>
+                
               </FormControl>
             </form>
           </Flex>

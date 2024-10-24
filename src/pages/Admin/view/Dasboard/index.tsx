@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  // Box,
   Icon,
   SimpleGrid,
   useColorModeValue,
@@ -18,8 +17,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { Table, DatePicker, Select } from 'antd';
+import { DatePicker, Select } from 'antd';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   MdAttachMoney,
   MdPeople,
@@ -29,25 +29,34 @@ import {
 import dayjs, { Dayjs } from 'dayjs';
 import CustomCard from '../../../../components/card/Card';
 import MiniStatistics from '../../../../components/card/MiniStatistics';
-import { formatCurrency } from '../../../../utils/formatCurrency';
 import IconBox from '../../../../components/icons/IconBox';
+import http from '../../../../utils/http';
+import { formatCurrency } from '../../../Payment/Payment';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 // Định nghĩa kiểu dữ liệu cho các trạng thái thống kê
+// interface Statistic {
+//   totalusers: number;
+//   totaldocuments: number | string;
+//   totalOrders?: number;
+//   totalcompletedpurchases?:string;
+//   daily_revenue: number;
+//   monthly_revenue: number;
+//   yearly_revenue: number;
+//   monthlyChange?: number;
+//   dailyChange?: number;
+//   yearlyChange?: number;
+// }
 interface Statistic {
-  totalUsers: number;
-  totalProducts: number;
-  totalOrders: number;
-  revenueToday: number;
-  revenueThisMonth: number;
-  revenueThisYear: number;
-  monthlyChange: number;
-  dailyChange: number;
-  yearlyChange: number;
+   totalusers: string | number
+    totaldocuments: string | number
+    totalcompletedpurchases: string | number
+    daily_revenue?: string | number
+    monthly_revenue?: string | number
+    yearly_revenue?: string | number
 }
-
 interface Revenue {
   _id: string;
   totalRevenue: number;
@@ -66,18 +75,20 @@ interface StatisticsTime {
 }
 
 export default function Dasboard() {
-  const [statistics] = useState<Statistic>({
-    totalUsers: 15,
-    totalProducts: 25,
-    totalOrders: 35,
-    revenueToday: 213,
-    revenueThisMonth: 561.22,
-    revenueThisYear: 1156.78,
-    monthlyChange: 25.5,
-    dailyChange: -15.2,
-    yearlyChange: 20.1,
-  });
-
+  const fetchDashboardData = async () => {
+    const response = await http.get<Statistic[]>('/admin/v1/dashboard', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('admin_token')}`, // Include the token in the headers
+      },
+    });
+    return response.data[0] as Statistic; // Return the response data
+  };
+  
+// @ts-ignore
+const { data: statistics } = useQuery<Statistic>({ queryKey: ['dashboardData'], queryFn: fetchDashboardData });
+console.log("static2:",statistics)
+ 
+  
   const [statisticsTime] = useState<StatisticsTime>({
     revenue: [
       { _id: '2024-09-01', totalRevenue: 4500 },
@@ -127,32 +138,32 @@ export default function Dasboard() {
     }
   };
 
-  const columns = [
-    {
-      title: 'Product Image',
-      dataIndex: 'image',
-      key: 'image',
-      render: (image: string) => (
-        <img
-          src={image}
-          alt="product"
-          width="50"
-          height="50"
-          style={{ borderRadius: '25%' }}
-        />
-      ),
-    },
-    {
-      title: 'Product Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Quantity Sold',
-      dataIndex: 'totalQuantitySold',
-      key: 'totalQuantitySold',
-    },
-  ];
+  // const columns = [
+  //   {
+  //     title: 'Product Image',
+  //     dataIndex: 'image',
+  //     key: 'image',
+  //     render: (image: string) => (
+  //       <img
+  //         src={image}
+  //         alt="product"
+  //         width="50"
+  //         height="50"
+  //         style={{ borderRadius: '25%' }}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: 'Product Name',
+  //     dataIndex: 'name',
+  //     key: 'name',
+  //   },
+  //   {
+  //     title: 'Quantity Sold',
+  //     dataIndex: 'totalQuantitySold',
+  //     key: 'totalQuantitySold',
+  //   },
+  // ];
 
   // Chakra Color Mode
   const brandColor = useColorModeValue('brand.500', 'white');
@@ -178,7 +189,7 @@ export default function Dasboard() {
             }
             content=""
             name="Total users"
-            value={statistics.totalUsers}
+            value={statistics?.totalusers || 0}
           />
           <MiniStatistics
             startContent={
@@ -191,7 +202,7 @@ export default function Dasboard() {
             }
             content=""
             name="Total products"
-            value={statistics.totalProducts}
+            value={statistics?.totaldocuments || 0}
           />
           <MiniStatistics
             startContent={
@@ -211,8 +222,9 @@ export default function Dasboard() {
             }
             content=""
             name="Total orders"
-            value={statistics.totalOrders}
+            value={35}
           />
+          {/* statistics.totalOrders  */}
           <MiniStatistics
             startContent={
               <IconBox
@@ -225,8 +237,8 @@ export default function Dasboard() {
               />
             }
             name="Daily Revenue"
-            value={formatCurrency(statistics.revenueToday)}
-            growth={statistics.dailyChange.toFixed(2)}
+            value={formatCurrency(statistics?.daily_revenue as number) + " VND"}
+            growth={15.21}
             content="since yesterday"
           />
           <MiniStatistics
@@ -241,8 +253,8 @@ export default function Dasboard() {
               />
             }
             name="Monthly revenue"
-            value={formatCurrency(statistics.revenueThisMonth)}
-            growth={statistics.monthlyChange.toFixed(2)}
+            value={formatCurrency(statistics?.monthly_revenue as number) + " VND"}
+            growth={25.50}
             content="since last month"
           />
           <MiniStatistics
@@ -257,8 +269,8 @@ export default function Dasboard() {
               />
             }
             name="Yearly revenue"
-            value={formatCurrency(statistics.revenueThisYear)}
-            growth={statistics.yearlyChange.toFixed(2)}
+            value={formatCurrency(statistics?.yearly_revenue as number) + " VND"}
+            growth={20.12}
             content="since last year"
           />
         </SimpleGrid>
@@ -324,7 +336,7 @@ export default function Dasboard() {
             </LineChart>
           </ResponsiveContainer>
 
-          <Text
+          {/* <Text
             lineHeight="100%"
             color={textColor}
             fontSize={{
@@ -340,7 +352,7 @@ export default function Dasboard() {
             dataSource={statisticsTime.productsSold || []}
             columns={columns}
             rowKey="_id"
-          />
+          /> */}
         </CustomCard>
       </Box>
     </>

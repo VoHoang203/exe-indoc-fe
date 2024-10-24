@@ -1,12 +1,10 @@
 import React, {  useEffect, useState } from 'react';
-import addDoc  from "../../assets/addDoc.png"
 import avt from "../../assets/avt.png"
 import edit_icon from "../../assets/edit_icon.png"
 import search_normal from "../../assets/search-normal.png"
 import board from "../../assets/board.png"
 import seeicon from  "../../assets/seeicon.png"
 import dateicon from "../../assets/dateicon.png"
-import useicon from "../../assets/useicon.png"
 import { getAccessToken } from '../../utils/auth';
 import {useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -18,9 +16,10 @@ import { formatCurrency } from '../Payment/Payment';
 import { formatDate } from '../../utils/formatCurrency';
 import request from "../../assets/hugeicons_money-receive-circle.png"
 import upload from "../../assets/hugeicons_money-send-circle.png"
+import { message, Pagination } from 'antd';
 // }
 interface Document2 {
-  id: string;
+  documentId: string;
   title: string;
   description: string;
   price: string;
@@ -28,14 +27,26 @@ interface Document2 {
   downloads: number;
   date: string;
   author: string;
+  createdAt: string;
 }
-
+interface DocumentResponse {
+  total: number;          // Total number of documents
+  limit: number;          // Limit of documents per page
+  page: number;           // Current page index (0-based)
+  data: Document2[];       // Array of documents
+}
 export interface Transaction2 {
   title: string
   documentid: string
   buyerid: string
   purchasedate: string
   amount: string
+}
+interface TransactionResponse {
+  total: number;          // Total number of transactions
+  limit: number;          // Limit of transactions per page
+  page: number;           // Current page index (0-based)
+  data: Transaction2[];    // Array of transactions
 }
 // interface UserInfo {
 //   user: string;
@@ -59,47 +70,56 @@ interface FormDataInterface {
   description:string;
   file:File | undefined;
 };
-const fetchPaidDocuments = async () => {
+const fetchPaidDocuments = async (currentPage: number, limit: number) : Promise<DocumentResponse> => {
   const accessToken = getAccessToken();
-  const response = await http.get('documents/paid', {
+  const response = await http.get(`documents/paid?page=${currentPage}&limit=${limit}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   });
   const data = await response.data;
-  return data.data.map((doc: Document2, index: number) => ({
-    id: index,
+  return {
+    total: data.total,
+    limit: data.limit,
+    page: data.page,
+    data:data.data.map((doc: Document2) => ({
+    id: doc.documentId,
     title: doc.title,
     downloads: 0,
     filePath: doc.filePath,
-    date: new Date().toLocaleDateString(),
+    createdAt: new Date(doc.createdAt).toLocaleDateString(),
     author: 'Unknown',
-  }));
+  }))} 
 };
 ReactModal.setAppElement('#root');
-const fetchOwnDocuments = async () => {
+const fetchOwnDocuments = async (currentPage: number, limit: number) : Promise<DocumentResponse>=> {
   const accessToken = getAccessToken();
-  const response = await http.get('documents/own', {
+  const response = await http.get(`/documents/own?page=${currentPage}&limit=${limit}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     },
   });
   const data = await response.data;
-  return data.data.map((doc: Document2, index: number) => ({
-    id: index,
-    title: doc.title,
-    downloads: 0,
-    filePath: doc.filePath,
-    date: new Date().toLocaleDateString(),
-    author: 'Unknown',
-    amount: parseFloat(doc.price),
-  }));
+  console.log(data)
+  return {
+    total: data.total,
+    limit: data.limit,
+    page: data.page,
+    data:data.data.map((doc: Document2) => ({
+      id: doc.documentId,
+      title: doc.title,
+      downloads: 0,
+      filePath: doc.filePath,
+      createdAt: new Date(doc.createdAt).toLocaleDateString() || '12/10/2023',
+      author: 'Unknown',
+      amount: parseFloat(doc.price),
+  }))} 
 };
-const fetchTransactions = async () => {
+const fetchTransactions = async (currentPage: number, limit: number): Promise<TransactionResponse>  => {
   const accessToken = getAccessToken();
-  const response = await http.get('/v1/seller/transaction', {
+  const response = await http.get(`/v1/seller/transaction?page=${currentPage}&limit=${limit}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -107,31 +127,42 @@ const fetchTransactions = async () => {
     },
   });
   const data = await response.data;
-  return data.data.map((transaction: Transaction2) => ({
-    title: transaction.title,
-    documentId: transaction.documentid,
-    buyerId: transaction.buyerid,
-    purchaseDate: new Date(transaction.purchasedate).toLocaleDateString(),
-    amount: parseFloat(transaction.amount),
-  }));
+  return {
+    total: data.total,
+    limit: data.limit,
+    page: data.page,
+    data: data.data.map((transaction: Transaction2) => ({
+        title: transaction.title,
+        documentId: transaction.documentid,
+        buyerId: transaction.buyerid,
+        purchasedate: new Date(transaction.purchasedate).toLocaleDateString(),
+        amount: parseFloat(transaction.amount),
+  }))};
 };
 const SellerProfile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('purchased');
   const [showAddDocModal, setShowAddDocModal] = useState(false);
   const [showDetailSellerModal, setShowDetailSellerModal] = useState(false);
   const { isSeller,setUser,user } = useAuth(); 
-  const { data: documents,refetch:refetchOwnDocument, isLoading:isLoadingOwnDocument} = useQuery<Document2[]>({
-    queryKey: ['ownDocuments'],
-    queryFn: fetchOwnDocuments,
+  const [limit, setLimit] = useState<number>(3);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const { data: documents , isLoading:isLoading1} = useQuery<DocumentResponse>({
+    queryKey: ['ownDocuments', currentPage, limit],
+    queryFn: () => fetchOwnDocuments(currentPage, limit),
   })
-  const { data: paidDocuments,refetch:refetchPaidDocument } = useQuery<Document2[]>({
-    queryKey: ['paidDocuments'],
-    queryFn: fetchPaidDocuments,
+  const { data: paid, isLoading:isLoading2 } = useQuery<DocumentResponse>({
+    queryKey: ['paidDocuments', currentPage, limit],
+    queryFn: () => fetchPaidDocuments(currentPage, limit),
   });
-  const { data: transactions,refetch:refetchTransaction } = useQuery<Transaction2[]>({
-    queryKey: ['transactions'],
-    queryFn: fetchTransactions,
+  const { data: transactions , isLoading:isLoading3 } = useQuery<TransactionResponse>({
+    queryKey: ['transactions', currentPage, limit],
+    queryFn: () => fetchTransactions(currentPage, limit),
   });
+  const [totalDocuments, setTotalDocuments] = useState<number>(0); 
+  const [ownDocuments, setOwnDocuments] = useState<Document2[]>(documents?.data || []); // State để lưu tài liệu của người dùng
+  const [paidDocuments, setPaidDocuments] = useState<Document2[]>(paid?.data || []); // State để lưu tài liệu đã mua
+  const [transactionsData, setTransactionsData] = useState<Transaction2[]>(transactions?.data || []); // State để lưu giao dịch
+  console.log("paid",paidDocuments)
   const [userInfo, setUserInfo] = useState<User>({
     user: '',
     email: '',
@@ -155,11 +186,45 @@ const SellerProfile: React.FC = () => {
     }
   }, [showDetailSellerModal]);
   useEffect(() => {
-    refetchOwnDocument();
-    refetchPaidDocument();
-    refetchTransaction();
-  }, [activeTab]);
-
+    setCurrentPage(0);
+    setLimit(3); 
+    if (activeTab === 'purchased') {
+      setTotalDocuments(paid?.total || 0); 
+      setPaidDocuments(paid?.data || []);
+    } else if (activeTab === 'uploaded') {
+      setTotalDocuments(documents?.total || 0);
+      setOwnDocuments(documents?.data || []);
+    } else if (activeTab === 'transactions') {
+      setTotalDocuments(transactions?.total || 0);
+      setTransactionsData(transactions?.data || []);
+    }
+  }, [activeTab]); // Thêm các state vào dependency array
+  const isLoading = isLoading1 || isLoading2 || isLoading3
+  useEffect(() => {
+    if (isLoading) {
+      message.loading('Loading...');
+    } else {
+      message.destroy();
+    }
+  
+    
+    
+    
+  }, [isLoading]);
+  useEffect(()=>{
+    if (documents) {
+      
+      setOwnDocuments(documents.data || []);
+    }
+  
+    if (paid) {
+      setPaidDocuments(paid.data || []);
+    }
+  
+    if (transactions) {
+      setTransactionsData(transactions.data || []);
+    }
+  },[documents,paid,transactions,currentPage,limit])
    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -185,25 +250,54 @@ const SellerProfile: React.FC = () => {
   const handleDetailSellerModalToggle = () => {
     setShowDetailSellerModal((prev) => !prev);
   };
-console.log(paidDocuments)
+  const handleUserInfoUpdate = (updatedUserInfo: User) => {
+    setUserInfo(updatedUserInfo);
+    setUser(updatedUserInfo); 
+  };
+console.log(ownDocuments)
+console.log("doc", documents?.data + " " + documents?.total + " " + documents?.page + " " + documents?.limit)
 console.log(transactions)
-console.log(getAccessToken())
+
+const handleWithdrawalRequest = async () => {
+  const accessToken = getAccessToken();
+  const loading = toast.loading('Loading...');
+  const amount = parseFloat(userInfo.accountBalance || '0') || 0; // Get the user's account balance
+  try {
+    const response = await http.post('/users/withdrawals', {
+      amount: amount,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 200) {
+      toast.success('Withdrawal request successful');
+    }
+  } catch (error) {
+    const axiosError = error as { response?: { status: number; data: { message: string } } };
+    if (axiosError.response?.status === 400) {
+      toast.error('Withdrawal request exceeds available balance');
+    } else {
+      toast.error('An error occurred while processing the request');
+    }
+  }
+  toast.done(loading);
+};
   return (
     <div className="flex gap-5 bg-white w-full h-screen p-5 overflow-y-auto mb-10 pb-5">
       <div className={` ${isSeller ? 'w-2/5' : 'w-1/3'}`}>
-        {isSeller && ( <div className='flex gap-2 justify-between'>
+        {isSeller && ( <div className='flex gap-2 justify-around'>
           <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
             <img src={upload} alt="" className="w-6" />
             <p className="text-lg text-cyan-500 focus:underline">Tải tài liệu lên</p>
           </button>
-          <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
+          <button onClick={() => handleWithdrawalRequest()} className="flex items-center gap-2 text-gray-400 mb-2">
             <img src={request} alt="" className="w-6" />
             <p className="text-lg text-cyan-500 focus:underline">Request</p>
           </button>
-          <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
-            <img src={addDoc} alt="" className="w-6" />
-            <p className="text-lg text-cyan-500 focus:underline">Thay đổi mật khẩu</p>
-          </button>
+          
           </div>
         )}
         <div className="bg-gray-100 rounded-xl shadow-md p-5 animate-fadeLeft">
@@ -358,54 +452,47 @@ console.log(getAccessToken())
           <div className="bg-gray-100 rounded-b-xl rounded-tr-xl p-10 shadow-md overflow-y-auto">
           {activeTab === 'uploaded' && (
               <>
-                  {isLoadingOwnDocument ? (
-                                <div role="status">
-                <svg aria-hidden="true" className="inline w-full h-full text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
-                </svg>
-                      <span className="sr-only">Loading...</span>
-                  </div>
-
-                  ):(Array.isArray(documents) && documents.map((doc: Document2) => (
-                  <DocumentItem key={doc.id} document={doc} />
-
+                  {(Array.isArray(ownDocuments) && ownDocuments.map((doc: Document2) => (
+                  <DocumentItem key={doc.documentId} document={doc} />
                 )))}
+                <Pagination total={totalDocuments} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )}
             {activeTab === 'transactions' && (
               <>
-                 {Array.isArray(transactions) && transactions.map((transaction: Transaction2) => (
+                 {Array.isArray(transactionsData) && transactionsData.map((transaction: Transaction2)=> (
                     <TransactionItem key={transaction.buyerid} transaction={transaction} />
                   ))}
-                {transactions && (
-                    <TotalTransactions 
-                    total={transactions.reduce((sum, transaction) => sum + Number(transaction.amount), 0)} 
+                {transactionsData && transactionsData && (
+                  <TotalTransactions 
+                    total={transactionsData.reduce((sum, transaction) => sum + Number(transaction.amount), 0)} // Access data here
                     date={new Date().toLocaleDateString()} 
                   />
-                  )}
+                )}
+                  <Pagination total={totalDocuments} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )} 
             {activeTab ===  'purchased' && (
               <>
                  {Array.isArray(paidDocuments) && paidDocuments.map((doc: Document2) => (
-                  <DocumentItem key={doc.id} document={doc} />
+                  <DocumentItem key={doc.documentId} document={doc} />
                 ))}
+                <Pagination total={totalDocuments} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )}
-            {/* Add content for other tabs */}
+            
           </div>
         </div>
       </div>
       {showAddDocModal && <AddDocModal  isOpen={showAddDocModal} onClose={() => setShowAddDocModal(false)} />}
-      {showDetailSellerModal && <DetailSellerModal  isOpen={showDetailSellerModal} onClose={() => setShowDetailSellerModal(false)} isSeller={isSeller}  userInfo={userInfo}/>}
+      {showDetailSellerModal && <DetailSellerModal  isOpen={showDetailSellerModal} onClose={() => setShowDetailSellerModal(false)} isSeller={isSeller}  userInfo={userInfo} onUserInfoUpdate={handleUserInfoUpdate}/>}
     </div>
   );
 };
 
 const DocumentItem: React.FC<{ document: Document2 }> = ({ document }) => (
 
-  <div className="flex items-center gap-2 py-4 border-b border-gray-300">
+  <div className="flex items-center gap-2 py-4 border-b border-gray-300 mb-4">
     <img src={board} alt="" className="w-1/12" />
     <div className="flex-grow">
       <h3 className="text-2xl font-bold text-gray-700 mb-2">{document.title}</h3>
@@ -416,11 +503,7 @@ const DocumentItem: React.FC<{ document: Document2 }> = ({ document }) => (
         </div>
         <div className="flex items-center gap-1">
           <img src={dateicon} alt="" className="w-6" />
-          <p className="text-gray-400">{document.date}</p>
-        </div>
-        <div className="flex items-center gap-1">
-          <img src={useicon} alt="" className="w-6" />
-          <p className="text-gray-400">{document.author}</p>
+          <p className="text-gray-400">Ngày tải: {(document.createdAt)}</p>
         </div>
       </div>
     </div>
@@ -440,20 +523,16 @@ const TransactionItem: React.FC<{ transaction: Transaction2 }> = ({ transaction 
         </div>
         <div className="flex items-center gap-1">
           <img src={dateicon} alt="" className="w-6" />
-          <p className="text-gray-400">{transaction.purchasedate}</p>
-        </div>
-        <div className="flex items-center gap-1">
-          <img src={seeicon} alt="" className="w-6" />
-          <p className="text-gray-400">{transaction.buyerid}</p>
+          <p className="text-gray-400">Ngày mua: {transaction.purchasedate}</p>
         </div>
       </div>
     </div>
-    <div className="bg-teal-500 text-white rounded px-4 py-2">+ {transaction.amount.toLocaleString()} vnd</div>
+    <div className="bg-teal-500 text-white rounded px-4 py-2 min-w-[150px]">+ {transaction.amount.toLocaleString()} vnd</div>
   </div>
 );
 
 const TotalTransactions: React.FC<{ total: number; date: string }> = ({ total, date }) => (
-  <div className="flex justify-between items-center p-5 bg-white rounded-xl shadow-md mt-4">
+  <div className="flex justify-between items-center p-5 bg-white rounded-xl shadow-md mt-4 mb-5">
     <div>
       <h2 className="text-xl font-medium">Tổng tiền trong tháng</h2>
       <p>{date}</p>
@@ -595,7 +674,7 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
   )
 };
 
-const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSeller: boolean; userInfo: User }> = ({ isOpen,onClose,isSeller, userInfo }) => {
+const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSeller: boolean; userInfo: User ; onUserInfoUpdate: (userInfo: User) => void }> = ({ isOpen,onClose,isSeller, userInfo, onUserInfoUpdate }) => {
   const { user, setUser } = useAuth();
   const [name, setName] = useState(user?.storeName || '');
   const [email] = useState(user?.email || '');
@@ -605,9 +684,10 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSelle
   const [createdAt] = useState(user?.createdAt || '');
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const updatedUserInfo = { ...user , email, phone, bankAccount, bankCV };
+    const updatedUserInfo = { ...user , email, phone, bankAccount, bankCV,name };
     setUser(updatedUserInfo as User);
     localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+    onUserInfoUpdate(updatedUserInfo as User);
     onClose();
   };
   return (
