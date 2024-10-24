@@ -497,13 +497,13 @@ const DocumentItem: React.FC<{ document: Document2 }> = ({ document }) => (
     <div className="flex-grow">
       <h3 className="text-2xl font-bold text-gray-700 mb-2">{document.title}</h3>
       <div className="flex gap-2 items-center">
-        <div className="flex items-center gap-1">
+        {/* <div className="flex items-center gap-1">
           <img src={seeicon} alt="" className="w-6" />
           <p className="text-gray-400">{document.downloads} lượt tải về</p>
-        </div>
+        </div> */}
         <div className="flex items-center gap-1">
           <img src={dateicon} alt="" className="w-6" />
-          <p className="text-gray-400">Ngày tải: {(document.createdAt)}</p>
+          <p className="text-gray-400">Ngày tải: {('03/12/2024')}</p>
         </div>
       </div>
     </div>
@@ -517,10 +517,10 @@ const TransactionItem: React.FC<{ transaction: Transaction2 }> = ({ transaction 
     <div className="flex-grow">
       <h3 className="text-2xl font-bold text-gray-700 mb-2">{transaction.title}</h3>
       <div className="flex gap-2 items-center">
-        <div className="flex items-center gap-1">
+        {/* <div className="flex items-center gap-1">
           <img src={seeicon} alt="" className="w-6" />
           <p className="text-gray-400">{formatCurrency(Number(transaction.amount))} lượt tải về</p>
-        </div>
+        </div> */}
         <div className="flex items-center gap-1">
           <img src={dateicon} alt="" className="w-6" />
           <p className="text-gray-400">Ngày mua: {transaction.purchasedate}</p>
