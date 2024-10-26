@@ -22,7 +22,6 @@ const ResourceCard: React.FC<ResourceCardProps> = ({
   details,
   imgSrc,
   documents,
-  linkColor,
 }) => (
   <div className="bg-gradient-to-r from-[#1ab3bc] to-[#7953af] p-[2px] rounded-lg">
     <div className={`bg-white p-6 rounded-[6px] shadow-lg`}>
