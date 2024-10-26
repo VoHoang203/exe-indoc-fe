@@ -11,10 +11,12 @@
     "proxy": "https://indocs.click"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.8.2",
     "@chakra-ui/system": "2.5.7",
     "@chakra-ui/theme-tools": "^1.3.6",
+    "@emotion/cache": "^10.0.29",
     "@emotion/react": "^11.13.3",
     "@floating-ui/react-dom": "^2.1.1",
     "@floating-ui/react-dom-interactions": "^0.13.3",
