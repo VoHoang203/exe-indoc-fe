@@ -2,7 +2,7 @@ import React from 'react'
 import Header from '../Header/Header';
 import Footer from '../Footer';
 import Breadcrumbs from '../../components/BreadCrumbs';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
     children?: React.ReactNode;
