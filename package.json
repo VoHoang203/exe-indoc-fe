@@ -32,6 +32,7 @@
     "firebase": "^10.13.1",
     "floating-ui": "^5.2.8",
     "framer-motion": "^11.5.4",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-custom-scrollbars-2": "^4.5.0",
     "react-dom": "^18.3.1",
