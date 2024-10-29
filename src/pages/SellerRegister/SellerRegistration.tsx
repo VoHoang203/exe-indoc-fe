@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-unresolved
 import Bookshelf from "../../assets/Bookshelf.png"
 import muitenImage from "../../assets/muiten.png"; 
@@ -8,6 +8,7 @@ import { getAccessToken, removeTokens } from '../../utils/auth';
 import { useAuth } from '../../context/app.context';
 import http from '../../utils/http';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 // Định nghĩa các type cho state
 type SellerInfo = {
   storeName: string;
@@ -28,7 +29,45 @@ type IdentityInfo = {
   qrCodeImage: File | null;
   bankOwner: string; 
 };
+interface Bank {
+  id: number
+  name: string
+  code: string
+  bin: string
+  shortName: string
+  logo: string
+  transferSupported: number
+  lookupSupported: number
+  short_name: string
+  support: number
+  isTransfer: number
+  swift_code: string
+}
+interface BankDataResponse {
+ code: string
+   desc: string
+   data: Bank[]
+ }
 
+export const fetchBankData = async (): Promise<{ id: number; name: string; shortName: string }[]>=> {
+  try {
+    const response = await axios.get<BankDataResponse >('https://api.vietqr.io/v2/banks');
+    if (response.status !== 200) {
+      toast.error('Network response was not ok');
+      throw new Error('Network response was not ok');
+    }
+    const data = response.data.data.map(bank => ({
+      id: bank.id,
+      name: bank.name,
+      shortName: bank.short_name,
+    }));
+    console.log(data); // Xử lý dữ liệu ở đây
+    return data;
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+    return []; // Return an empty array on error
+  }
+}
 // Component chính
 const SellerRegistration: React.FC = () => {
   const [step, setStep] = useState(0);
@@ -61,6 +100,14 @@ const { reset} = useAuth()
     setTaxInfo(prev => ({ ...prev, [name]: value }));
   };
   
+  const [bankOptions, setBankOptions] = useState<{ id: number; name: string; shortName: string }[]>([]);
+  useEffect(() => {
+    const loadBankData = async () => {
+      const banks = await fetchBankData();
+      setBankOptions(banks);
+    };
+    loadBankData();
+  }, []);
   // const handleArrayInputChange = (index: number, field: 'emails' | 'phones', value: string) => {
   //   setTaxInfo(prev => {
   //     const newArray = [...prev[field]];
@@ -316,7 +363,7 @@ const { reset} = useAuth()
   );
 
   const renderStep3 = () => {
-    
+   
     return (
    
     <form onSubmit={handleSubmit}>
@@ -369,8 +416,9 @@ const { reset} = useAuth()
           required
         >
           <option value="" disabled>Ngân hàng</option>
-          <option value="vietcombank">Vietcombank</option>
-          <option value="bidv">BIDV</option>
+              {bankOptions.map(bank => (
+                <option key={bank.id} value={bank.shortName}>{bank.shortName}: {bank.name}</option>
+              ))}
         </select>
         <input
           type="text"

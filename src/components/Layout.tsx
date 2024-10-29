@@ -10,6 +10,7 @@ import { RiFilterLine } from "react-icons/ri";
     setSearchQuery: (query: string) => void;
     handleSearch: (e: React.FormEvent) => void;
     isLoading: boolean;
+    selectedCategory: string | null;
     categories: {
       id: string;
       name: string;
@@ -26,7 +27,7 @@ import { RiFilterLine } from "react-icons/ri";
   //   { id: "f6c90cad-8d8c-400b-8199-9aba7e5b8757", name: "Chuyên ngành Ngôn ngữ" },
   // ];
 const Layout = ({ children, categories,commentsSidebar ,
-    onCategoryChange, isLoading}: LayoutProps) => {
+    onCategoryChange, isLoading, selectedCategory}: LayoutProps) => {
       const [activeCategory, setActiveCategory] = React.useState<string | null>(
         null
       );
@@ -35,7 +36,7 @@ const Layout = ({ children, categories,commentsSidebar ,
       );
       const [activeSubcategory, setActiveSubcategory] = React.useState<
         string | null
-      >(null);
+      >(selectedCategory || null);
     
       const handleCategoryClick = (categoryId: string): void => {
         setActiveCategory(categoryId);
@@ -70,9 +71,9 @@ const Layout = ({ children, categories,commentsSidebar ,
           <h2 className="flex items-center text-lg font-semibold text-teal-600">
             <RiFilterLine className="mr-2 text-2xl font-bold text-gray-800" /> Tài liệu
           </h2>
-          <button className="text-blue-600 hover:text-blue-800 transition duration-300">
+          {/* <button className="text-blue-600 hover:text-blue-800 transition duration-300">
             Clear All
-          </button>
+          </button> */}
         </div>
         
         <nav className="p-4 w-full">
@@ -81,9 +82,9 @@ const Layout = ({ children, categories,commentsSidebar ,
             <li key={index} className="mb-4 w-full">
               <div className="flex items-start justify-between">
                 <button
-                disabled={isLoading}
+                disabled={isLoading || activeCategory === category.id}
                   className={`text-left focus:outline-none font-semibold ${
-                    activeCategory === category.id ? "text-cyan-500" : "text-gray-600"
+                    activeCategory === category.id ? "text-cyan-500 cursor-not-allowed" : "text-gray-600 cursor-pointer"
                   }`}
                   onClick={() => handleCategoryClick(category.id)}
                 >
@@ -102,15 +103,15 @@ const Layout = ({ children, categories,commentsSidebar ,
               </div>
               {expandedCategory === category.id && (
                 <ul
-                  id={`subcategories-${index}`}
+                  id={`subcategories`}
                   className="ml-4 mt-2 space-y-2"
                 >
                   {category.subcategories.map((sub, index) => (
                     <li
                       key={index}
-                      className={`flex items-center space-x-2 text-sm cursor-pointer ${isLoading ? 'opacity-50 cursor-not-allowed' : ''} ${
-                        activeSubcategory === `${index}-${sub.id}`
-                          ? "text-cyan-500"
+                      className={`flex items-center space-x-2 text-sm cursor-pointer $ ${isLoading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${
+                        activeSubcategory === `${sub.id}`
+                          ? "text-cyan-500 pointer-events-none"
                           : "text-gray-500"
                       } hover:text-cyan-500 transition-colors duration-200`}
                       onClick={() => handleSubCategoryClick( sub.id)}
