@@ -463,7 +463,10 @@ const handleWithdrawalRequest = async () => {
                   {(Array.isArray(ownDocuments) && ownDocuments.map((doc: Document2) => (
                   <DocumentItem key={doc.documentId} document={doc} />
                 )))}
-                <Pagination total={totalDocuments} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
+                <Pagination total={totalDocuments} pageSizeOptions={[3,4,5,7,10]}
+                  showSizeChanger
+                  //@ts-ignore
+                    onShowSizeChange={(current, pageSize) => setLimit(pageSize)} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )}
             {activeTab === 'transactions' && (
@@ -477,7 +480,11 @@ const handleWithdrawalRequest = async () => {
                     date={new Date().toLocaleDateString()} 
                   />
                 )}
-                  <Pagination total={totalDocuments} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
+                  <Pagination total={totalDocuments} pageSizeOptions={[3,4,5,7,10]}
+                  showSizeChanger
+                  //@ts-ignore
+                    onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
+                   current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )} 
             {activeTab ===  'purchased' && (
@@ -485,7 +492,12 @@ const handleWithdrawalRequest = async () => {
                  {Array.isArray(paidDocuments) && paidDocuments.map((doc: Document2) => (
                   <DocumentItem key={doc.documentId} document={doc} />
                 ))}
-                <Pagination total={totalDocuments} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
+                <Pagination total={totalDocuments} 
+                pageSizeOptions={[3,4,5,7,10]}
+                showSizeChanger
+                //@ts-ignore
+                  onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
+                   current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )}
             
