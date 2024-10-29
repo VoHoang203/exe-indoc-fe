@@ -3,20 +3,20 @@ import avt from "../../assets/avt.png"
 import edit_icon from "../../assets/edit_icon.png"
 import search_normal from "../../assets/search-normal.png"
 import board from "../../assets/board.png"
-// import seeicon from  "../../assets/seeicon.png"
+import seeicon from  "../../assets/seeicon.png"
 import dateicon from "../../assets/dateicon.png"
 import { getAccessToken } from '../../utils/auth';
-import {useQuery } from '@tanstack/react-query';
+import {useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import http from '../../utils/http';
 import { useAuth, User } from '../../context/app.context';
 import ReactModal from 'react-modal'
 import { FaCamera } from 'react-icons/fa';
 import { formatCurrency } from '../Payment/Payment';
-import { formatDate } from '../../utils/formatCurrency';
 import request from "../../assets/hugeicons_money-receive-circle.png"
 import upload from "../../assets/hugeicons_money-send-circle.png"
 import { message, Pagination } from 'antd';
+import { fetchBankData } from '../SellerRegister/SellerRegistration';
 // }
 interface Document2 {
   documentId: string;
@@ -24,10 +24,11 @@ interface Document2 {
   description: string;
   price: string;
   filePath: string;
-  downloads: number;
+  saleCount: number | string;
   date: string;
   author: string;
   createdAt: string;
+  purchaseDate?:string
 }
 interface DocumentResponse {
   total: number;          // Total number of documents
@@ -86,9 +87,9 @@ const fetchPaidDocuments = async (currentPage: number, limit: number) : Promise<
     data:data.data.map((doc: Document2) => ({
     id: doc.documentId,
     title: doc.title,
-    downloads: 0,
+    saleCount: doc.saleCount,
     filePath: doc.filePath,
-    createdAt: new Date(doc.createdAt).toLocaleDateString(),
+    createdAt: new Date(doc.purchaseDate || doc.createdAt).toLocaleDateString(),
     author: 'Unknown',
   }))} 
 };
@@ -110,9 +111,9 @@ const fetchOwnDocuments = async (currentPage: number, limit: number) : Promise<D
     data:data.data.map((doc: Document2) => ({
       id: doc.documentId,
       title: doc.title,
-      downloads: 0,
+      saleCount: doc.saleCount,
       filePath: doc.filePath,
-      createdAt: new Date(doc.createdAt).toLocaleDateString() || '12/10/2023',
+      createdAt: new Date(doc.createdAt).toLocaleDateString() ,
       author: 'Unknown',
       amount: parseFloat(doc.price),
   }))} 
@@ -164,27 +165,23 @@ const SellerProfile: React.FC = () => {
   const [transactionsData, setTransactionsData] = useState<Transaction2[]>(transactions?.data || []); // State để lưu giao dịch
   console.log("paid",paidDocuments)
   const [userInfo, setUserInfo] = useState<User>({
-    user: '',
-    email: '',
-    phoneNumber: '',
-    role: '',
-    bankAccount: '',
-    avatar: '',
-    storeName: '',
-    accountBalance: '',
-    bankName: '',
-    bankAccountNumber: '',
-    bankOwnerName: '',
-    createdAt: '',
-    isVerified: false,
+    user: user?.user || '',
+    email: user?.email || '',
+    phoneNumber: user?.phoneNumber || '',
+    role: user?.role || '',
+    bankAccount: user?.bankAccount || '',
+    avatar: user?.avatar || '',
+    storeName: user?.storeName || '',
+    accountBalance: user?.accountBalance ||   '',
+    bankName: user?.bankName || '',
+    bankAccountNumber: user?.bankAccountNumber || '',
+    bankOwnerName: user?.bankOwnerName || '',
+    createdAt: user?.createdAt || '',
+    isVerified: user?.isVerified || false,
+    electronicInvoiceEmail: user?.electronicInvoiceEmail || '',
   });
 
-  useEffect(() => {
-    const storedUserInfo = localStorage.getItem('userInfo');
-    if (storedUserInfo) {
-      setUserInfo(JSON.parse(storedUserInfo));
-    }
-  }, [showDetailSellerModal]);
+ 
   useEffect(() => {
     setCurrentPage(0);
     setLimit(3); 
@@ -213,14 +210,11 @@ const SellerProfile: React.FC = () => {
   }, [isLoading]);
   useEffect(()=>{
     if (documents) {
-      
       setOwnDocuments(documents.data || []);
     }
-  
     if (paid) {
       setPaidDocuments(paid.data || []);
     }
-  
     if (transactions) {
       setTransactionsData(transactions.data || []);
     }
@@ -233,7 +227,6 @@ const SellerProfile: React.FC = () => {
         const updatedUserInfo = { 
           ...userInfo, 
           avatar: reader.result as string,
-          password: user?.password|| '', // Ensure password is included
           phoneNumber: user?.phoneNumber || '' // Ensure phoneNumber is included
         };
         setUserInfo(updatedUserInfo);
@@ -251,7 +244,22 @@ const SellerProfile: React.FC = () => {
     setShowDetailSellerModal((prev) => !prev);
   };
   const handleUserInfoUpdate = (updatedUserInfo: User) => {
-    setUserInfo(updatedUserInfo);
+    console.log("updatedUserInfo",updatedUserInfo)
+    setUserInfo({
+      ...updatedUserInfo,
+      accountBalance: updatedUserInfo.accountBalance ,
+      avatar: updatedUserInfo.avatar ,
+      bankAccountNumber: updatedUserInfo.bankAccountNumber,
+      bankCV: updatedUserInfo.bankCV ,
+      bankName: updatedUserInfo.bankName ,
+      bankOwnerName: updatedUserInfo.bankOwnerName ,
+      email: updatedUserInfo.email ,
+      phoneNumber: updatedUserInfo.phoneNumber ,
+      role: updatedUserInfo.role,
+      storeName: updatedUserInfo.storeName ,
+      user: updatedUserInfo.user ,
+      createdAt: updatedUserInfo.createdAt
+    });
     setUser(updatedUserInfo); 
   };
 console.log(ownDocuments)
@@ -358,7 +366,7 @@ const handleWithdrawalRequest = async () => {
                   </tr>
                   <tr className='border-b border-gray-300 last:border-b-0'>
                     <td className="p-4 font-medium text-left border-r border-gray-300">Ngân hàng</td>
-                    <td className="p-4 text-left">{userInfo.bankName}</td>
+                    <td className="p-4 text-left" >{userInfo.bankName}</td>
                     <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -397,7 +405,7 @@ const handleWithdrawalRequest = async () => {
                   </tr>
                   <tr className='border-b border-gray-300 last:border-b-0'>
                     <td className="p-4 font-medium text-left border-r border-gray-300">Ngày tham gia</td>
-                    <td className="p-4 text-left">{formatDate(userInfo.createdAt || '') }</td>
+                    <td className="p-4 text-left">{userInfo.createdAt}</td>
                     <td className="p-4  border-l border-gray-300">
                   <button onClick={() =>handleDetailSellerModalToggle()}>
                     <img src={edit_icon} alt="" className="w-5 h-5" />
@@ -497,13 +505,13 @@ const DocumentItem: React.FC<{ document: Document2 }> = ({ document }) => (
     <div className="flex-grow">
       <h3 className="text-2xl font-bold text-gray-700 mb-2">{document.title}</h3>
       <div className="flex gap-2 items-center">
-        {/* <div className="flex items-center gap-1">
+        {document.saleCount && (<div className="flex items-center gap-1">
           <img src={seeicon} alt="" className="w-6" />
-          <p className="text-gray-400">{document.downloads} lượt tải về</p>
-        </div> */}
+          <p className="text-gray-400">{document.saleCount} lượt tải về</p>
+        </div> )}
         <div className="flex items-center gap-1">
           <img src={dateicon} alt="" className="w-6" />
-          <p className="text-gray-400">Ngày tải: {('03/12/2024')}</p>
+          <p className="text-gray-400">Ngày tải: {document.createdAt}</p>
         </div>
       </div>
     </div>
@@ -673,23 +681,86 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
       </form></ReactModal>
   )
 };
+const updateSellerInfo = async (payload: {
+  storeName: string;
+  phoneNumber: string;
+  typeOfBusiness: string;
+  electronicInvoiceEmail: string;
+  typeOfAuthen: string;
+  idNumber: string;
+  bankName: string ;
+  bankOwnerName: string | undefined;
+  bankAccountNumber: string;
+}) => {
+  const accessToken = getAccessToken(); // Lấy access token
+  const loadingToastId = toast.loading('Cập nhật thông tin...')
+  const response = await http.post('/seller/profile/update', payload, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
 
+  if (response.status !== 200) {
+    throw new Error('Failed to update seller info');
+  }
+  toast.dismiss(loadingToastId)
+  return response.data; // Trả về dữ liệu nếu cần
+};
 const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSeller: boolean; userInfo: User ; onUserInfoUpdate: (userInfo: User) => void }> = ({ isOpen,onClose,isSeller, userInfo, onUserInfoUpdate }) => {
   const { user, setUser } = useAuth();
-  const [name, setName] = useState(user?.storeName || '');
+  const [storeName, setStoreName] = useState(user?.storeName || '');
   const [email] = useState(user?.email || '');
-  const [phone, setPhone] = useState(user?.phoneNumber || '');
-  const [bankAccount] = useState(user?.bankAccount || '');
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
   const [bankCV] = useState(user?.bankCV || '');
+  const [bankOwnerName, setBankOwnerName] = useState(user?.bankOwnerName || '');
+  const [bankAccountNumber, setBankAccountNumber] = useState(user?.bankAccountNumber || '');
+  const [bankName, setBankName] = useState(user?.bankName || '');
+  const [electronicInvoiceEmail ] = useState(user?.electronicInvoiceEmail || '');
   const [createdAt] = useState(user?.createdAt || '');
+  const mutation = useMutation( {
+    mutationFn: updateSellerInfo,
+    onSuccess: (data: User) => {
+      toast.success('Cập nhật thông tin thành công');
+      console.log("Cập nhật thông tin thành công", data);
+      onUserInfoUpdate({ ...user, ...data }); // Cập nhật user info
+      
+    },
+    onError: (error) => {
+      console.error("Có lỗi xảy ra:", error);
+    },
+  });
+  console.log("electronicInvoiceEmail",electronicInvoiceEmail)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const updatedUserInfo = { ...user , email, phone, bankAccount, bankCV,name };
+    const updatedUserInfo = { ...user , email, phoneNumber, bankCV,storeName, bankOwnerName, bankAccountNumber, electronicInvoiceEmail,bankName };
     setUser(updatedUserInfo as User);
+    
+    mutation.mutate({
+      storeName: storeName,
+      phoneNumber: phoneNumber,
+      bankAccountNumber: bankAccountNumber,
+      bankOwnerName: bankOwnerName,
+      bankName: bankName,
+      typeOfBusiness: 'Trường Học', 
+      electronicInvoiceEmail: electronicInvoiceEmail, 
+      idNumber: '934534535454' ,
+      typeOfAuthen: 'CMND'
+  });
+  
     localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
     onUserInfoUpdate(updatedUserInfo as User);
-    onClose();
+    
   };
+  const [bankOptions, setBankOptions] = useState<{ id: number; name: string; shortName: string }[]>([]);
+
+  useEffect(() => {
+    const loadBankData = async () => {
+      const banks = await fetchBankData();
+      setBankOptions(banks);
+    };
+    loadBankData();
+  }, []);
   return (
     <ReactModal
       isOpen={isOpen}
@@ -698,17 +769,17 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSelle
       className="bg-white rounded-xl p-8 w-2/3 max-w-2xl mx-auto mt-20"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
     >
-      <h3 className="text-center text-2xl font-medium mb-6">Chỉnh sửa thông tin người dùng</h3>
+      <h3 className="text-center text-2xl font-medium mb-6">{isSeller ? "Chỉnh sửa thông tin người dùng" : "Thông tin người dùng"}</h3>
       <form onSubmit={handleSubmit}>
       {isSeller ? (
           <>
             <div className="mb-4">
               <label className="block mb-1">Tên cửa hàng</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={name} onChange={(e) => setName(e.target.value)} />
+              <input type="text" className="w-full border rounded-xl p-2" value={storeName} onChange={(e) => setStoreName(e.target.value)} />
             </div>
             <div className="mb-4">
               <label className="block mb-1">SĐT</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <input type="text" className="w-full border rounded-xl p-2" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
             </div>
             <div className="mb-4">
               <label className="block mb-1">Số dư tài khoản</label>
@@ -716,22 +787,34 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSelle
             </div>
             <div className="mb-4">
               <label className="block mb-1">Ngân hàng</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.bankName} readOnly />
+              <select
+                    className="w-full border rounded-xl p-2"
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>{bankName}</option>
+                    {bankOptions.map(bank => (
+                      <option key={bank.id} value={bank.shortName}>
+                        {bank.shortName}
+                      </option>
+                    ))}
+                </select>
             </div>
             <div className="mb-4">
               <label className="block mb-1">Số tài khoản</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.bankAccountNumber} readOnly />
+              <input type="text" className="w-full border rounded-xl p-2" value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)}/>
             </div>
             <div className="mb-4">
               <label className="block mb-1">Chủ tài khoản</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.bankOwnerName} readOnly />
+              <input type="text" className="w-full border rounded-xl p-2" value={bankOwnerName} onChange={(e) => setBankOwnerName(e.target.value)}/>
             </div>
           </>
         ) : (
           <>
             <div className="mb-4">
               <label className="block mb-1">Ngày tham gia</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={formatDate(createdAt || '')} readOnly />
+              <input type="text" className="w-full border rounded-xl p-2" value={createdAt} readOnly />
             </div>
             <div className="mb-4">
               <label className="block mb-1">Đã xác thực</label>

@@ -88,7 +88,7 @@ const checkDocumentOwnership = async (documentId: string, accessToken: string) =
     if (error.response && error.response.status === 400) {
       throw new Error(error.response.data.message); // Trả về thông báo lỗi
     }
-    throw new Error('An error occurred while checking document ownership.');
+    throw new Error('Back end ngu');
   }
 };
 
@@ -203,6 +203,7 @@ useEffect(() => {
       handleSearch={handleSearch}
       categories={transformedCategories }
       isLoading={isLoading}
+      selectedCategory={selectedCategory}
       commentsSidebar={selectedDocument ? <CommentsSidebar /> : undefined}>
         {selectedDocument ? (
         <ProductDetail document={selectedDocument} onBack={() => setSelectedDocument(null)} />
@@ -527,18 +528,18 @@ const ProductDetail: React.FC <{ document: Document; onBack: () => void }> = ({ 
     const isOwner = await checkDocumentOwnership(documentId, accessToken);
     const isPurchased = await checkDocumentPurchased(documentId, accessToken);
 
-    if (isOwner) {
+    if (isOwner !== true ) {
       alert('You cannot purchase the document that you uploaded.');
       return;
     }
 
-    if (isPurchased) {
+    if (!isPurchased) {
       alert('You already bought this document.');
       return;
     }
     navigate('/payment', { state: { document } });
   } catch (error:any) {
-    alert(error.message); // Hiển thị thông báo lỗi cho người dùng
+    alert(error.message); 
   }
   
   };

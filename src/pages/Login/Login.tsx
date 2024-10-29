@@ -73,9 +73,8 @@ const Login = () => {
           role: userProfile?.role ,
           phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",
           bankName: userProfile?.bankName || "chưa có thông tin",
+          electronicInvoiceEmail: userProfile?.electronicInvoiceEmail || '',
         };
-          localStorage.setItem('userInfo', JSON.stringify(userInfo));
-          setUser(userInfo);
       }else {
           userInfo= {
             user: userProfile?.email?.split('@')[0],
@@ -91,8 +90,8 @@ const Login = () => {
           
       }
       
-        localStorage.setItem('userInfo', JSON.stringify(userInfo));
-        setUser(userInfo);
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      setUser(userInfo);
       setIsAuthenticated(true);
       saveAccessToken(response.data.accessToken)
       navigate('/')

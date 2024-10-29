@@ -13,6 +13,8 @@ import tick from "../../assets/tick.png"
 // import * as yup from "yup";
 import login from '../../assets/login_register.png'
 import { AxiosError } from "axios"
+import { FaEyeSlash } from "react-icons/fa"
+import { FaEye } from "react-icons/fa"
 // import { getAccessToken } from "../../utils/auth"
 export type RegisterInputs = Pick<Schema,"email"|"password"|"confirm_password" >
 enum RegisterStep {
@@ -62,7 +64,7 @@ const Register: React.FC = () => {
       toast.success('OTP confirmed successfully.');
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      toast.error(error.response?.data.message || 'Failed to confirm OTP.');
+      toast.error((error.response?.data.message || 'Failed to confirm OTP.') + " Note: OTP only exist 2 minutes, maybe `gửi lại`" );
     },
   });
   const registerMutation = useMutation({
@@ -104,11 +106,11 @@ const Register: React.FC = () => {
   const renderStep = () => {
     switch (step) {
       case RegisterStep.Index:
-        return <RegisterIndex  emailSubmit={handleEmailSubmit} setValue={setValue} register={register} errors={errors}/>;
+        return <RegisterIndex isLoading={checkEmailMutation.isPending} emailSubmit={handleEmailSubmit} setValue={setValue} register={register} errors={errors}/>;
       case RegisterStep.XacMinh:
-        return <RegisterXacMinh email={getValues("email")} currentStep={1} otpSubmit={handleOtpSubmit} resetStep={resetStep }/>;
+        return <RegisterXacMinh isLoading={confirmOtpMutation.isPending} email={getValues("email")} currentStep={1} otpSubmit={handleOtpSubmit} resetStep={resetStep }/>;
       case RegisterStep.TaoMatKhau:
-        return <RegisterTaoMatKhau  currentStep={2} passwordSubmit={handlePasswordSubmit} register={register} errors={errors} getValues={getValues} />;
+        return <RegisterTaoMatKhau isLoading={registerMutation.isPending} currentStep={2} passwordSubmit={handlePasswordSubmit} register={register} errors={errors} getValues={getValues} />;
       case RegisterStep.HoanThanh:
         return <RegisterHoanThanh email={getValues("email")} currentStep={3}/>;
     }
@@ -260,9 +262,10 @@ interface RegisterIndexProps {
   register: UseFormRegister<RegisterInputs>;
   setValue: UseFormSetValue<RegisterInputs>;
   errors: FieldErrors<RegisterInputs>;
+  isLoading: boolean;
 }
 
-const RegisterIndex: React.FC<RegisterIndexProps> = ({emailSubmit ,setValue}) => {
+const RegisterIndex: React.FC<RegisterIndexProps> = ({emailSubmit ,setValue,isLoading}) => {
  
   const emailSchema = schema.pick(["email"])
   const {
@@ -305,7 +308,23 @@ const RegisterIndex: React.FC<RegisterIndexProps> = ({emailSubmit ,setValue}) =>
           className="w-full h-10 px-3 rounded border border-[#8D8C8C] focus:border-[#868585] outline-none text-[#8D8C8C] transition-all duration-300"
         />
          <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">{errors.email?.message}</div>
-        <button type="submit" className="w-full mt-10 py-3 bg-[#1AB3BC] hover:bg-[#1699a0] text-white rounded cursor-pointer transition-colors duration-300">
+        <button disabled={isLoading} type="submit" className="w-full flex  items-center justify-center mt-10 py-3 bg-[#1AB3BC] hover:bg-[#1699a0] text-white rounded cursor-pointer transition-colors duration-300">
+           {isLoading && (<svg
+                        aria-hidden='true'
+                        className='mr-2 h-4 w-4 animate-spin fill-white text-gray-200'
+                        viewBox='0 0 100 101'
+                        fill='none'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z'
+                          fill='currentColor'
+                        />
+                        <path
+                          d='M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z'
+                          fill='currentFill'
+                        />
+                      </svg>)}
             Gửi OTP
         </button>
       </form>
@@ -319,19 +338,12 @@ const RegisterIndex: React.FC<RegisterIndexProps> = ({emailSubmit ,setValue}) =>
           <img src={logoFacebook} className="h-5" />
           <span className="text-[#828282]">Facebook</span>
         </button>
-        <button className="flex-1 flex items-center justify-center gap-2 border border-[#9f9f9f] py-2 rounded transition-all duration-300 hover:bg-gray-100">
+        <button  className="flex-1 flex items-center justify-center gap-2 border border-[#9f9f9f] py-2 rounded transition-all duration-300 hover:bg-gray-100">
           <img src={logoGoogle}  className="h-5" />
           <span className="text-[#828282]">Google</span>
         </button>
       </div>
-      <div className="mt-10 text-center text-sm">
-        <p>Bằng việc đăng kí, bạn đã đồng ý với Shopee về</p>
-        <p>
-          <a href="#" className="text-[#1AB3BC] hover:underline transition-all duration-300">Điều khoản và dịch vụ</a> &
-          <a href="#" className="text-[#1AB3BC] hover:underline transition-all duration-300">Chính sách bảo mật</a>
-        </p>
-      </div>
-      <div className="mt-15 text-center text-sm text-[#828282] hover:underline transition-all duration-300">
+      <div className="mt-5 text-center text-sm text-[#828282] hover:underline transition-all duration-300">
         Bạn đã có tài khoản ? <a href="/login" className="text-[#1AB3BC]">Đăng nhập</a>
       </div>
       </div>
@@ -345,9 +357,10 @@ interface RegisterXacMinhProps {
   currentStep: number;
   otpSubmit: (OTP:string, email:string) => Promise<void>;
   resetStep: () => void;
+  isLoading: boolean;
 }
 
-const RegisterXacMinh: React.FC<RegisterXacMinhProps> = ({email,currentStep ,otpSubmit,resetStep}) => {
+const RegisterXacMinh: React.FC<RegisterXacMinhProps> = ({email,currentStep ,otpSubmit,resetStep, isLoading}) => {
   const [verificationCode, setVerificationCode] = useState<string[]>(Array(6).fill(''));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const resendOtpMutation = useMutation({
@@ -396,11 +409,11 @@ const RegisterXacMinh: React.FC<RegisterXacMinhProps> = ({email,currentStep ,otp
     <StepIndicator currentStep={currentStep} />
      <div className="bg-white rounded-lg shadow-md p-10 w-[520px] text-center opacity-0 animate-fadeIn">
       <h3 className="text-xl font-medium text-[#504C4C] mb-5">Nhập mã xác nhận</h3>
-      <p className="text-[#00000066]">Mã xác nhận đã được gửi tới email</p>
-      <p className="text-[#00000066] mt-2">{email}</p>
+      <p className="text-black ">Mã xác nhận đã được gửi tới email: </p>
+      <p className="text-[#1AB3BC] mt-2">{email}</p>
 
       <form onSubmit={handleSubmit}>
-        <div className="flex justify-between mt-24 mb-10 px-7">
+        <div className="flex justify-between mt-4 mb-5 px-7">
           {verificationCode.map((digit, index) => (
             <input
               key={index}
@@ -420,17 +433,33 @@ const RegisterXacMinh: React.FC<RegisterXacMinhProps> = ({email,currentStep ,otp
             onClick={() => handleResendOtp()} 
             className="text-[#1AB3BC] hover:underline focus:outline-none"
           >
-            Gửi lại
+            Gửi lại 
           </button> 
-          hoặc 
+           {" hoặc "} 
           <button 
             onClick={() => {resetStep();}} 
-            className="text-[#1AB3BC] ml-1 hover:underline focus:outline-none"
+            className="text-[#1AB3BC]  hover:underline focus:outline-none"
           >
-            Nhập email khác
+          Nhập email khác
           </button>
         </p>
-        <button type="submit" className="w-full mt-10 py-2 bg-white border border-[#4c4c4c] text-[#A4A4A4] rounded-lg hover:bg-[#1AB3BC] hover:text-white hover:border-[#1AB3BC] transition-colors duration-300">
+        <button disabled={isLoading} type="submit" className="w-full flex items-center justify-center mt-10 py-4 rounded-xl bg-[#1AB3BC] px-2 text-sm uppercase text-white hover:bg-blue-600 transition-colors duration-300">
+        {isLoading && (<svg
+                        aria-hidden='true'
+                        className='mr-2 h-4 w-4 animate-spin fill-white text-gray-200'
+                        viewBox='0 0 100 101'
+                        fill='none'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z'
+                          fill='currentColor'
+                        />
+                        <path
+                          d='M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z'
+                          fill='currentFill'
+                        />
+                      </svg>)}
           Tiếp theo
         </button>
       </form>
@@ -445,17 +474,27 @@ interface RegisterTaoMatKhauProps {
   register: UseFormRegister<RegisterInputs>;
   errors: FieldErrors<RegisterInputs>;
   getValues: () => { email: string; password: string };
+  isLoading: boolean;
 }
 
-const RegisterTaoMatKhau: React.FC<RegisterTaoMatKhauProps> = ({currentStep,passwordSubmit, getValues}) => {
+const RegisterTaoMatKhau: React.FC<RegisterTaoMatKhauProps> = ({currentStep,passwordSubmit, getValues:getValueraw, isLoading}) => {
   
   
-  const [password,setPassword] = useState<string>('')
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(getValues().email + ' ' + password)
-    passwordSubmit({ email: getValues().email, password: password });
-  };
+  // const [password,setPassword] = useState<string>('')
+  const passwordSchema = schema.pick(["password", "confirm_password"])
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
+  const {
+    register,
+    handleSubmit,
+      formState: { errors },
+    } = useForm<{password:string, confirm_password:string}>({
+    resolver: yupResolver(passwordSchema),
+  });
+  const onSubmit = handleSubmit(async (data)=>{
+    console.log(getValueraw().email + ' ' + data.password)
+    passwordSubmit({ email: getValueraw().email, password: data.password });
+  });
   return (<>
     <StepIndicator currentStep={currentStep} />
     <div className="bg-white rounded-lg shadow-md p-10 w-[520px] opacity-0 animate-fadeIn">
@@ -463,25 +502,78 @@ const RegisterTaoMatKhau: React.FC<RegisterTaoMatKhauProps> = ({currentStep,pass
       <p className="text-[#00000066]">Hãy tạo mật khẩu bạn có thể ghi nhớ</p>
 
       <form onSubmit={onSubmit}>
-        <div className="mt-16">
+        <div className="mt-4 relative">
               <input
-              value={password}
-              onChange={(e)=>setPassword(e.target.value)}
-                type="password"
+              {...register("password")}
+                type={showPassword ? "text" : "password"}
                  title="Password must contain at least one uppercase letter, one number, one special character, and be longer than 7 characters."
                 className="mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm"
                 placeholder="Mật khẩu"
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                onClick={() => {
+                  setShowPassword(!showPassword); }}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <FaEye className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
              
               
         </div>
-        <div className="mt-4 text-left text-[#868585]">
-          {/* <p className="mt-2">* 1 kí tự viết hoa</p>
-          <p className="mt-2">* 1 con số</p> */}
+        <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm ">{errors.password?.message}</div>
+        <div className="mt-1 relative">
+              <input
+              {...register("confirm_password")}
+                type={showConfirmPassword ? "text" : "password"}
+                 title="Password must contain at least one uppercase letter, one number, one special character, and be longer than 7 characters."
+                className="mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm"
+                placeholder="Mật khẩu"
+              />
+             <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                onClick={() => {
+                  setShowConfirmPassword(!showConfirmPassword); }}
+              >
+                {showConfirmPassword ? (
+                  <FaEyeSlash className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <FaEye className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
+             
+        </div>
+        <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm ">{errors.confirm_password?.message}</div>
+        <div className="mt-2 text-left text-[#868585]">
+          {/* <p className="mt-2">* 1 kí tự viết hoa</p> */}
+          <p className="mt-2">* Mật khẩu xác nhận phải giống mật khẩu mới</p>
           <p className="mt-2">* Trên 7 kí tự</p>
         </div>
-        <button type="submit" className="w-full mt-24 py-2 bg-white border border-[#4c4c4c] text-[#A4A4A4] rounded-lg hover:bg-[#1AB3BC] hover:text-white hover:border-[#1AB3BC] transition-colors duration-300">
-          Tiếp theo
+        <button disabled={isLoading} type="submit" className="w-full mt-4  border border-[#4c4c4c] rounded-2xl bg-[#1AB3BC] py-4 px-2 text-sm uppercase text-white hover:bg-blue-600 transition-colors duration-300">
+          {isLoading && (
+                        <svg
+                          aria-hidden='true'
+                          className='mr-2 h-4 w-4 animate-spin fill-white text-gray-200'
+                          viewBox='0 0 100 101'
+                          fill='none'
+                          xmlns='http://www.w3.org/2000/svg'
+                        >
+                          <path
+                            d='M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z'
+                            fill='currentColor'
+                          />
+                          <path
+                            d='M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z'
+                            fill='currentFill'
+                          />
+                        </svg>
+                        )}
+            Tiếp theo
         </button>
       </form>
     </div>
@@ -496,14 +588,15 @@ interface RegisterHoanThanhProps {
 }
 
 const RegisterHoanThanh: React.FC<RegisterHoanThanhProps> = ({ email,currentStep }) => {
+  const navigate = useNavigate()
   return (<>
   <StepIndicator currentStep={currentStep} />
     <div className="bg-white rounded-lg shadow-md p-10 w-[520px] text-center opacity-0 animate-fadeIn">
       <img src={tick} alt="Success" className="w-24 mx-auto mb-7" />
       <p className="text-[#00000066] mt-7">Bạn đã thành công tạo tài khoản với email</p>
       <p className="text-[#1AB3BC] mt-2">{email}</p>
-      <button className="w-full mt-24 py-3 bg-[#1AB3BC] text-white rounded-lg hover:bg-[#1699a0] transition-all duration-300">
-        Tìm kiếm tài liệu
+      <button type="button" onClick={()=>{navigate('/login')}} className="w-full mt-24 py-3 bg-[#1AB3BC] text-white rounded-lg hover:bg-[#1699a0] transition-all duration-300">
+        Đăng nhập
       </button>
   </div>
   </>

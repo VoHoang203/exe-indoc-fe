@@ -135,6 +135,9 @@ const ForgotPassword: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <div>
+        <button onClick={() => navigate("/login")} className="mb-4 text-blue-500 hover:text-blue-700">
+            &larr; Back to login
+            </button>
           <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-8">
             Forgot Password
           </h2>
@@ -156,7 +159,7 @@ const ForgotPassword: React.FC = () => {
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             <button
               onClick={handleEmailSubmit}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-200 transform hover:scale-[1.02]"
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-200 transform hover:scale-[1.02] bg-gradient-to-r from-cyan-500 to-purple-600  text-sm uppercase hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-800"
             >
               Send OTP
             </button>

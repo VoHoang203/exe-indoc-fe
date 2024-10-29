@@ -54,11 +54,13 @@ const Header = () => {
         <div className="container mx-auto flex justify-between items-center py-2 px-6">
 
           <nav className="flex-shrink-0">
-            <img
-              src={logo_indocs} // Đường dẫn đến file ảnh logo của bạn
-              alt="Logo"
-              className=" w-32 h-auto" // Giữ nguyên các class CSS để đảm bảo kích thước phù hợp
-            />
+            <Link to="/">
+              <img
+                src={logo_indocs} // Đường dẫn đến file ảnh logo của bạn
+                alt="Logo"
+                className=" w-32 h-auto" // Giữ nguyên các class CSS để đảm bảo kích thước phù hợp
+              />
+            </Link>
           </nav>
           <nav className=" hidden md:flex justify-center space-x-8">
             <Link

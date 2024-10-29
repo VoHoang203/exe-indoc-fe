@@ -8,7 +8,7 @@ export interface User {
     bankAccount?: string;
     bankCV?: string;
     createdAt: string;
-    isVerified: boolean
+    isVerified?: boolean
     role: string
     storeName?: string
     phoneNumber: string
