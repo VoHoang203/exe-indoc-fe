@@ -89,7 +89,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
           <Flex justifyContent="space-between" mt={4}>
             <Input
               placeholder="Price"
-              type="number"
+              type="string"
               style={{ width: '48%', height: '40px' }}
               value={formatCurrency(Number(editProduct.cost)) + " VND"}
             />
