@@ -200,7 +200,7 @@ console.log(transactionDetail)
           total={totalPages}
           pageSize={limit}
           onChange={handlePageChange}
-          pageSizeOptions={[3,5,10, 20, 50, 100]}
+          pageSizeOptions={[3,4,5,7,10]}
           //@ts-ignore
           onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
           style={{ marginTop: '20px', textAlign: 'center' }}

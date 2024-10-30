@@ -117,7 +117,7 @@ export default function OrderManagement() {
     console.log(withdrawalsId)
     try {
       const response = await http.post('/admin/withdrawals/solved', {
-        "withdrawalsId":withdrawalsId ,
+        withdrawalsId: withdrawalsId ,
       });
   
       if (response.status === 200) {
@@ -186,30 +186,27 @@ export default function OrderManagement() {
       align: 'center' as 'center',
       //@ts-ignore
       render: (text: any, record: any) => (
+        console.log("record2",record),
         <Button onClick={() => handleViewDetail()}>Detail</Button>
       ),
     }, {
       title: 'Action',
-      dataIndex: 'status',
-      key: 'status',
+      key: 'ctions',
       render: (record: Withdrawal) => (
-        <Popconfirm
-      title="Are you sure you want to process this withdrawal?"
-      onConfirm={() => toggleWithdrawalStatus(record.withdrawalsId)}
-      okText="Yes"
-      cancelText="No"
-    >
-      {/* Make sure record.status exists here */}
+        console.log("record",record),
+    
       <Button
         disabled={record.status === 'approved'}
         onClick={async () => {
+          console.log('Processing withdrawal ID:', record.withdrawalsId);
           await toggleWithdrawalStatus(record.withdrawalsId);
+          setWithdrawal([])
           refetch(); // Refetch data after processing
+          setWithdrawal(mockData?.data || []);
         }}
       >
         Process
       </Button>
-    </Popconfirm>
       ),
     }
   ];

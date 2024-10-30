@@ -307,7 +307,7 @@ console.log("documents:",documents)
           current={currentPage}
           total={total}
           pageSize={limit}
-          pageSizeOptions={[3,5,10, 20, 50, 100]}
+          pageSizeOptions={[3,4,5,7,10]}
           onChange={handlePageChange}
           showSizeChanger
           //@ts-ignore

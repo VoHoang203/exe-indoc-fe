@@ -203,9 +203,6 @@ const SellerProfile: React.FC = () => {
     } else {
       message.destroy();
     }
-  
-    
-    
     
   }, [isLoading]);
   useEffect(()=>{
