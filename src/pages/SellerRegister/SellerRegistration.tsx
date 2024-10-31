@@ -70,7 +70,7 @@ export const fetchBankData = async (): Promise<{ id: number; name: string; short
 }
 // Component chính
 const SellerRegistration: React.FC = () => {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(3);
   const [sellerInfo, setSellerInfo] = useState<SellerInfo>({ storeName: '', email: '', phone: '' });
   const [taxInfo, setTaxInfo] = useState<TaxInfo>({
     businessType: '',
@@ -174,7 +174,7 @@ const { reset} = useAuth()
   const renderStepIndicator = () => {
     if (step === 0) return null;
     return (
-        <div className="flex justify-center items-center mb-12 gap-2">
+        <div className="flex justify-center items-center mb-12 gap-2 align-baseline">
         {[1, 2, 3, 4].map((num) => (
           <React.Fragment key={num}>
             <div className={`flex flex-col items-center ${step >= num ? 'text-[#1AB3BC]' : 'text-gray-500'}`}>
@@ -264,6 +264,8 @@ const { reset} = useAuth()
           name="phone"
           className="w-3/4 p-2 border border-gray-300 rounded"
           placeholder="Số điện thoại của bạn"
+          maxLength={10}
+          minLength={10}
           required
           value={sellerInfo.phone}
           onChange={handleSellerInfoChange}
@@ -383,6 +385,7 @@ const { reset} = useAuth()
               checked={identityInfo.idType === type}
               onChange={handleIdentityInfoChange}
               className="mr-2"
+              required
             />
             {type === 'cccd' ? 'Căn cước công dân' : type === 'cmnd' ? 'Chứng minh nhân dân' : 'Hộ chiếu'}
           </label>
@@ -391,7 +394,7 @@ const { reset} = useAuth()
     </div>
 
     <div className="flex items-center mb-4">
-      <label htmlFor="idNumber" className="w-1/4 text-gray-700"><span className="text-red-500">*</span> Số {identityInfo.idType}</label>
+      <label htmlFor="idNumber" className="w-1/4 text-gray-700"><span className="text-red-500">*</span> Mã định danh: </label>
       <input
         type="text"
         id="idNumber"
@@ -405,7 +408,7 @@ const { reset} = useAuth()
     </div>
 
     <div className="flex items-center mb-4">
-      <label htmlFor="bank" className="w-1/4 text-gray-700"><span className="text-red-500">*</span> Tài khoản ngân hàng</label>
+      <label htmlFor="bank" className="w-1/4 text-gray-700"><span className="text-red-500" >*</span> Tài khoản ngân hàng</label>
       <div className="w-3/4 flex space-x-4">
         <select
           id="bank"
@@ -469,8 +472,8 @@ const { reset} = useAuth()
 
     <div className="flex items-center mb-4">
       <label className="flex items-center space-x-3">
-        <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded" />
-        <span className="text-gray-700">Tôi xác nhận tất cả dữ liệu đã cung cấp là chính xác và trung thực. Tôi đã đọc và đồng ý với Chính Sách Bảo Mật của InDocs.</span>
+        <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded" required/>
+        <span className="text-gray-700">Tôi xác nhận tất cả dữ liệu đã cung cấp là chính xác và trung thực. Tôi đã đọc và đồng ý với <a href='https://policies.google.com/privacy?hl=vi' target='_blank' className='underline text-blue-500'>Chính Sách Bảo Mật của InDocs</a>.</span>
       </label>
     </div>
 
@@ -520,7 +523,7 @@ const { reset} = useAuth()
   return (
     <div className="bg-gray-100 min-h-screen">
       
-      <div className="container mx-auto mt-1 bg-white h-[100%] p-10 rounded-lg shadow-lg max-w-3xl">
+      <div className="container mx-auto mt-1 bg-white h-[100%] p-10 rounded-lg shadow-lg max-w-3xl ">
         {renderStepIndicator()}
         <div className="border-t border-gray-300 my-4"></div>
         {step === 0 && renderStep0()}

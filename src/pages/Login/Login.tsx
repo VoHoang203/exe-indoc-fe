@@ -15,7 +15,8 @@ import { saveAccessToken } from "../../utils/auth";
 import {AxiosError} from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
-import { formatDate } from "../../utils/formatCurrency";
+import {  formatDate } from "../../utils/formatCurrency";
+import { formatCurrency } from "../Payment/Payment";
 type Inputs = {
   email: string
   password: string
@@ -68,7 +69,7 @@ const Login = () => {
           createdAt: formatDate(userProfile?.createdAt) || "chưa có thông tin",
           bankOwnerName: userProfile?.bankOwnerName || "chưa có thông tin",
           bankAccountNumber: userProfile?.bankAccountNumber || "chưa có thông tin",
-          accountBalance: userProfile?.accountBalance  || 0,
+          accountBalance: formatCurrency(userProfile?.accountBalance ) || 0,
           isVerified: userProfile?.isVerified || false,
           role: userProfile?.role ,
           phoneNumber: userProfile?.phoneNumber || "chưa có thông tin",

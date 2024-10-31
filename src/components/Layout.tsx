@@ -68,8 +68,12 @@ const Layout = ({ children, categories,commentsSidebar ,
       {/* Sidebar */}
       <div className="w-1/3 bg-white shadow-lg p-6 overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="flex items-center text-lg font-semibold text-teal-600">
-            <RiFilterLine className="mr-2 text-2xl font-bold text-gray-800" /> Tài liệu
+          <h2 className="flex items-center text-lg font-semibold align-baseline">
+          <RiFilterLine className="text-2xl font-bol text-teal-600" />
+            <select className="border rounded p-1 border-none">
+              <option value="document" className='text-teal-600'>Tài liệu</option>
+              <option value="image" className='text-teal-600'>Hình ảnh</option>
+            </select>
           </h2>
           {/* <button className="text-blue-600 hover:text-blue-800 transition duration-300">
             Clear All

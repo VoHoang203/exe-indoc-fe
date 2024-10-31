@@ -5,6 +5,7 @@ import OrderDetailModal from './components/OrderDetailModal';
 import CustomCard from '../../../../components/card/Card';
 import http from '../../../../utils/http';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 const { Option } = Select;
 
@@ -146,6 +147,14 @@ console.log(mockData)
     setSelectedFeedback(feedback);
     setIsModalVisible(true);
   };
+  //@ts-ignore
+  const handlePageSizeChange = (current: number, pageSize: number) => {
+    if (pageSize > totalPages) {
+      toast.error('Page size cannot exceed the current limit.');
+    } else {
+      setLimit(pageSize);
+    }
+  };
 console.log(feedbacks)
   // Define Columns
   const columns = [
@@ -161,7 +170,9 @@ console.log(feedbacks)
     },
     {title: 'Feedback',
       dataIndex: 'feedback',
-      key: 'feedback',},
+      key: 'feedback',
+      width: 350,
+    },
     {
       title: 'Status',
       dataIndex: 'status',
@@ -255,9 +266,9 @@ console.log(feedbacks)
               total={totalPages}
               pageSize={limit}
               onChange={handlePageChange}
-              pageSizeOptions={[3,4,5,7,10]}
-              //@ts-ignore
-              onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
+              pageSizeOptions={[3,5,10]}
+              showSizeChanger
+              onShowSizeChange={(current, pageSize) => handlePageSizeChange(current, pageSize)}
               style={{ marginTop: '20px', textAlign: 'center' }}
             />
           </>

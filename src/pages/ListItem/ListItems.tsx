@@ -10,6 +10,7 @@ import http from "../../utils/http"
 import { formatCurrency } from '../Payment/Payment';
 import { getAccessToken } from '../../utils/auth';
 import { useAuth } from '../../context/app.context';
+import { toast } from 'react-toastify';
 export interface Document {
   id: string;
   title: string;
@@ -86,9 +87,9 @@ const checkDocumentOwnership = async (documentId: string, accessToken: string) =
     return response.status === 200; // Trả về true nếu thành công
   } catch (error:any) {
     if (error.response && error.response.status === 400) {
-      throw new Error(error.response.data.message); // Trả về thông báo lỗi
+      toast.error(error.response.data.message); // Trả về thông báo lỗi
     }
-    throw new Error('Back end ngu');
+      toast.error('Back end disconnected');
   }
 };
 
@@ -524,22 +525,26 @@ const ProductDetail: React.FC <{ document: Document; onBack: () => void }> = ({ 
 
   const handleBuyNow = async (documentId:string) => {
     const accessToken = getAccessToken();
+    if(!accessToken){
+      toast.error('Please login to purchase the document.');
+      return;
+    }
   try {
     const isOwner = await checkDocumentOwnership(documentId, accessToken);
     const isPurchased = await checkDocumentPurchased(documentId, accessToken);
 
     if (isOwner !== true ) {
-      alert('You cannot purchase the document that you uploaded.');
+      toast.error('You cannot purchase the document that you uploaded.');
       return;
     }
 
     if (!isPurchased) {
-      alert('You already bought this document.');
+      toast.error('You already bought this document.');
       return;
     }
     navigate('/payment', { state: { document } });
   } catch (error:any) {
-    alert(error.message); 
+    toast.error(error.message); 
   }
   
   };

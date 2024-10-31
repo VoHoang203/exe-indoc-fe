@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import http from "../../utils/http";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 export const forgotPassword = async (email: string) => {
     const response = await http.post(`/auth/v1/forgot-password`, { email });
@@ -44,7 +44,7 @@ const ForgotPassword: React.FC = () => {
   const forgotPasswordMutation = useMutation({
     mutationFn: forgotPassword,
     onSuccess: () => {
-        toast.success("OTP sent successfully!")
+      toast.success("OTP sent successfully!")
       setStep(2);
       setErrors({});
     },
@@ -76,19 +76,13 @@ const ForgotPassword: React.FC = () => {
     },
   });
   const handleEmailSubmit = async (): Promise<void> => {
+
     if (!validateEmail(email)) {
       setErrors({ email: "Please enter a valid Gmail address" });
       return;
     }
     
     forgotPasswordMutation.mutate(email);
-    let loading: any;
-    if(forgotPasswordMutation.isPending){
-      loading = message.loading("Loading...");
-    }else{
-      toast.dismiss(loading);
-    }
-    
     
   };
 
@@ -98,12 +92,6 @@ const ForgotPassword: React.FC = () => {
       return;
     }
     verifyOtpMutation.mutate({ email, otp })
-    let loading: any;
-    if(verifyOtpMutation.isPending){
-      loading = message.loading("Loading...");
-    }else{
-      toast.dismiss(loading);
-    }
   };
 
   const handlePasswordSubmit = (): void => {
@@ -119,13 +107,17 @@ const ForgotPassword: React.FC = () => {
     // Here you would typically submit the new password to your backend
     
     resetPasswordMutation.mutate({ email, otp, newPassword })
-    let loading: any;
-    if(resetPasswordMutation.isPending){
-      loading = message.loading("Loading...");
-    }else{
-      toast.dismiss(loading);
-    }
+    
   };
+  let disableButton = resetPasswordMutation.isPending || verifyOtpMutation.isPending || forgotPasswordMutation.isPending;
+
+  useEffect(() => {
+    if (resetPasswordMutation.isPending || verifyOtpMutation.isPending || forgotPasswordMutation.isPending) {
+      message.loading("Loading.....")
+    }else{
+      message.destroy();
+    }
+  }, [resetPasswordMutation.isPending, verifyOtpMutation.isPending,forgotPasswordMutation.isPending]);
 
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);
@@ -135,7 +127,7 @@ const ForgotPassword: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <div>
-        <button onClick={() => navigate("/login")} className="mb-4 text-blue-500 hover:text-blue-700">
+        <button disabled={disableButton} onClick={() => navigate("/login")} className="mb-4 text-blue-500 hover:text-blue-700">
             &larr; Back to login
             </button>
           <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-8">
@@ -159,6 +151,7 @@ const ForgotPassword: React.FC = () => {
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             <button
               onClick={handleEmailSubmit}
+              disabled={disableButton}
               className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-200 transform hover:scale-[1.02] bg-gradient-to-r from-cyan-500 to-purple-600  text-sm uppercase hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-800"
             >
               Send OTP
@@ -181,11 +174,18 @@ const ForgotPassword: React.FC = () => {
             />
             {errors.otp && <p className="text-red-500 text-sm">{errors.otp}</p>}
             <button
+              disabled={disableButton}
               onClick={handleOtpSubmit}
               className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-200 transform hover:scale-[1.02]"
             >
               Verify OTP
             </button>
+            <a
+              onClick={handleEmailSubmit} // Thêm nút reset gọi lại hàm handleEmailSubmit
+              className="text-[#1AB3BC] hover:underline hover:text-red-400"
+            >
+              Resend OTP
+            </a>
           </div>
         )}
         {step === 3 && (
@@ -215,24 +215,34 @@ const ForgotPassword: React.FC = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
               )}
             </div>
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                 Confirm New Password
               </label>
+            <div className="relative mt-1">
+              
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm new password"
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
               />
-              {errors.confirmPassword && (
+              
+              <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                </button>
+            </div>
+            {errors.confirmPassword && (
                 <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
               )}
-            </div>
             <button
               onClick={handlePasswordSubmit}
+              
               className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition duration-200 transform hover:scale-[1.02]"
             >
               Reset Password

@@ -29,6 +29,7 @@ interface Document2 {
   author: string;
   createdAt: string;
   purchaseDate?:string
+  ownerId:string
 }
 interface DocumentResponse {
   total: number;          // Total number of documents
@@ -85,11 +86,11 @@ const fetchPaidDocuments = async (currentPage: number, limit: number) : Promise<
     limit: data.limit,
     page: data.page,
     data:data.data.map((doc: Document2) => ({
-    id: doc.documentId,
+    id: doc.documentId ,
     title: doc.title,
     saleCount: doc.saleCount,
     filePath: doc.filePath,
-    createdAt: new Date(doc.purchaseDate || doc.createdAt).toLocaleDateString(),
+    purchaseDate : doc.purchaseDate ? new Date(doc.purchaseDate).toLocaleDateString() : new Date(doc.createdAt).toLocaleDateString(),
     author: 'Unknown',
   }))} 
 };
@@ -207,13 +208,16 @@ const SellerProfile: React.FC = () => {
   }, [isLoading]);
   useEffect(()=>{
     if (documents) {
-      setOwnDocuments(documents.data || []);
+      setOwnDocuments([])
+      setOwnDocuments(documents.data );
     }
     if (paid) {
-      setPaidDocuments(paid.data || []);
+      setPaidDocuments([])
+      setPaidDocuments(paid.data );
     }
     if (transactions) {
-      setTransactionsData(transactions.data || []);
+      setTransactionsData([])
+      setTransactionsData(transactions.data );
     }
   },[documents,paid,transactions,currentPage,limit])
    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,6 +235,14 @@ const SellerProfile: React.FC = () => {
         localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo)); // Save to localStorage
       };
       reader.readAsDataURL(file);
+    }
+  };
+  //@ts-ignore
+  const handlePageSizeChange = (current: number, pageSize: number) => {
+    if (pageSize > totalDocuments) {
+      toast.error('Page size cannot exceed the current limit.');
+    } else {
+      setLimit(pageSize);
     }
   };
   const handleAddDocModalToggle = () => {
@@ -266,7 +278,7 @@ console.log(transactions)
 const handleWithdrawalRequest = async () => {
   const accessToken = getAccessToken();
   const loading = toast.loading('Loading...');
-  const amount = parseFloat(userInfo.accountBalance || '0') || 0; // Get the user's account balance
+  const amount = parseFloat(userInfo.accountBalance?.toString() || '0') || 0; // Get the user's account balance
   try {
     const response = await http.post('/users/withdrawals', {
       amount: amount,
@@ -291,7 +303,7 @@ const handleWithdrawalRequest = async () => {
   toast.done(loading);
 };
   return (
-    <div className="flex gap-5 bg-white w-full h-screen p-5 overflow-y-auto mb-10 pb-5">
+    <div className="flex gap-5 bg-white w-full h-screen p-5 overflow-y-auto  mb-10 pb-5">
       <div className={` ${isSeller ? 'w-2/5' : 'w-1/3'}`}>
         {isSeller && ( <div className='flex gap-2 justify-around'>
           <button onClick={() => handleAddDocModalToggle()} className="flex items-center gap-2 text-gray-400 mb-2">
@@ -439,6 +451,9 @@ const handleWithdrawalRequest = async () => {
           <input type="text" placeholder="Tìm kiếm ...." className="w-full p-2 outline-none text-gray-600 text-lg" />
           <img src={search_normal} alt="" className="w-10 p-2" />
         </div>
+        {activeTab === 'uploaded' && (
+            <p className="text-red-500 mb-4">* Nếu bạn vừa tải tài liệu vui lòng chờ trong giây lát</p>
+          )}
         <div className="animate-fateIn">
           <div className="flex">
             <div className="bg-gray-100 rounded-t-xl p-2 w-48">
@@ -454,22 +469,25 @@ const handleWithdrawalRequest = async () => {
               </select>
             </div>
           </div>
-          <div className="bg-gray-100 rounded-b-xl rounded-tr-xl p-10 shadow-md overflow-y-auto">
+         
+          <div className="bg-gray-100 rounded-b-xl rounded-tr-xl p-10 shadow-md ">
+            
           {activeTab === 'uploaded' && (
               <>
-                  {(Array.isArray(ownDocuments) && ownDocuments.map((doc: Document2) => (
-                  <DocumentItem key={doc.documentId} document={doc} />
+                  
+                  {(Array.isArray(ownDocuments) && ownDocuments.map((doc: Document2, index:number) => (
+                  <DocumentItem key={index} document={doc} />
                 )))}
                 <Pagination total={totalDocuments} pageSizeOptions={[3,4,5,7,10]}
                   showSizeChanger
-                  //@ts-ignore
-                    onShowSizeChange={(current, pageSize) => setLimit(pageSize)} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
+                  
+                    onShowSizeChange={(current, pageSize) => handlePageSizeChange(current, pageSize)} current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )}
             {activeTab === 'transactions' && (
               <>
-                 {Array.isArray(transactionsData) && transactionsData.map((transaction: Transaction2)=> (
-                    <TransactionItem key={transaction.buyerid} transaction={transaction} />
+                 {Array.isArray(transactionsData) && transactionsData.map((transaction: Transaction2, index:number)=> (
+                    <TransactionItem key={index} transaction={transaction} />
                   ))}
                 {transactionsData && transactionsData && (
                   <TotalTransactions 
@@ -479,21 +497,20 @@ const handleWithdrawalRequest = async () => {
                 )}
                   <Pagination total={totalDocuments} pageSizeOptions={[3,4,5,7,10]}
                   showSizeChanger
-                  //@ts-ignore
-                    onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
-                   current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
+                    onShowSizeChange={(current, pageSize) => handlePageSizeChange(current, pageSize)}
+                   current={currentPage +1} 
+                   onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )} 
             {activeTab ===  'purchased' && (
               <>
-                 {Array.isArray(paidDocuments) && paidDocuments.map((doc: Document2) => (
-                  <DocumentItem key={doc.documentId} document={doc} />
+                 {Array.isArray(paidDocuments) && paidDocuments.map((doc: Document2, index:number) => (
+                  <DocumentItem key={index} document={doc} />
                 ))}
                 <Pagination total={totalDocuments} 
                 pageSizeOptions={[3,4,5,7,10]}
                 showSizeChanger
-                //@ts-ignore
-                  onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
+                  onShowSizeChange={(current, pageSize) => handlePageSizeChange(current, pageSize)}
                    current={currentPage +1} onChange={(page) => setCurrentPage(page -1)} pageSize={limit}/>
               </>
             )}
@@ -512,7 +529,7 @@ const DocumentItem: React.FC<{ document: Document2 }> = ({ document }) => (
   <div className="flex items-center gap-2 py-4 border-b border-gray-300 mb-4">
     <img src={board} alt="" className="w-1/12" />
     <div className="flex-grow">
-      <h3 className="text-2xl font-bold text-gray-700 mb-2">{document.title}</h3>
+      <h3 className="text-xl font-bold text-gray-700 mb-2">{document.title}</h3>
       <div className="flex gap-2 items-center">
         {document.saleCount && (<div className="flex items-center gap-1">
           <img src={seeicon} alt="" className="w-6" />
@@ -520,7 +537,7 @@ const DocumentItem: React.FC<{ document: Document2 }> = ({ document }) => (
         </div> )}
         <div className="flex items-center gap-1">
           <img src={dateicon} alt="" className="w-6" />
-          <p className="text-gray-400">Ngày tải: {document.createdAt}</p>
+          <p className="text-gray-400">{document.purchaseDate ? `Ngày mua: ${document.purchaseDate}` : `Ngày tải: ${document.createdAt}`}</p>
         </div>
       </div>
     </div>
@@ -532,7 +549,7 @@ const TransactionItem: React.FC<{ transaction: Transaction2 }> = ({ transaction 
   <div className="flex items-center gap-2 py-4 border-b border-gray-300">
     <img src={board} alt="" className="w-1/12 basis-2" />
     <div className="flex-grow">
-      <h3 className="text-2xl font-bold text-gray-700 mb-2">{transaction.title}</h3>
+      <h3 className="text-xl font-bold text-gray-700 mb-2">{transaction.title}</h3>
       <div className="flex gap-2 items-center">
         {/* <div className="flex items-center gap-1">
           <img src={seeicon} alt="" className="w-6" />
@@ -566,6 +583,13 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
   const [file, setFile] = useState<File | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
+      const file = e.target.files[0];
+      const fileSizeInMB = file.size / (1024 * 1024); // Convert size to MB
+      if (fileSizeInMB > 15) {
+        toast.error('Kích cỡ file tối đa 15MB. Vui lòng chọn file nhỏ hơn');
+        e.target.value = '';
+        return;
+      }
       setFile(e.target.files[0]);
     }
   };
@@ -583,9 +607,8 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
       toast.error('Vui lòng chọn file')
       return;
     }
-    
-    onClose();
-    const loadingToastId = toast.loading('Uploading...')
+
+    const loadingToastId = toast.loading('Đang xử lý tài liệu tải lên...')
     try {
     
       
@@ -598,11 +621,14 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
       })
       
 
-    if (response.status === 201) {
+    if (response.status === 201 || response.status === 200 || response.status === 204) {
       toast.success('Upload thành công');
       onClose();
     } else {
       toast.error('Upload thất bại');
+    }
+    if(response.status === 500){
+      toast.error("Kích cỡ tài liệu quá lớn, vui lòng chọn file nhỏ hơn")
     }
   } catch (error) {
     const axiosError = error as { response?: { data: { message: string; error: string; statusCode: number } } };
@@ -677,10 +703,11 @@ const AddDocModal: React.FC<{isOpen: boolean; onClose: () => void }> = ({ isOpen
         </div>
         <div className="mb-4">
           <label className="block mb-1">Tài liệu tải lên</label>
+          <p className="text-red-500 mb-1">* Kích thước file tối đa 15MB</p>
           <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
             <p className="mb-2">Thả file tại đây</p>
             <p>hoặc</p>
-            <input type="file" className="mt-2" onChange={handleFileChange} />
+            <input type="file" className="mt-2" onChange={handleFileChange} accept=".pdf"/>
           </div>
         </div>
         <div className="flex justify-end gap-4">
@@ -731,6 +758,7 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSelle
     mutationFn: updateSellerInfo,
     onSuccess: (data: User) => {
       toast.success('Cập nhật thông tin thành công');
+      onClose();
       console.log("Cập nhật thông tin thành công", data);
       onUserInfoUpdate({ ...user, ...data }); // Cập nhật user info
       
@@ -788,11 +816,11 @@ const DetailSellerModal: React.FC<{  isOpen: boolean;onClose: () => void;isSelle
             </div>
             <div className="mb-4">
               <label className="block mb-1">SĐT</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+              <input type="text" minLength={10} maxLength={10} className="w-full border rounded-xl p-2" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
             </div>
             <div className="mb-4">
               <label className="block mb-1">Số dư tài khoản</label>
-              <input type="text" className="w-full border rounded-xl p-2" value={userInfo.accountBalance + " VNĐ"} readOnly />
+              <input type="text" className="w-full border rounded-xl p-2" value={(userInfo.accountBalance) + " VNĐ"} readOnly />
             </div>
             <div className="mb-4">
               <label className="block mb-1">Ngân hàng</label>

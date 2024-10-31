@@ -7,7 +7,7 @@ const RegisterHeader = () => {
     <header className="bg-white shadow sticky top-0 z-50">
       <div className="container bg-white  mx-auto flex justify-between items-center py-4 px-6">
         <nav className="flex items-center">
-          <Link to="/login">
+          <Link to="/">
         <img
                 src={logo_indocs} // Đường dẫn đến file ảnh logo của bạn
                 alt="Logo"

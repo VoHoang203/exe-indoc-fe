@@ -150,7 +150,7 @@ export default function UserManagement() {
   // );
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setCurrentPage(page -1);
   };
 // Hàm để cập nhật thông tin người dùng
 const updateUser = (updatedUser: User) => {
@@ -407,7 +407,7 @@ console.log(mockData)
         />
         
         <Pagination
-            current={currentPage}
+            current={currentPage + 1}
             total={totalPages}
             pageSize={searching ? searchUser.length :limit}
             onChange={handlePageChange}

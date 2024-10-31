@@ -283,19 +283,23 @@ console.log("static2:",statistics)
           mb="20px"
         >
           <Flex justify="space-between" align="center" mb="20px">
-            <RangePicker
-              onChange={handleDateChange}
-              value={dateRange}
-              style={{ marginRight: '20px' }}
-            />
-            <Select
-              defaultValue="day"
-              style={{ width: 120, marginRight: '20px' }}
-              onChange={handleTypeChange}
-            >
-              <Option value="day">Day</Option>
-              <Option value="month">Month</Option>
-            </Select>
+            <div className="">
+              <Select
+                  defaultValue="day"
+                  style={{ width: 120, marginRight: '20px' }}
+                  onChange={handleTypeChange}
+                >
+                  <Option value="day">Day</Option>
+                  <Option value="month">Month</Option>
+                </Select>
+              <RangePicker
+                onChange={handleDateChange}
+                value={dateRange}
+                style={{ marginRight: '20px' }}
+              />
+            </div>
+           
+            
             <Button colorScheme="blue">Calculate</Button>
           </Flex>
         </CustomCard>

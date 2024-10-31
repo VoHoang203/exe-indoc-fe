@@ -7,6 +7,7 @@ import CustomCard from '../../../../components/card/Card';
 import http from '../../../../utils/http';
 import {useQuery  } from '@tanstack/react-query';
 import { formatCurrency } from '../../../Payment/Payment';
+import { toast } from 'react-toastify';
 
 // const { Option } = Select;
 
@@ -68,10 +69,7 @@ export default function OrderManagement() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   
   const [searchTerm, setSearchTerm] = useState<string>('');
-  // const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  //@ts-ignore
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [limit, setLimit] = useState<number>(2);
+  const [limit, setLimit] = useState<number>(5);
   const fetchWithdrawals = async (page: number, limit: number): Promise<WithdrawalResponse> => {
     const response = await http.get<WithdrawalResponse>(`/admin/withdrawals?page=${page}&limit=${limit}`, {
       headers: {
@@ -91,26 +89,32 @@ export default function OrderManagement() {
   const [totalPages,setTotalPages] = useState<number>(mockData?.total || 0);
   
   useEffect(() => {
-    if (mockData) {
-      setWithdrawal(mockData.data); 
-      setTotalPages(mockData.total);
-    }
+      setWithdrawal([])
+      setWithdrawal(mockData?.data || []); 
+      setTotalPages(mockData?.total || 0);
+  }, [mockData,limit,currentPage]);
+  useEffect(() => {
     if(isLoading){
       message.loading('Loading...');
     }else{
       message.destroy();
     }
-  }, [isLoading,mockData,limit,currentPage]);
- 
+  }, [isLoading]);
   const handlePageChange = (page: number) => {
+    
+    console.log(withdrawal)
     setWithdrawal([])
-    setCurrentPage(page);
+    setCurrentPage(page -1);
   };
 
   // View Order Details
-  const handleViewDetail = () => {
-    //setSelectedOrder(order);
-    setIsModalVisible(true);
+   //@ts-ignore
+   const handlePageSizeChange = (current: number, pageSize: number) => {
+    if (pageSize > totalPages) {
+      toast.error('Page size cannot exceed the current limit.');
+    } else {
+      setLimit(pageSize);
+    }
   };
   
   const toggleWithdrawalStatus = async (withdrawalsId: string) => {
@@ -174,27 +178,16 @@ export default function OrderManagement() {
       title: 'Bank Owner Name',
       dataIndex: 'bankOwnerName',
       key: 'bankOwnerName',
+      width:200,
     },
     {
       title: 'Bank Account Number',
       dataIndex: 'bankAccountNumber',
       key: 'bankAccountNumber',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      align: 'center' as 'center',
-      //@ts-ignore
-      render: (text: any, record: any) => (
-        console.log("record2",record),
-        <Button onClick={() => handleViewDetail()}>Detail</Button>
-      ),
     }, {
       title: 'Action',
-      key: 'ctions',
+      key: 'actions',
       render: (record: Withdrawal) => (
-        console.log("record",record),
-    
       <Button
         disabled={record.status === 'approved'}
         onClick={async () => {
@@ -246,20 +239,18 @@ export default function OrderManagement() {
             <Table
               columns={columns}
               dataSource={withdrawal}
-              pagination={false}
               rowKey={(record: Withdrawal) => record.withdrawalsId}
               style={{ width: '100%', cursor: 'pointer' }}
             />
 
             <Pagination
-              current={currentPage}
+              current={currentPage +1}
               total={totalPages}
               pageSize={limit}
               onChange={handlePageChange}
-              pageSizeOptions={[2,5,10]}
+              pageSizeOptions={[3,5,10]}
               showSizeChanger
-              //@ts-ignore
-              onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
+              onShowSizeChange={(current, pageSize) => handlePageSizeChange(current, pageSize)}
               style={{ marginTop: '20px', textAlign: 'center' }}
             />
           </>
