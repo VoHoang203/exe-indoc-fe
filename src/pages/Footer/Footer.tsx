@@ -10,8 +10,7 @@ const Footer = () => {
                 className=" w-32 h-auto" // Giữ nguyên các class CSS để đảm bảo kích thước phù hợp
               />
           <p className="text-gray-600 max-w-xs">
-            Lorem ipsum dolor sit amet consectetur adipiscing, mauris integer
-            quam dolor nunc that any semper.
+          Thanh toán dễ dàng tiện lợi cùng InDocs
           </p>
         </div>
         <div className="flex flex-wrap justify-center md:justify-start space-x-8 mb-8 md:mb-0">
@@ -66,9 +65,12 @@ const Footer = () => {
         </div>
         {/* Copyright */}
       </div>
-      <div className="text-center text-gray-500 text-sm mt-6">
+      {/* <div className="text-center text-gray-500 text-sm mt-6">
         © 2024. Nguyen Gia Nguyen/Nguyen Thai Hieu
       </div>
+      <div className="mt-6">
+       
+      </div> */}
     </footer>
   );
 };

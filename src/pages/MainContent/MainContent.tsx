@@ -24,6 +24,7 @@ import arrowCheo from "../../assets/arrowCheo.png";
 import nuocxanh from "../../assets/nuocxanh.png";
 import nuocxam from "../../assets/nuocxam.png";
 import tintuc from "../../assets/tintuc.jpg";
+import talkimg from "../../assets/talkimg.png";
 import { Link } from "react-router-dom";
 import ResourceCard from "../../components/card/ResourceCard";
 import { useAuth } from "../../context/app.context"
@@ -398,33 +399,29 @@ const MainContent = () => {
           </h1>
           <div className="flex justify-center items-center space-x-6">
             <img src={lapLeft} alt="Laptop Image" className="w-1/2 z-10" />
-            <ul className="text-left text-gray-700 space-y-4">
+            <ul className="text-left text-gray-700 space-y-10">
               <li className="flex items-start gap-4">
                 <img src={rightArrow} className="w-10 h-10" />
                 <p>
-                  Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                  với người dùng
+                Cách thức đăng ký dễ dàng, thao tác đăng tải, lưu trữ, mua bán tài liệu nhanh chóng.
                 </p>
               </li>
               <li className="flex items-start gap-4">
                 <img src={rightArrow} className="w-10 h-10" />
                 <p>
-                  Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                  với người dùng
+                Tạo ra thu nhập cá nhân đến từ chất xám trí tuệ.
                 </p>
               </li>
               <li className="flex items-start gap-4">
                 <img src={rightArrow} className="w-10 h-10" />
                 <p>
-                  Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                  với người dùng
+                Xây dựng thương hiệu cá nhân, mở rộng tầm ảnh hưởng, có cơ hội hợp tác với nhiều chuyên gia, tổ chức, doanh nghiệp.
                 </p>
               </li>
               <li className="flex items-start gap-4">
                 <img src={rightArrow} className="w-10 h-10" />
                 <p>
-                  Xây dựng thương hiệu cá nhân chuyên nghiệp tạo niềm tin đối
-                  với người dùng
+                Góp phần sáng tạo cộng đồng học thuật trao đổi, giúp đỡ lẫn nhau.
                 </p>
               </li>
             </ul>
@@ -553,28 +550,15 @@ const MainContent = () => {
               <div className="bg-gradient-to-r from-[#1ab3bc] to-[#7953af] p-[2px] rounded-lg h-fit">
                 <div className="rounded-[6px] p-6 shadow-md hover:shadow-lg bg-white transition-shadow">
                   <div className="flex justify-center mb-4">
-                    <div className="bg-[#5701AD] p-2 rounded-tl-none rounded-full text-white">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-11.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l5-5z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                    <div className="bg-[#5701AD] rounded-tl-none rounded-full text-white">
+                      <img src={talkimg} alt="h-8 w-8" />
                     </div>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">
-                    Nguyễn Gia Nguyên
+                    Nguyễn Minh Anh
                   </h3>
-                  <p className="text-gray-600 mt-4">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text...
+                  <p className="text-gray-600 mt-4 line-clamp-3">
+                    InDocs thực sự đã giúp mình tìm kiếm tài liệu dễ hơn. Mình không cần truy cập quá nhiều trang web mà vẫn có thể tìm được tài liệu tham khảo mà mình muốn, mình rất thích điểm này.
                   </p>
                   <Link
                     to="/news"
@@ -587,34 +571,21 @@ const MainContent = () => {
 
               {/* Card 2 */}
               <div className="bg-gradient-to-r from-[#1ab3bc] to-[#7953af] p-[2px] rounded-lg h-fit">
-                <div className="rounded-[6px] p-6 shadow-md hover:shadow-l bg-white transition-shadow h-[300px]">
+                <div className="rounded-[6px] p-6 shadow-md hover:shadow-l bg-white transition-shadow h-[350px]">
                   <div className="flex justify-center mb-4">
-                    <div className="bg-[#5701AD] p-2 rounded-tl-none rounded-full text-white">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-11.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l5-5z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                    <div className="bg-[#5701AD] rounded-tl-none rounded-full text-white">
+                    <img src={talkimg} alt="h-8 w-8" />
                     </div>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">
-                    Nguyễn Gia Nguyên
+                    Nguyễn Thị Như Ý
                   </h3>
-                  <p className="text-gray-600 mt-4">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text...
+                  <p className="text-gray-600 mt-4 line-clamp-5">
+                    Công việc của mình cần phải đọc rất nhiều những bài nghiên cứu về lĩnh vực marketing và InDocs đã cung cấp cho mình tài liệu có giá trị, giúp ích nhiều cho bản thân mình trong công việc, đặc biệt là lúc mình cần tham khảo để lên kế hoạch truyền thông.
                   </p>
                   <Link
                     to="/news"
-                    className="text-blue-600 font-semibold mt-6 inline-block"
+                    className="text-blue-600 font-semibold my-6 inline-block"
                   >
                     Đi đến bài biết ↗
                   </Link>
@@ -624,28 +595,15 @@ const MainContent = () => {
               <div className="bg-gradient-to-r from-[#1ab3bc] to-[#7953af] p-[2px] rounded-lg h-fit">
                 <div className="rounded-[6px] p-6 shadow-md hover:shadow-l bg-white transition-shadow">
                   <div className="flex justify-center mb-4">
-                    <div className="bg-[#5701AD] p-2 rounded-tl-none rounded-full text-white">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-11.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l5-5z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                    <div className="bg-[#5701AD]  rounded-tl-none rounded-full text-white">
+                    <img src={talkimg} alt="h-8 w-8" />
                     </div>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">
-                    Nguyễn Gia Nguyên
+                    Trần Quốc Bình
                   </h3>
-                  <p className="text-gray-600 mt-4">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text...
+                  <p className="text-gray-600 mt-4 line-clamp-3">
+                  Qua một thời gian sử dụng, tôi nhận thấy website khá dễ sử dụng và chất lượng tài liệu ổn. Tôi cũng dùng một vài bài nghiên cứu trên trang web để lấy ví dụ cho sinh viên hiểu và đạt được hiệu quả tham khảo tốt.
                   </p>
                   <Link
                     to="/news"
@@ -842,28 +800,25 @@ const MainContent = () => {
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Main Event Image & Content */}
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 text-left">
                 <img
-                  src={tintuc}
+                  src="https://kenh14cdn.com/2019/9/8/15royimantaka695756721647585880128965861961527105763103n-1567938316567151816331.jpg"
                   alt="Main Event"
-                  className="w-full h-auto rounded-lg shadow-md"
+                  className="w-full h-[500px] rounded-lg shadow-md"
                 />
                 <div className="mt-6">
                   <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry.
+                  Các trường đại học tích cực tìm kiếm các trang web tài liệu để giúp đỡ sinh viên
                   </h3>
-                  <p className="text-gray-600">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text...
+                  <p className="text-gray-600 line-clamp-2">
+                  Nhiều trường đại học trên cả nước đang tích cực tìm kiếm và hợp tác với các trang web cung cấp tài liệu học tập nhằm hỗ trợ sinh viên trong quá trình học tập. Điều này không chỉ giúp sinh viên tiếp cận được nguồn tài liệu phong phú mà còn giúp họ tiết kiệm thời gian và chi phí trong việc tìm kiếm tài liệu.
                   </p>
                 </div>
               </div>
               {/* Event List */}
               <div className="space-y-6">
                 {/* Event Item 1 */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center text-left space-x-4">
                   <img
                     src={tintuc}
                     alt="Event 1"
@@ -871,16 +826,15 @@ const MainContent = () => {
                   />
                   <div>
                     <h4 className="text-gray-800 font-semibold">
-                      Lorem Ipsum is simply dummy text
+                    Xu hướng học trực tuyến ngày càng phát triển trong giới trẻ
                     </h4>
-                    <p className="text-gray-600 text-sm">
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry...
+                    <p className="text-gray-600 text-sm line-clamp-2">
+                    Học trực tuyến đang trở thành xu hướng phổ biến trong giới trẻ, ......
                     </p>
                   </div>
                 </div>
                 {/* Event Item 2 */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center text-left space-x-4">
                   <img
                     src={tintuc}
                     alt="Event 2"
@@ -890,48 +844,45 @@ const MainContent = () => {
                     <h4 className="text-gray-800 font-semibold">
                       Lorem Ipsum is simply dummy text
                     </h4>
-                    <p className="text-gray-600 text-sm">
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry...
+                    <p className="text-gray-600 text-sm line-clamp-2">
+                    Trong thời đại công nghệ 4.0, kỹ năng mềm đang ngày càng được coi trọng bên cạnh kiến thức...
                     </p>
                   </div>
                 </div>
                 {/* Event Item 3 */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center text-left space-x-4">
                   <img
                     src={tintuc}
                     alt="Event 3"
                     className="w-24 h-auto rounded-lg shadow-md"
                   />
                   <div>
-                    <h4 className="text-gray-800 font-semibold">
-                      Lorem Ipsum is simply dummy text
+                    <h4 className="text-gray-800 font-semibold line-clamp-2">
+                    Các trường đại học đẩy mạnh hợp tác quốc tế trong nghiên cứu khoa học
                     </h4>
-                    <p className="text-gray-600 text-sm">
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry...
+                    <p className="text-gray-600 text-sm line-clamp-2">
+                    Nhiều trường đại học Việt Nam đang tích cực mở rộng hợp tác quốc tế trong lĩnh vực nghiên....
                     </p>
                   </div>
                 </div>
                 {/* Event Item 4 */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center text-left space-x-4">
                   <img
                     src={tintuc}
                     alt="Event 4"
                     className="w-24 h-auto rounded-lg shadow-md"
                   />
                   <div>
-                    <h4 className="text-gray-800 font-semibold">
-                      Lorem Ipsum is simply dummy text
+                    <h4 className="text-gray-800 font-semibold ">
+                    Ứng dụng trí tuệ nhân tạo trong giáo dục: Cơ hội và thách thức
                     </h4>
-                    <p className="text-gray-600 text-sm">
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry...
+                    <p className="text-gray-600 text-sm line-clamp-2">
+                    Trí tuệ nhân tạo (AI) đang dần được ứng dụng rộng rãi trong lĩnh vực giáo dục, mang lại nhiều...
                     </p>
                   </div>
                 </div>
                 {/* Event Item 5 */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center text-left space-x-4">
                   <img
                     src={tintuc}
                     alt="Event 5"
@@ -939,11 +890,10 @@ const MainContent = () => {
                   />
                   <div>
                     <h4 className="text-gray-800 font-semibold">
-                      Lorem Ipsum is simply dummy text
+                    Giảm giá xăng, tăng giá dầu
                     </h4>
-                    <p className="text-gray-600 text-sm">
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry...
+                    <p className="text-gray-600 text-sm line-clamp-2">
+                    Trong kỳ điều hành ngày 31/10, giá xăng dầu có sự tăng giảm trái chiều. Trong khi giá...
                     </p>
                   </div>
                 </div>

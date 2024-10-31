@@ -16,7 +16,7 @@ export interface User {
     bankAccountNumber?: string
     bankOwnerName?: string
     electronicInvoiceEmail?: string
-    accountBalance?: string
+    accountBalance?: string | number
   }
   
   

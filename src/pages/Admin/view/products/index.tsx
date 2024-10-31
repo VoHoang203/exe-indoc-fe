@@ -121,7 +121,7 @@ const fetchDocuments = async (page: number, limit: number): Promise<DocumentResp
 
 export default function ProductManagement() {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(3);
+  const [limit, setLimit] = useState<number>(5);
   const { data: mockData, isLoading:isLoading } = useQuery<DocumentResponse, Error>({
     queryKey: ['documents', currentPage, limit],
     queryFn: () => fetchDocuments(currentPage, limit),
@@ -160,7 +160,7 @@ console.log("documents:",documents)
   // Xử lý thay đổi trang
   const handlePageChange = (page: number) => {
     setDocuments([])
-    setCurrentPage(page);
+    setCurrentPage(page -1);
   };
 
   // Xử lý khi nhấn nút Edit
@@ -304,10 +304,10 @@ console.log("documents:",documents)
         />
 
         <Pagination
-          current={currentPage}
+          current={currentPage +1}
           total={total}
           pageSize={limit}
-          pageSizeOptions={[3,4,5,7,10]}
+          pageSizeOptions={[3,5,10]}
           onChange={handlePageChange}
           showSizeChanger
           //@ts-ignore

@@ -17,6 +17,7 @@ import Card from '../../../../components/card/Card';
 import EditProductModal, { TransactionDetail } from './components/EditProductModal';
 import { useQuery } from '@tanstack/react-query';
 import http from '../../../../utils/http';
+import { toast } from 'react-toastify';
 
 // Định nghĩa kiểu dữ liệu cho sản phẩm và danh mục
 // interface Category {
@@ -82,21 +83,21 @@ console.log(transactionDetail)
   } = useDisclosure();
 
   useEffect(() => {
-    if (transactionsData) {
-      setTransactions(transactionsData.data); // Cập nhật state users với dữ liệu mới
-      setTotalPages(transactionsData.total);
-    }
+      setTransactions([])
+      setTransactions(transactionsData?.data || []);
+      setTotalPages(transactionsData?.total || 0);
+  }, [transactionsData,limit,currentPage]);
+  useEffect(() => {
     if(loading){
       message.loading('Loading...');
     }else{
       message.destroy();
     }
-  }, [loading,transactionsData,limit,currentPage]);
-
+  }, [loading]);
   // Xử lý thay đổi trang
   const handlePageChange = (page: number) => {
     setTransactions([])
-    setCurrentPage(page);
+    setCurrentPage(page -1);
   };
 
   // Xử lý khi nhấn nút Edit
@@ -104,7 +105,14 @@ console.log(transactionDetail)
     setEditProductData(record);
     onEditOpen();
   };
-  
+  //@ts-ignore
+  const handlePageSizeChange = (current: number, pageSize: number) => {
+    if (pageSize > totalPages) {
+      toast.error('Page size cannot exceed the current limit.');
+    } else {
+      setLimit(pageSize);
+    }
+  };
 
   // Cấu hình cột cho bảng
   const columns = [
@@ -196,13 +204,13 @@ console.log(transactionDetail)
         />
 
         <Pagination
-          current={currentPage}
+          current={currentPage +1}
           total={totalPages}
           pageSize={limit}
           onChange={handlePageChange}
-          pageSizeOptions={[3,4,5,7,10]}
-          //@ts-ignore
-          onShowSizeChange={(current, pageSize) => setLimit(pageSize)}
+          pageSizeOptions={[3,5,10]}
+          showSizeChanger
+          onShowSizeChange={(current, pageSize) => handlePageSizeChange(current, pageSize)}
           style={{ marginTop: '20px', textAlign: 'center' }}
         />
 
