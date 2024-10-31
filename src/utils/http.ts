@@ -19,7 +19,7 @@ class Http {
     this.accessToken = getAccessToken();
     this.refreshToken = getRefreshToken();
     this.instance = axios.create({
-      baseURL: "http://localhost:3001/api/",
+      baseURL: "https://indocs.click//api/",
       timeout: 100000,
       headers:{
         "Content-Type": "application/json"
